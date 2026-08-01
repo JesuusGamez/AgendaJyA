@@ -156,15 +156,25 @@
       display: flex;
       flex-direction: column;
       justify-content: space-between;
-      min-height: 260px;
+      min-height: 200px;
     }
 
     .col h2 {
-      font-size: 1rem;
+      font-size: 0.95rem;
       text-align: center;
       margin-bottom: 8px;
       padding-bottom: 6px;
       border-bottom: 1px solid var(--border);
+    }
+
+    .section-divider {
+      text-align: center;
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-top: 4px;
+      margin-bottom: -4px;
     }
 
     .title-ingresos { color: var(--green); }
@@ -176,7 +186,7 @@
       list-style: none;
       flex-grow: 1;
       overflow-y: auto;
-      max-height: 220px;
+      max-height: 180px;
       display: flex;
       flex-direction: column;
       gap: 6px;
@@ -196,13 +206,13 @@
     .items-list.ingresos li { border-left-color: var(--green); }
     .items-list.gastos li { border-left-color: var(--red); }
 
-    /* Estilos Pendientes (Rojo vs Verde) */
+    /* Estilos Pendientes y Pagados */
     .pending-item {
       border-left: 3px solid var(--red) !important;
       background: rgba(239, 68, 68, 0.08) !important;
     }
 
-    .pending-item.paid {
+    .paid-item {
       border-left: 3px solid var(--green) !important;
       background: rgba(34, 197, 94, 0.08) !important;
     }
@@ -217,10 +227,20 @@
       color: var(--green);
       cursor: pointer;
       font-weight: bold;
-      font-size: 1rem;
-      padding: 2px 4px;
+      font-size: 0.9rem;
+      padding: 2px 6px;
       border-radius: 4px;
       background: rgba(34, 197, 94, 0.15);
+    }
+
+    .undo-btn {
+      color: var(--red);
+      cursor: pointer;
+      font-weight: bold;
+      font-size: 0.9rem;
+      padding: 2px 6px;
+      border-radius: 4px;
+      background: rgba(239, 68, 68, 0.15);
     }
 
     .delete-btn {
@@ -238,13 +258,14 @@
 
     .add-btn {
       width: 100%;
-      padding: 10px;
-      margin-top: 10px;
+      padding: 8px;
+      margin-top: 8px;
       border: 1px solid var(--border);
       border-radius: 8px;
       background: #1e293b;
       color: var(--text);
       font-weight: 600;
+      font-size: 0.85rem;
       cursor: pointer;
     }
 
@@ -371,21 +392,38 @@
       </div>
     </div>
 
-    <!-- PESTAÑA 2: PENDIENTES DEL MES -->
+    <!-- PESTAÑA 2: PENDIENTES Y PAGADAS -->
     <div id="tab-pending" class="tab-content">
+      
+      <!-- Bloque Deudas Pendientes (Por Pagar) -->
+      <div class="section-divider">🔴 Deudas Pendientes</div>
       <div class="columns-grid">
         <div class="col">
-          <h2 class="title-jesus">Jesús</h2>
+          <h2 class="title-jesus">Jesús (Pendiente)</h2>
           <ul class="items-list" id="pendingJesusList"></ul>
           <button class="add-btn" onclick="addPending('Jesus')">+ Deuda</button>
         </div>
         <div class="col">
-          <h2 class="title-ali">Ali</h2>
+          <h2 class="title-ali">Ali (Pendiente)</h2>
           <ul class="items-list" id="pendingAliList"></ul>
           <button class="add-btn" onclick="addPending('Ali')">+ Deuda</button>
         </div>
       </div>
 
+      <!-- Bloque Deudas Pagadas -->
+      <div class="section-divider">🟢 Deudas Pagadas</div>
+      <div class="columns-grid">
+        <div class="col">
+          <h2 class="title-jesus">Jesús (Pagado)</h2>
+          <ul class="items-list" id="paidJesusList"></ul>
+        </div>
+        <div class="col">
+          <h2 class="title-ali">Ali (Pagado)</h2>
+          <ul class="items-list" id="paidAliList"></ul>
+        </div>
+      </div>
+
+      <!-- Resumen Totales Pendientes -->
       <div class="summary-card">
         <div class="summary-item">
           <span class="label">Pendiente Jesús</span>
@@ -516,41 +554,45 @@
       });
     }
 
-    // Cambiar estado de Pendiente (Chulito ✓)
-    function togglePending(key) {
+    // Marcar como Pagado (Pasa a columna inferior y suma a gasto)
+    function markAsPaid(key) {
       const p = allPendings[key];
-      if (!p) return;
+      if (!p || p.paid) return;
 
-      if (!p.paid) {
-        const newExpenseRef = db.ref('registros').push();
-        const newExpenseKey = newExpenseRef.key;
+      const newExpenseRef = db.ref('registros').push();
+      const newExpenseKey = newExpenseRef.key;
 
-        newExpenseRef.set({
-          type: 'gasto',
-          description: `[Deuda ${p.owner}] ${p.description}`,
-          amount: p.amount,
-          date: new Date().toISOString()
-        });
+      newExpenseRef.set({
+        type: 'gasto',
+        description: `[Deuda ${p.owner}] ${p.description}`,
+        amount: p.amount,
+        date: new Date().toISOString()
+      });
 
-        db.ref('pendientes/' + key).update({
-          paid: true,
-          expenseId: newExpenseKey
-        });
-      } else {
-        if (p.expenseId) {
-          db.ref('registros/' + p.expenseId).remove();
-        }
-
-        db.ref('pendientes/' + key).update({
-          paid: false,
-          expenseId: null
-        });
-      }
+      db.ref('pendientes/' + key).update({
+        paid: true,
+        expenseId: newExpenseKey
+      });
     }
 
-    // Eliminar Pendiente
+    // Deshacer Pago (Pasa de nuevo a columna superior y resta del gasto)
+    function undoPayment(key) {
+      const p = allPendings[key];
+      if (!p || !p.paid) return;
+
+      if (p.expenseId) {
+        db.ref('registros/' + p.expenseId).remove();
+      }
+
+      db.ref('pendientes/' + key).update({
+        paid: false,
+        expenseId: null
+      });
+    }
+
+    // Eliminar registro de Pendiente por completo
     function deletePending(key) {
-      if (confirm("¿Eliminar este pendiente?")) {
+      if (confirm("¿Eliminar este registro permanentemente?")) {
         const p = allPendings[key];
         if (p && p.paid && p.expenseId) {
           db.ref('registros/' + p.expenseId).remove();
@@ -566,12 +608,17 @@
       }
     }
 
-    // Renderizar Pestaña Pendientes
+    // Renderizar Pestaña Pendientes y Pagados
     function renderPendings() {
       const listJesus = document.getElementById('pendingJesusList');
       const listAli = document.getElementById('pendingAliList');
+      const listPaidJesus = document.getElementById('paidJesusList');
+      const listPaidAli = document.getElementById('paidAliList');
+
       listJesus.innerHTML = '';
       listAli.innerHTML = '';
+      listPaidJesus.innerHTML = '';
+      listPaidAli.innerHTML = '';
 
       let totalJesus = 0;
       let totalAli = 0;
@@ -579,22 +626,41 @@
       Object.keys(allPendings).forEach(key => {
         const p = allPendings[key];
         const li = document.createElement('li');
-        li.className = `pending-item ${p.paid ? 'paid' : ''}`;
 
-        li.innerHTML = `
-          <span>${p.description} (<b>$${p.amount.toLocaleString()}</b>)</span>
-          <div class="actions">
-            <span class="check-btn" onclick="togglePending('${key}')">${p.paid ? '✓' : '✓'}</span>
-            <span class="delete-btn" onclick="deletePending('${key}')">✕</span>
-          </div>
-        `;
+        if (!p.paid) {
+          // --- PENDIENTES (ARRIBA - ROJO) ---
+          li.className = 'pending-item';
+          li.innerHTML = `
+            <span>${p.description} (<b>$${p.amount.toLocaleString()}</b>)</span>
+            <div class="actions">
+              <span class="check-btn" title="Marcar como Pagado" onclick="markAsPaid('${key}')">✓</span>
+              <span class="delete-btn" title="Eliminar" onclick="deletePending('${key}')">🗑️</span>
+            </div>
+          `;
 
-        if (p.owner === 'Jesus') {
-          listJesus.appendChild(li);
-          if (!p.paid) totalJesus += p.amount;
+          if (p.owner === 'Jesus') {
+            listJesus.appendChild(li);
+            totalJesus += p.amount;
+          } else {
+            listAli.appendChild(li);
+            totalAli += p.amount;
+          }
         } else {
-          listAli.appendChild(li);
-          if (!p.paid) totalAli += p.amount;
+          // --- PAGADOS (ABAJO - VERDE) ---
+          li.className = 'paid-item';
+          li.innerHTML = `
+            <span>${p.description} (<b>$${p.amount.toLocaleString()}</b>)</span>
+            <div class="actions">
+              <span class="undo-btn" title="Deshacer pago (volver a pendientes)" onclick="undoPayment('${key}')">✕</span>
+              <span class="delete-btn" title="Eliminar" onclick="deletePending('${key}')">🗑️</span>
+            </div>
+          `;
+
+          if (p.owner === 'Jesus') {
+            listPaidJesus.appendChild(li);
+          } else {
+            listPaidAli.appendChild(li);
+          }
         }
       });
 
