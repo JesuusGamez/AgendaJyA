@@ -296,7 +296,7 @@
       background: #0f172a;
       border: 1px solid var(--border);
       border-radius: 12px;
-      padding: 15px;
+      padding: 12px;
       text-align: center;
       display: flex;
       flex-direction: column;
@@ -304,13 +304,13 @@
     }
 
     .balance-title {
-      font-size: 0.85rem;
+      font-size: 0.8rem;
       color: var(--text-muted);
       text-transform: uppercase;
     }
 
     .balance-amount {
-      font-size: 1.6rem;
+      font-size: 1.4rem;
       font-weight: 800;
     }
   </style>
@@ -362,6 +362,12 @@
           <span class="label">Gastos del Día</span>
           <span class="value" id="dailyTotalGastos" style="color: var(--red);">$0</span>
         </div>
+      </div>
+
+      <!-- Balance Neto Diario -->
+      <div class="balance-card">
+        <span class="balance-title">Balance Neto de Hoy</span>
+        <span class="balance-amount" id="dailyBalance">$0</span>
       </div>
     </div>
 
@@ -471,7 +477,7 @@
       renderPendings();
     });
 
-    // Añadir Registro Normal (Ingreso / Gasto)
+    // Añadir Registro Normal
     function addRecord(type) {
       const desc = prompt(`Descripción del ${type}:`);
       if (!desc) return;
@@ -516,7 +522,6 @@
       if (!p) return;
 
       if (!p.paid) {
-        // Marcar como Pagado -> Crear gasto automático
         const newExpenseRef = db.ref('registros').push();
         const newExpenseKey = newExpenseRef.key;
 
@@ -532,7 +537,6 @@
           expenseId: newExpenseKey
         });
       } else {
-        // Desmarcar -> Eliminar el gasto automático en Firebase
         if (p.expenseId) {
           db.ref('registros/' + p.expenseId).remove();
         }
@@ -646,20 +650,32 @@
       document.getElementById('dailyTotalIngresos').innerText = `$${dailyTotalIng.toLocaleString()}`;
       document.getElementById('dailyTotalGastos').innerText = `$${dailyTotalGas.toLocaleString()}`;
 
+      // Balance Neto del Día
+      const dailyBalance = dailyTotalIng - dailyTotalGas;
+      const dailyBalanceElem = document.getElementById('dailyBalance');
+
+      if (dailyBalance >= 0) {
+        dailyBalanceElem.style.color = 'var(--green)';
+        dailyBalanceElem.innerText = `+$${dailyBalance.toLocaleString()}`;
+      } else {
+        dailyBalanceElem.style.color = 'var(--red)';
+        dailyBalanceElem.innerText = `-$${Math.abs(dailyBalance).toLocaleString()}`;
+      }
+
       // Totales del Mes
       document.getElementById('monthlyTotalIngresos').innerText = `$${monthlyTotalIng.toLocaleString()}`;
       document.getElementById('monthlyTotalGastos').innerText = `$${monthlyTotalGas.toLocaleString()}`;
 
-      // Balance
-      const balance = monthlyTotalIng - monthlyTotalGas;
-      const balanceElem = document.getElementById('monthlyBalance');
+      // Balance Neto del Mes
+      const monthlyBalance = monthlyTotalIng - monthlyTotalGas;
+      const monthlyBalanceElem = document.getElementById('monthlyBalance');
       
-      if (balance >= 0) {
-        balanceElem.style.color = 'var(--green)';
-        balanceElem.innerText = `+$${balance.toLocaleString()}`;
+      if (monthlyBalance >= 0) {
+        monthlyBalanceElem.style.color = 'var(--green)';
+        monthlyBalanceElem.innerText = `+$${monthlyBalance.toLocaleString()}`;
       } else {
-        balanceElem.style.color = 'var(--red)';
-        balanceElem.innerText = `-$${Math.abs(balance).toLocaleString()}`;
+        monthlyBalanceElem.style.color = 'var(--red)';
+        monthlyBalanceElem.innerText = `-$${Math.abs(monthlyBalance).toLocaleString()}`;
       }
 
       renderChart(monthlyTotalIng, monthlyTotalGas);
