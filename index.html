@@ -14,6 +14,8 @@
       --green: #22c55e;
       --red: #ef4444;
       --border: #334155;
+      --jesus-color: #3b82f6;
+      --ali-color: #ec4899;
     }
 
     * {
@@ -34,7 +36,7 @@
 
     .app-container {
       width: 100%;
-      max-width: 480px;
+      max-width: 520px;
       background: var(--card-bg);
       border: 1px solid var(--border);
       border-radius: 16px;
@@ -141,7 +143,20 @@
       text-align: center;
     }
 
-    /* Columnas */
+    .section-divider {
+      text-align: center;
+      font-size: 0.85rem;
+      font-weight: 700;
+      letter-spacing: 0.5px;
+      margin-top: 4px;
+      margin-bottom: -4px;
+      text-transform: uppercase;
+    }
+
+    .title-jesus { color: var(--jesus-color); }
+    .title-ali { color: var(--ali-color); }
+
+    /* Columnas Grid */
     .columns-grid {
       display: grid;
       grid-template-columns: 1fr 1fr;
@@ -156,37 +171,22 @@
       display: flex;
       flex-direction: column;
       justify-content: space-between;
-      min-height: 200px;
+      min-height: 190px;
     }
 
     .col h2 {
-      font-size: 0.95rem;
+      font-size: 0.85rem;
       text-align: center;
       margin-bottom: 8px;
       padding-bottom: 6px;
       border-bottom: 1px solid var(--border);
     }
 
-    .section-divider {
-      text-align: center;
-      font-size: 0.85rem;
-      color: var(--text-muted);
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
-      margin-top: 4px;
-      margin-bottom: -4px;
-    }
-
-    .title-ingresos { color: var(--green); }
-    .title-gastos { color: var(--red); }
-    .title-jesus { color: #3b82f6; }
-    .title-ali { color: #ec4899; }
-
     .items-list {
       list-style: none;
       flex-grow: 1;
       overflow-y: auto;
-      max-height: 180px;
+      max-height: 160px;
       display: flex;
       flex-direction: column;
       gap: 6px;
@@ -196,7 +196,7 @@
       background: #1e293b;
       padding: 8px;
       border-radius: 6px;
-      font-size: 0.82rem;
+      font-size: 0.8rem;
       display: flex;
       justify-content: space-between;
       align-items: center;
@@ -265,7 +265,7 @@
       background: #1e293b;
       color: var(--text);
       font-weight: 600;
-      font-size: 0.85rem;
+      font-size: 0.8rem;
       cursor: pointer;
     }
 
@@ -274,12 +274,26 @@
       background: var(--accent);
     }
 
-    /* Tarjetas de Resumen */
-    .summary-card {
+    /* Tarjetas de Resumen Dobles */
+    .user-summary-card {
       background: #0f172a;
       border: 1px solid var(--border);
       border-radius: 12px;
-      padding: 12px;
+      padding: 10px;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .user-summary-card.jesus-card { border-top: 3px solid var(--jesus-color); }
+    .user-summary-card.ali-card { border-top: 3px solid var(--ali-color); }
+
+    .user-summary-card h3 {
+      font-size: 0.85rem;
+      text-align: center;
+    }
+
+    .summary-metrics {
       display: flex;
       justify-content: space-around;
       text-align: center;
@@ -292,47 +306,50 @@
     }
 
     .summary-item .label {
-      font-size: 0.75rem;
+      font-size: 0.7rem;
       color: var(--text-muted);
     }
 
     .summary-item .value {
-      font-size: 1.1rem;
+      font-size: 0.95rem;
       font-weight: bold;
     }
 
     /* Gráfica y Balance */
-    .chart-container {
-      background: #0f172a;
-      border: 1px solid var(--border);
-      border-radius: 12px;
-      padding: 15px;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      max-height: 230px;
+    .charts-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
     }
 
-    .balance-card {
+    .chart-box {
       background: #0f172a;
       border: 1px solid var(--border);
       border-radius: 12px;
-      padding: 12px;
-      text-align: center;
+      padding: 10px;
       display: flex;
       flex-direction: column;
-      gap: 4px;
+      align-items: center;
+      gap: 8px;
     }
 
-    .balance-title {
-      font-size: 0.8rem;
-      color: var(--text-muted);
-      text-transform: uppercase;
+    .chart-box h3 {
+      font-size: 0.85rem;
     }
 
-    .balance-amount {
-      font-size: 1.4rem;
+    .chart-wrapper {
+      position: relative;
+      width: 100%;
+      height: 140px;
+    }
+
+    .balance-badge {
+      font-size: 0.85rem;
       font-weight: 800;
+      padding: 4px 8px;
+      border-radius: 6px;
+      background: #1e293b;
+      margin-top: 2px;
     }
   </style>
 
@@ -357,45 +374,70 @@
       <button class="tab-btn" onclick="switchTab('monthly', event)">📅 Consulta</button>
     </div>
 
-    <!-- PESTAÑA 1: DÍA A DÍA -->
+    <!-- PESTAÑA 1: DÍA A DÍA (DESGLOSADO JESÚS & ALI) -->
     <div id="tab-daily" class="tab-content active">
       <div class="date-indicator" id="todayLabel"></div>
 
+      <!-- SECCIÓN INGRESOS -->
+      <div class="section-divider title-ingresos">🟢 Ingresos de Hoy</div>
       <div class="columns-grid">
         <div class="col">
-          <h2 class="title-ingresos">Ingresos</h2>
-          <ul class="items-list ingresos" id="dailyIngresosList"></ul>
-          <button class="add-btn" onclick="addRecord('ingreso')">+ Añadir</button>
+          <h2 class="title-jesus">Jesús</h2>
+          <ul class="items-list ingresos" id="dailyIngresosJesus"></ul>
+          <button class="add-btn" onclick="addRecord('ingreso', 'Jesus')">+ Jesús</button>
         </div>
         <div class="col">
-          <h2 class="title-gastos">Gastos</h2>
-          <ul class="items-list gastos" id="dailyGastosList"></ul>
-          <button class="add-btn" onclick="addRecord('gasto')">+ Añadir</button>
+          <h2 class="title-ali">Ali</h2>
+          <ul class="items-list ingresos" id="dailyIngresosAli"></ul>
+          <button class="add-btn" onclick="addRecord('ingreso', 'Ali')">+ Ali</button>
         </div>
       </div>
 
-      <div class="summary-card">
-        <div class="summary-item">
-          <span class="label">Ingresos del Día</span>
-          <span class="value" id="dailyTotalIngresos" style="color: var(--green);">$0</span>
+      <!-- SECCIÓN GASTOS -->
+      <div class="section-divider title-gastos">🔴 Gastos de Hoy</div>
+      <div class="columns-grid">
+        <div class="col">
+          <h2 class="title-jesus">Jesús</h2>
+          <ul class="items-list gastos" id="dailyGastosJesus"></ul>
+          <button class="add-btn" onclick="addRecord('gasto', 'Jesus')">+ Jesús</button>
         </div>
-        <div class="summary-item">
-          <span class="label">Gastos del Día</span>
-          <span class="value" id="dailyTotalGastos" style="color: var(--red);">$0</span>
+        <div class="col">
+          <h2 class="title-ali">Ali</h2>
+          <ul class="items-list gastos" id="dailyGastosAli"></ul>
+          <button class="add-btn" onclick="addRecord('gasto', 'Ali')">+ Ali</button>
         </div>
       </div>
 
-      <!-- Balance Neto Diario -->
-      <div class="balance-card">
-        <span class="balance-title">Balance Neto de Hoy</span>
-        <span class="balance-amount" id="dailyBalance">$0</span>
+      <!-- RESUMEN DIARIO INDIVIDUAL -->
+      <div class="columns-grid">
+        <div class="user-summary-card jesus-card">
+          <h3 class="title-jesus">Resumen Jesús</h3>
+          <div class="summary-metrics">
+            <div class="summary-item"><span class="label">Ing.</span><span class="value" id="dailyIngJesus" style="color:var(--green)">$0</span></div>
+            <div class="summary-item"><span class="label">Gas.</span><span class="value" id="dailyGasJesus" style="color:var(--red)">$0</span></div>
+          </div>
+          <div style="text-align: center; margin-top: 4px;">
+            <span class="summary-item"><span class="label">Balance Neto</span></span>
+            <div class="balance-badge" id="dailyBalJesus">$0</div>
+          </div>
+        </div>
+
+        <div class="user-summary-card ali-card">
+          <h3 class="title-ali">Resumen Ali</h3>
+          <div class="summary-metrics">
+            <div class="summary-item"><span class="label">Ing.</span><span class="value" id="dailyIngAli" style="color:var(--green)">$0</span></div>
+            <div class="summary-item"><span class="label">Gas.</span><span class="value" id="dailyGasAli" style="color:var(--red)">$0</span></div>
+          </div>
+          <div style="text-align: center; margin-top: 4px;">
+            <span class="summary-item"><span class="label">Balance Neto</span></span>
+            <div class="balance-badge" id="dailyBalAli">$0</div>
+          </div>
+        </div>
       </div>
     </div>
 
     <!-- PESTAÑA 2: PENDIENTES Y PAGADAS -->
     <div id="tab-pending" class="tab-content">
-      
-      <!-- Bloque Deudas Pendientes (Por Pagar) -->
       <div class="section-divider">🔴 Deudas Pendientes</div>
       <div class="columns-grid">
         <div class="col">
@@ -410,7 +452,6 @@
         </div>
       </div>
 
-      <!-- Bloque Deudas Pagadas -->
       <div class="section-divider">🟢 Deudas Pagadas</div>
       <div class="columns-grid">
         <div class="col">
@@ -423,44 +464,70 @@
         </div>
       </div>
 
-      <!-- Resumen Totales Pendientes -->
-      <div class="summary-card">
-        <div class="summary-item">
-          <span class="label">Pendiente Jesús</span>
-          <span class="value" id="totalPendingJesus" style="color: var(--red);">$0</span>
+      <div class="columns-grid">
+        <div class="user-summary-card jesus-card">
+          <h3 class="title-jesus">Total Pendiente</h3>
+          <div style="text-align:center;" class="summary-item">
+            <span class="value" id="totalPendingJesus" style="color: var(--red); font-size:1.1rem;">$0</span>
+          </div>
         </div>
-        <div class="summary-item">
-          <span class="label">Pendiente Ali</span>
-          <span class="value" id="totalPendingAli" style="color: var(--red);">$0</span>
+        <div class="user-summary-card ali-card">
+          <h3 class="title-ali">Total Pendiente</h3>
+          <div style="text-align:center;" class="summary-item">
+            <span class="value" id="totalPendingAli" style="color: var(--red); font-size:1.1rem;">$0</span>
+          </div>
         </div>
       </div>
     </div>
 
-    <!-- PESTAÑA 3: CONSULTA MENSUAL -->
+    <!-- PESTAÑA 3: CONSULTA MENSUAL (DUPLICADA PARA JESÚS Y ALI) -->
     <div id="tab-monthly" class="tab-content">
       <div class="filter-box">
         <label for="monthPicker">Seleccionar Mes a Consultar</label>
         <input type="month" id="monthPicker" onchange="renderData()">
       </div>
 
-      <div class="chart-container">
-        <canvas id="monthlyChart"></canvas>
+      <!-- GRÁFICAS DUALES -->
+      <div class="charts-grid">
+        <div class="chart-box">
+          <h3 class="title-jesus">Jesús</h3>
+          <div class="chart-wrapper">
+            <canvas id="chartJesus"></canvas>
+          </div>
+        </div>
+        <div class="chart-box">
+          <h3 class="title-ali">Ali</h3>
+          <div class="chart-wrapper">
+            <canvas id="chartAli"></canvas>
+          </div>
+        </div>
       </div>
 
-      <div class="summary-card">
-        <div class="summary-item">
-          <span class="label">Ingresos Mes</span>
-          <span class="value" id="monthlyTotalIngresos" style="color: var(--green);">$0</span>
+      <!-- RESUMEN MENSUAL INDIVIDUAL -->
+      <div class="columns-grid">
+        <div class="user-summary-card jesus-card">
+          <h3 class="title-jesus">Mes Jesús</h3>
+          <div class="summary-metrics">
+            <div class="summary-item"><span class="label">Ingresos</span><span class="value" id="monthlyIngJesus" style="color:var(--green)">$0</span></div>
+            <div class="summary-item"><span class="label">Gastos</span><span class="value" id="monthlyGasJesus" style="color:var(--red)">$0</span></div>
+          </div>
+          <div style="text-align: center; margin-top: 4px;">
+            <span class="summary-item"><span class="label">Balance Mes</span></span>
+            <div class="balance-badge" id="monthlyBalJesus">$0</div>
+          </div>
         </div>
-        <div class="summary-item">
-          <span class="label">Gastos Mes</span>
-          <span class="value" id="monthlyTotalGastos" style="color: var(--red);">$0</span>
-        </div>
-      </div>
 
-      <div class="balance-card">
-        <span class="balance-title">Balance Neto del Mes</span>
-        <span class="balance-amount" id="monthlyBalance">$0</span>
+        <div class="user-summary-card ali-card">
+          <h3 class="title-ali">Mes Ali</h3>
+          <div class="summary-metrics">
+            <div class="summary-item"><span class="label">Ingresos</span><span class="value" id="monthlyIngAli" style="color:var(--green)">$0</span></div>
+            <div class="summary-item"><span class="label">Gastos</span><span class="value" id="monthlyGasAli" style="color:var(--red)">$0</span></div>
+          </div>
+          <div style="text-align: center; margin-top: 4px;">
+            <span class="summary-item"><span class="label">Balance Mes</span></span>
+            <div class="balance-badge" id="monthlyBalAli">$0</div>
+          </div>
+        </div>
       </div>
     </div>
   </div>
@@ -493,7 +560,8 @@
 
     let allRecords = {};
     let allPendings = {};
-    let chartInstance = null;
+    let chartJesusInstance = null;
+    let chartAliInstance = null;
 
     // Cambiar Pestañas
     function switchTab(tab, e) {
@@ -515,9 +583,9 @@
       renderPendings();
     });
 
-    // Añadir Registro Normal
-    function addRecord(type) {
-      const desc = prompt(`Descripción del ${type}:`);
+    // Añadir Registro Normal (Con Dueño)
+    function addRecord(type, owner) {
+      const desc = prompt(`Descripción del ${type} (${owner}):`);
       if (!desc) return;
 
       const amount = parseFloat(prompt(`Monto ($):`));
@@ -528,6 +596,7 @@
 
       db.ref('registros').push({
         type: type,
+        owner: owner,
         description: desc,
         amount: amount,
         date: new Date().toISOString()
@@ -554,7 +623,7 @@
       });
     }
 
-    // Marcar como Pagado (Pasa a columna inferior y suma a gasto)
+    // Marcar como Pagado
     function markAsPaid(key) {
       const p = allPendings[key];
       if (!p || p.paid) return;
@@ -564,6 +633,7 @@
 
       newExpenseRef.set({
         type: 'gasto',
+        owner: p.owner,
         description: `[Deuda ${p.owner}] ${p.description}`,
         amount: p.amount,
         date: new Date().toISOString()
@@ -575,7 +645,7 @@
       });
     }
 
-    // Deshacer Pago (Pasa de nuevo a columna superior y resta del gasto)
+    // Deshacer Pago
     function undoPayment(key) {
       const p = allPendings[key];
       if (!p || !p.paid) return;
@@ -590,7 +660,7 @@
       });
     }
 
-    // Eliminar registro de Pendiente por completo
+    // Eliminar registro de Pendiente
     function deletePending(key) {
       if (confirm("¿Eliminar este registro permanentemente?")) {
         const p = allPendings[key];
@@ -608,7 +678,7 @@
       }
     }
 
-    // Renderizar Pestaña Pendientes y Pagados
+    // Renderizar Pestaña Pendientes
     function renderPendings() {
       const listJesus = document.getElementById('pendingJesusList');
       const listAli = document.getElementById('pendingAliList');
@@ -628,7 +698,6 @@
         const li = document.createElement('li');
 
         if (!p.paid) {
-          // --- PENDIENTES (ARRIBA - ROJO) ---
           li.className = 'pending-item';
           li.innerHTML = `
             <span>${p.description} (<b>$${p.amount.toLocaleString()}</b>)</span>
@@ -646,12 +715,11 @@
             totalAli += p.amount;
           }
         } else {
-          // --- PAGADOS (ABAJO - VERDE) ---
           li.className = 'paid-item';
           li.innerHTML = `
             <span>${p.description} (<b>$${p.amount.toLocaleString()}</b>)</span>
             <div class="actions">
-              <span class="undo-btn" title="Deshacer pago (volver a pendientes)" onclick="undoPayment('${key}')">✕</span>
+              <span class="undo-btn" title="Deshacer pago" onclick="undoPayment('${key}')">✕</span>
               <span class="delete-btn" title="Eliminar" onclick="deletePending('${key}')">🗑️</span>
             </div>
           `;
@@ -670,114 +738,132 @@
 
     // Renderizar Datos Diarios y Mensuales
     function renderData() {
-      // Día
-      const dailyIngresos = document.getElementById('dailyIngresosList');
-      const dailyGastos = document.getElementById('dailyGastosList');
-      dailyIngresos.innerHTML = '';
-      dailyGastos.innerHTML = '';
-      let dailyTotalIng = 0, dailyTotalGas = 0;
+      // Listas Diarias
+      const ingJesus = document.getElementById('dailyIngresosJesus');
+      const ingAli = document.getElementById('dailyIngresosAli');
+      const gasJesus = document.getElementById('dailyGastosJesus');
+      const gasAli = document.getElementById('dailyGastosAli');
 
-      // Mes
+      ingJesus.innerHTML = ''; ingAli.innerHTML = '';
+      gasJesus.innerHTML = ''; gasAli.innerHTML = '';
+
+      // Totales
+      let dIngJesus = 0, dGasJesus = 0, dIngAli = 0, dGasAli = 0;
+      let mIngJesus = 0, mGasJesus = 0, mIngAli = 0, mGasAli = 0;
+
       const selectedMonth = monthPicker.value;
-      let monthlyTotalIng = 0, monthlyTotalGas = 0;
 
       Object.keys(allRecords).forEach(key => {
         const item = allRecords[key];
         const itemDateStr = item.date ? item.date.slice(0, 10) : "";
         const itemMonthStr = item.date ? item.date.slice(0, 7) : "";
+        const owner = item.owner || 'Jesus'; // Fallback por defecto
 
-        // Solo Hoy
+        // Registros de Hoy
         if (itemDateStr === todayStr) {
           const li = document.createElement('li');
           li.innerHTML = `
             <span>${item.description} (<b>$${item.amount.toLocaleString()}</b>)</span>
             <span class="delete-btn" onclick="deleteRecord('${key}')">✕</span>
           `;
+
           if (item.type === 'ingreso') {
-            dailyIngresos.appendChild(li);
-            dailyTotalIng += item.amount;
+            if (owner === 'Jesus') { ingJesus.appendChild(li); dIngJesus += item.amount; }
+            else { ingAli.appendChild(li); dIngAli += item.amount; }
           } else {
-            dailyGastos.appendChild(li);
-            dailyTotalGas += item.amount;
+            if (owner === 'Jesus') { gasJesus.appendChild(li); dGasJesus += item.amount; }
+            else { gasAli.appendChild(li); dGasAli += item.amount; }
           }
         }
 
-        // Totales del Mes Seleccionado
+        // Registros del Mes Seleccionado
         if (itemMonthStr === selectedMonth) {
           if (item.type === 'ingreso') {
-            monthlyTotalIng += item.amount;
+            if (owner === 'Jesus') mIngJesus += item.amount;
+            else mIngAli += item.amount;
           } else {
-            monthlyTotalGas += item.amount;
+            if (owner === 'Jesus') mGasJesus += item.amount;
+            else mGasAli += item.amount;
           }
         }
       });
 
-      // Totales del Día
-      document.getElementById('dailyTotalIngresos').innerText = `$${dailyTotalIng.toLocaleString()}`;
-      document.getElementById('dailyTotalGastos').innerText = `$${dailyTotalGas.toLocaleString()}`;
+      // --- ACTUALIZAR HOY ---
+      document.getElementById('dailyIngJesus').innerText = `$${dIngJesus.toLocaleString()}`;
+      document.getElementById('dailyGasJesus').innerText = `$${dGasJesus.toLocaleString()}`;
+      updateBalanceBadge('dailyBalJesus', dIngJesus - dGasJesus);
 
-      // Balance Neto del Día
-      const dailyBalance = dailyTotalIng - dailyTotalGas;
-      const dailyBalanceElem = document.getElementById('dailyBalance');
+      document.getElementById('dailyIngAli').innerText = `$${dIngAli.toLocaleString()}`;
+      document.getElementById('dailyGasAli').innerText = `$${dGasAli.toLocaleString()}`;
+      updateBalanceBadge('dailyBalAli', dIngAli - dGasAli);
 
-      if (dailyBalance >= 0) {
-        dailyBalanceElem.style.color = 'var(--green)';
-        dailyBalanceElem.innerText = `+$${dailyBalance.toLocaleString()}`;
-      } else {
-        dailyBalanceElem.style.color = 'var(--red)';
-        dailyBalanceElem.innerText = `-$${Math.abs(dailyBalance).toLocaleString()}`;
-      }
+      // --- ACTUALIZAR MES ---
+      document.getElementById('monthlyIngJesus').innerText = `$${mIngJesus.toLocaleString()}`;
+      document.getElementById('monthlyGasJesus').innerText = `$${mGasJesus.toLocaleString()}`;
+      updateBalanceBadge('monthlyBalJesus', mIngJesus - mGasJesus);
 
-      // Totales del Mes
-      document.getElementById('monthlyTotalIngresos').innerText = `$${monthlyTotalIng.toLocaleString()}`;
-      document.getElementById('monthlyTotalGastos').innerText = `$${monthlyTotalGas.toLocaleString()}`;
+      document.getElementById('monthlyIngAli').innerText = `$${mIngAli.toLocaleString()}`;
+      document.getElementById('monthlyGasAli').innerText = `$${mGasAli.toLocaleString()}`;
+      updateBalanceBadge('monthlyBalAli', mIngAli - mGasAli);
 
-      // Balance Neto del Mes
-      const monthlyBalance = monthlyTotalIng - monthlyTotalGas;
-      const monthlyBalanceElem = document.getElementById('monthlyBalance');
-      
-      if (monthlyBalance >= 0) {
-        monthlyBalanceElem.style.color = 'var(--green)';
-        monthlyBalanceElem.innerText = `+$${monthlyBalance.toLocaleString()}`;
-      } else {
-        monthlyBalanceElem.style.color = 'var(--red)';
-        monthlyBalanceElem.innerText = `-$${Math.abs(monthlyBalance).toLocaleString()}`;
-      }
-
-      renderChart(monthlyTotalIng, monthlyTotalGas);
+      // Renderizar Gráficas
+      renderCharts(mIngJesus, mGasJesus, mIngAli, mGasAli);
     }
 
-    // Gráfica de Torta
-    function renderChart(ingresos, gastos) {
-      const ctx = document.getElementById('monthlyChart').getContext('2d');
-
-      if (chartInstance) {
-        chartInstance.destroy();
+    // Auxiliar para Badges de Balance
+    function updateBalanceBadge(elemId, balance) {
+      const elem = document.getElementById(elemId);
+      if (balance >= 0) {
+        elem.style.color = 'var(--green)';
+        elem.innerText = `+$${balance.toLocaleString()}`;
+      } else {
+        elem.style.color = 'var(--red)';
+        elem.innerText = `-$${Math.abs(balance).toLocaleString()}`;
       }
+    }
 
-      chartInstance = new Chart(ctx, {
+    // Crear / Actualizar Gráficas de Torta Independientes
+    function renderCharts(ingJesus, gasJesus, ingAli, gasAli) {
+      const ctxJesus = document.getElementById('chartJesus').getContext('2d');
+      const ctxAli = document.getElementById('chartAli').getContext('2d');
+
+      if (chartJesusInstance) chartJesusInstance.destroy();
+      if (chartAliInstance) chartAliInstance.destroy();
+
+      const commonOptions = {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+          legend: { display: false }
+        }
+      };
+
+      chartJesusInstance = new Chart(ctxJesus, {
         type: 'doughnut',
         data: {
           labels: ['Ingresos', 'Gastos'],
           datasets: [{
-            data: [ingresos, gastos],
+            data: [ingJesus, gasJesus],
             backgroundColor: ['#22c55e', '#ef4444'],
             borderColor: '#1e293b',
             borderWidth: 2
           }]
         },
-        options: {
-          responsive: true,
-          maintainAspectRatio: false,
-          plugins: {
-            legend: {
-              labels: {
-                color: '#f8fafc',
-                font: { size: 13 }
-              }
-            }
-          }
-        }
+        options: commonOptions
+      });
+
+      chartAliInstance = new Chart(ctxAli, {
+        type: 'doughnut',
+        data: {
+          labels: ['Ingresos', 'Gastos'],
+          datasets: [{
+            data: [ingAli, gasAli],
+            backgroundColor: ['#22c55e', '#ef4444'],
+            borderColor: '#1e293b',
+            borderWidth: 2
+          }]
+        },
+        options: commonOptions
       });
     }
   </script>
