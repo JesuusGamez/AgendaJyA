@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -100,7 +101,7 @@
       display: flex;
     }
 
-    /* Indicador de Fecha / Filtro */
+    /* Indicadores / Filtros */
     .date-indicator {
       text-align: center;
       font-size: 0.85rem;
@@ -140,7 +141,7 @@
       text-align: center;
     }
 
-    /* Columnas */
+    /* Columnas Diarias */
     .columns-grid {
       display: grid;
       grid-template-columns: 1fr 1fr;
@@ -193,7 +194,6 @@
     .items-list.ingresos li { border-left-color: var(--green); }
     .items-list.gastos li { border-left-color: var(--red); }
 
-    /* Botón Eliminar ✕ */
     .delete-btn {
       color: var(--text-muted);
       cursor: pointer;
@@ -224,7 +224,7 @@
       background: var(--accent);
     }
 
-    /* Resumen */
+    /* Tarjetas de Resumen */
     .summary-card {
       background: #0f172a;
       border: 1px solid var(--border);
@@ -250,11 +250,48 @@
       font-size: 1.1rem;
       font-weight: bold;
     }
+
+    /* Contenedor Gráfica Mensual */
+    .chart-container {
+      background: #0f172a;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 15px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      max-height: 250px;
+    }
+
+    .balance-card {
+      background: #0f172a;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 15px;
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .balance-title {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      text-transform: uppercase;
+    }
+
+    .balance-amount {
+      font-size: 1.6rem;
+      font-weight: 800;
+    }
   </style>
 
   <!-- Firebase -->
   <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
   <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
+
+  <!-- Chart.js para la gráfica de torta/dona -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
 
@@ -305,32 +342,32 @@
         <input type="month" id="monthPicker" onchange="renderData()">
       </div>
 
-      <div class="columns-grid">
-        <div class="col">
-          <h2 class="title-ingresos">Ingresos Mes</h2>
-          <ul class="items-list ingresos" id="monthlyIngresosList"></ul>
-        </div>
-        <div class="col">
-          <h2 class="title-gastos">Gastos Mes</h2>
-          <ul class="items-list gastos" id="monthlyGastosList"></ul>
-        </div>
+      <!-- Gráfico de Torta / Dona -->
+      <div class="chart-container">
+        <canvas id="monthlyChart"></canvas>
       </div>
 
       <div class="summary-card">
         <div class="summary-item">
-          <span class="label">Total Ingresos Mes</span>
+          <span class="label">Ingresos Mes</span>
           <span class="value" id="monthlyTotalIngresos" style="color: var(--green);">$0</span>
         </div>
         <div class="summary-item">
-          <span class="label">Total Gastos Mes</span>
+          <span class="label">Gastos Mes</span>
           <span class="value" id="monthlyTotalGastos" style="color: var(--red);">$0</span>
         </div>
+      </div>
+
+      <!-- Balance Neto Final -->
+      <div class="balance-card">
+        <span class="balance-title">Balance Neto del Mes</span>
+        <span class="balance-amount" id="monthlyBalance">$0</span>
       </div>
     </div>
   </div>
 
   <script>
-    // Configuración Firebase con tus llaves reales
+    // Configuración Firebase
     const firebaseConfig = {
       apiKey: "AIzaSyCbsHxOR1w4gDjQCAV0cdej3CEp83-WQs0",
       authDomain: "agendajya-94e6c.firebaseapp.com",
@@ -356,6 +393,7 @@
     monthPicker.value = currentMonthStr;
 
     let allRecords = {};
+    let chartInstance = null;
 
     // Cambiar Pestañas
     function switchTab(tab, e) {
@@ -392,14 +430,14 @@
       });
     }
 
-    // ELIMINAR REGISTRO DE FIREBASE
+    // Eliminar Registro
     function deleteRecord(id) {
       if (confirm("¿Estás seguro de borrar este registro?")) {
         db.ref('registros/' + id).remove();
       }
     }
 
-    // Renderizar Listas y Totales
+    // Renderizar Listas y Gráfica
     function renderData() {
       // Día
       const dailyIngresos = document.getElementById('dailyIngresosList');
@@ -410,10 +448,6 @@
 
       // Mes
       const selectedMonth = monthPicker.value;
-      const monthlyIngresos = document.getElementById('monthlyIngresosList');
-      const monthlyGastos = document.getElementById('monthlyGastosList');
-      monthlyIngresos.innerHTML = '';
-      monthlyGastos.innerHTML = '';
       let monthlyTotalIng = 0, monthlyTotalGas = 0;
 
       Object.keys(allRecords).forEach(key => {
@@ -421,7 +455,7 @@
         const itemDateStr = item.date ? item.date.slice(0, 10) : "";
         const itemMonthStr = item.date ? item.date.slice(0, 7) : "";
 
-        // Vista Diaria (Solo hoy)
+        // Solo Hoy
         if (itemDateStr === todayStr) {
           const li = document.createElement('li');
           li.innerHTML = `
@@ -437,29 +471,72 @@
           }
         }
 
-        // Vista Mensual (Mes seleccionado)
+        // Totales del Mes Seleccionado
         if (itemMonthStr === selectedMonth) {
-          const li = document.createElement('li');
-          const dayNum = new Date(item.date).getDate();
-          li.innerHTML = `
-            <span><small style="color:#94a3b8">${dayNum}d -</small> ${item.description} (<b>$${item.amount.toLocaleString()}</b>)</span>
-            <span class="delete-btn" onclick="deleteRecord('${key}')">✕</span>
-          `;
           if (item.type === 'ingreso') {
-            monthlyIngresos.appendChild(li);
             monthlyTotalIng += item.amount;
           } else {
-            monthlyGastos.appendChild(li);
             monthlyTotalGas += item.amount;
           }
         }
       });
 
-      // Actualizar Totales en pantalla
+      // Actualizar Totales del Día
       document.getElementById('dailyTotalIngresos').innerText = `$${dailyTotalIng.toLocaleString()}`;
       document.getElementById('dailyTotalGastos').innerText = `$${dailyTotalGas.toLocaleString()}`;
+
+      // Actualizar Totales del Mes
       document.getElementById('monthlyTotalIngresos').innerText = `$${monthlyTotalIng.toLocaleString()}`;
       document.getElementById('monthlyTotalGastos').innerText = `$${monthlyTotalGas.toLocaleString()}`;
+
+      // Balance Neto (Ingresos - Gastos)
+      const balance = monthlyTotalIng - monthlyTotalGas;
+      const balanceElem = document.getElementById('monthlyBalance');
+      
+      if (balance >= 0) {
+        balanceElem.style.color = 'var(--green)';
+        balanceElem.innerText = `+$${balance.toLocaleString()}`;
+      } else {
+        balanceElem.style.color = 'var(--red)';
+        balanceElem.innerText = `-$${Math.abs(balance).toLocaleString()}`;
+      }
+
+      // Renderizar la Gráfica de Torta
+      renderChart(monthlyTotalIng, monthlyTotalGas);
+    }
+
+    // Dibujar/Actualizar la Gráfica
+    function renderChart(ingresos, gastos) {
+      const ctx = document.getElementById('monthlyChart').getContext('2d');
+
+      if (chartInstance) {
+        chartInstance.destroy();
+      }
+
+      chartInstance = new Chart(ctx, {
+        type: 'doughnut',
+        data: {
+          labels: ['Ingresos', 'Gastos'],
+          datasets: [{
+            data: [ingresos, gastos],
+            backgroundColor: ['#22c55e', '#ef4444'],
+            borderColor: '#1e293b',
+            borderWidth: 2
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: {
+              labels: {
+                color: '#f8fafc',
+                font: { size: 13 }
+              }
+            }
+          }
+        }
+      });
     }
   </script>
 </body>
