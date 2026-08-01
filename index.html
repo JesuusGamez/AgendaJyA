@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -35,7 +34,7 @@
 
     .app-container {
       width: 100%;
-      max-width: 450px;
+      max-width: 480px;
       background: var(--card-bg);
       border: 1px solid var(--border);
       border-radius: 16px;
@@ -69,16 +68,17 @@
       border-radius: 10px;
       padding: 4px;
       border: 1px solid var(--border);
+      gap: 2px;
     }
 
     .tab-btn {
       flex: 1;
-      padding: 10px;
+      padding: 8px 4px;
       background: transparent;
       border: none;
       color: var(--text-muted);
       font-weight: 600;
-      font-size: 0.9rem;
+      font-size: 0.8rem;
       border-radius: 8px;
       cursor: pointer;
       transition: all 0.2s;
@@ -141,7 +141,7 @@
       text-align: center;
     }
 
-    /* Columnas Diarias */
+    /* Columnas */
     .columns-grid {
       display: grid;
       grid-template-columns: 1fr 1fr;
@@ -160,7 +160,7 @@
     }
 
     .col h2 {
-      font-size: 1.1rem;
+      font-size: 1rem;
       text-align: center;
       margin-bottom: 8px;
       padding-bottom: 6px;
@@ -169,12 +169,14 @@
 
     .title-ingresos { color: var(--green); }
     .title-gastos { color: var(--red); }
+    .title-jesus { color: #3b82f6; }
+    .title-ali { color: #ec4899; }
 
     .items-list {
       list-style: none;
       flex-grow: 1;
       overflow-y: auto;
-      max-height: 200px;
+      max-height: 220px;
       display: flex;
       flex-direction: column;
       gap: 6px;
@@ -184,7 +186,7 @@
       background: #1e293b;
       padding: 8px;
       border-radius: 6px;
-      font-size: 0.85rem;
+      font-size: 0.82rem;
       display: flex;
       justify-content: space-between;
       align-items: center;
@@ -193,6 +195,33 @@
 
     .items-list.ingresos li { border-left-color: var(--green); }
     .items-list.gastos li { border-left-color: var(--red); }
+
+    /* Estilos Pendientes (Rojo vs Verde) */
+    .pending-item {
+      border-left: 3px solid var(--red) !important;
+      background: rgba(239, 68, 68, 0.08) !important;
+    }
+
+    .pending-item.paid {
+      border-left: 3px solid var(--green) !important;
+      background: rgba(34, 197, 94, 0.08) !important;
+    }
+
+    .actions {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .check-btn {
+      color: var(--green);
+      cursor: pointer;
+      font-weight: bold;
+      font-size: 1rem;
+      padding: 2px 4px;
+      border-radius: 4px;
+      background: rgba(34, 197, 94, 0.15);
+    }
 
     .delete-btn {
       color: var(--text-muted);
@@ -251,7 +280,7 @@
       font-weight: bold;
     }
 
-    /* Contenedor Gráfica Mensual */
+    /* Gráfica y Balance */
     .chart-container {
       background: #0f172a;
       border: 1px solid var(--border);
@@ -260,7 +289,7 @@
       display: flex;
       justify-content: center;
       align-items: center;
-      max-height: 250px;
+      max-height: 230px;
     }
 
     .balance-card {
@@ -290,7 +319,7 @@
   <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
   <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
 
-  <!-- Chart.js para la gráfica de torta/dona -->
+  <!-- Chart.js -->
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
@@ -300,10 +329,11 @@
       <h1>Jesús <span>&</span> Ali</h1>
     </header>
 
-    <!-- Navegación -->
+    <!-- Navegación por pestañas -->
     <div class="tabs-nav">
       <button class="tab-btn active" onclick="switchTab('daily', event)">☀️ Hoy</button>
-      <button class="tab-btn" onclick="switchTab('monthly', event)">📅 Consulta Mensual</button>
+      <button class="tab-btn" onclick="switchTab('pending', event)">📌 Pendientes</button>
+      <button class="tab-btn" onclick="switchTab('monthly', event)">📅 Consulta</button>
     </div>
 
     <!-- PESTAÑA 1: DÍA A DÍA -->
@@ -335,14 +365,40 @@
       </div>
     </div>
 
-    <!-- PESTAÑA 2: CONSULTA MENSUAL -->
+    <!-- PESTAÑA 2: PENDIENTES DEL MES -->
+    <div id="tab-pending" class="tab-content">
+      <div class="columns-grid">
+        <div class="col">
+          <h2 class="title-jesus">Jesús</h2>
+          <ul class="items-list" id="pendingJesusList"></ul>
+          <button class="add-btn" onclick="addPending('Jesus')">+ Deuda</button>
+        </div>
+        <div class="col">
+          <h2 class="title-ali">Ali</h2>
+          <ul class="items-list" id="pendingAliList"></ul>
+          <button class="add-btn" onclick="addPending('Ali')">+ Deuda</button>
+        </div>
+      </div>
+
+      <div class="summary-card">
+        <div class="summary-item">
+          <span class="label">Pendiente Jesús</span>
+          <span class="value" id="totalPendingJesus" style="color: var(--red);">$0</span>
+        </div>
+        <div class="summary-item">
+          <span class="label">Pendiente Ali</span>
+          <span class="value" id="totalPendingAli" style="color: var(--red);">$0</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- PESTAÑA 3: CONSULTA MENSUAL -->
     <div id="tab-monthly" class="tab-content">
       <div class="filter-box">
         <label for="monthPicker">Seleccionar Mes a Consultar</label>
         <input type="month" id="monthPicker" onchange="renderData()">
       </div>
 
-      <!-- Gráfico de Torta / Dona -->
       <div class="chart-container">
         <canvas id="monthlyChart"></canvas>
       </div>
@@ -358,7 +414,6 @@
         </div>
       </div>
 
-      <!-- Balance Neto Final -->
       <div class="balance-card">
         <span class="balance-title">Balance Neto del Mes</span>
         <span class="balance-amount" id="monthlyBalance">$0</span>
@@ -382,7 +437,7 @@
     firebase.initializeApp(firebaseConfig);
     const db = firebase.database();
 
-    // Variables de fecha
+    // Fechas
     const today = new Date();
     const todayStr = today.toISOString().slice(0, 10);
     const currentMonthStr = today.toISOString().slice(0, 7);
@@ -393,6 +448,7 @@
     monthPicker.value = currentMonthStr;
 
     let allRecords = {};
+    let allPendings = {};
     let chartInstance = null;
 
     // Cambiar Pestañas
@@ -404,13 +460,18 @@
       document.getElementById(`tab-${tab}`).classList.add('active');
     }
 
-    // Escuchar cambios en la nube
+    // Escuchar Registros y Pendientes
     db.ref('registros').on('value', (snapshot) => {
       allRecords = snapshot.val() || {};
       renderData();
     });
 
-    // Añadir Registro
+    db.ref('pendientes').on('value', (snapshot) => {
+      allPendings = snapshot.val() || {};
+      renderPendings();
+    });
+
+    // Añadir Registro Normal (Ingreso / Gasto)
     function addRecord(type) {
       const desc = prompt(`Descripción del ${type}:`);
       if (!desc) return;
@@ -421,8 +482,7 @@
         return;
       }
 
-      const newRef = db.ref('registros').push();
-      newRef.set({
+      db.ref('registros').push({
         type: type,
         description: desc,
         amount: amount,
@@ -430,14 +490,115 @@
       });
     }
 
-    // Eliminar Registro
+    // Añadir Pendiente (Deuda)
+    function addPending(owner) {
+      const desc = prompt(`Deuda / Pendiente de ${owner}:`);
+      if (!desc) return;
+
+      const amount = parseFloat(prompt(`Monto ($):`));
+      if (isNaN(amount) || amount <= 0) {
+        alert("Ingresa un monto válido.");
+        return;
+      }
+
+      db.ref('pendientes').push({
+        owner: owner,
+        description: desc,
+        amount: amount,
+        paid: false,
+        expenseId: null
+      });
+    }
+
+    // Cambiar estado de Pendiente (Chulito ✓)
+    function togglePending(key) {
+      const p = allPendings[key];
+      if (!p) return;
+
+      if (!p.paid) {
+        // Marcar como Pagado -> Crear gasto automático
+        const newExpenseRef = db.ref('registros').push();
+        const newExpenseKey = newExpenseRef.key;
+
+        newExpenseRef.set({
+          type: 'gasto',
+          description: `[Deuda ${p.owner}] ${p.description}`,
+          amount: p.amount,
+          date: new Date().toISOString()
+        });
+
+        db.ref('pendientes/' + key).update({
+          paid: true,
+          expenseId: newExpenseKey
+        });
+      } else {
+        // Desmarcar -> Eliminar el gasto automático en Firebase
+        if (p.expenseId) {
+          db.ref('registros/' + p.expenseId).remove();
+        }
+
+        db.ref('pendientes/' + key).update({
+          paid: false,
+          expenseId: null
+        });
+      }
+    }
+
+    // Eliminar Pendiente
+    function deletePending(key) {
+      if (confirm("¿Eliminar este pendiente?")) {
+        const p = allPendings[key];
+        if (p && p.paid && p.expenseId) {
+          db.ref('registros/' + p.expenseId).remove();
+        }
+        db.ref('pendientes/' + key).remove();
+      }
+    }
+
+    // Eliminar Registro Diario
     function deleteRecord(id) {
       if (confirm("¿Estás seguro de borrar este registro?")) {
         db.ref('registros/' + id).remove();
       }
     }
 
-    // Renderizar Listas y Gráfica
+    // Renderizar Pestaña Pendientes
+    function renderPendings() {
+      const listJesus = document.getElementById('pendingJesusList');
+      const listAli = document.getElementById('pendingAliList');
+      listJesus.innerHTML = '';
+      listAli.innerHTML = '';
+
+      let totalJesus = 0;
+      let totalAli = 0;
+
+      Object.keys(allPendings).forEach(key => {
+        const p = allPendings[key];
+        const li = document.createElement('li');
+        li.className = `pending-item ${p.paid ? 'paid' : ''}`;
+
+        li.innerHTML = `
+          <span>${p.description} (<b>$${p.amount.toLocaleString()}</b>)</span>
+          <div class="actions">
+            <span class="check-btn" onclick="togglePending('${key}')">${p.paid ? '✓' : '✓'}</span>
+            <span class="delete-btn" onclick="deletePending('${key}')">✕</span>
+          </div>
+        `;
+
+        if (p.owner === 'Jesus') {
+          listJesus.appendChild(li);
+          if (!p.paid) totalJesus += p.amount;
+        } else {
+          listAli.appendChild(li);
+          if (!p.paid) totalAli += p.amount;
+        }
+      });
+
+      document.getElementById('totalPendingJesus').innerText = `$${totalJesus.toLocaleString()}`;
+      document.getElementById('totalPendingAli').innerText = `$${totalAli.toLocaleString()}`;
+    }
+
+    // Renderizar Datos Diarios y Mensuales
     function renderData() {
       // Día
       const dailyIngresos = document.getElementById('dailyIngresosList');
@@ -481,15 +642,15 @@
         }
       });
 
-      // Actualizar Totales del Día
+      // Totales del Día
       document.getElementById('dailyTotalIngresos').innerText = `$${dailyTotalIng.toLocaleString()}`;
       document.getElementById('dailyTotalGastos').innerText = `$${dailyTotalGas.toLocaleString()}`;
 
-      // Actualizar Totales del Mes
+      // Totales del Mes
       document.getElementById('monthlyTotalIngresos').innerText = `$${monthlyTotalIng.toLocaleString()}`;
       document.getElementById('monthlyTotalGastos').innerText = `$${monthlyTotalGas.toLocaleString()}`;
 
-      // Balance Neto (Ingresos - Gastos)
+      // Balance
       const balance = monthlyTotalIng - monthlyTotalGas;
       const balanceElem = document.getElementById('monthlyBalance');
       
@@ -501,11 +662,10 @@
         balanceElem.innerText = `-$${Math.abs(balance).toLocaleString()}`;
       }
 
-      // Renderizar la Gráfica de Torta
       renderChart(monthlyTotalIng, monthlyTotalGas);
     }
 
-    // Dibujar/Actualizar la Gráfica
+    // Gráfica de Torta
     function renderChart(ingresos, gastos) {
       const ctx = document.getElementById('monthlyChart').getContext('2d');
 
@@ -541,3 +701,4 @@
   </script>
 </body>
 </html>
+
