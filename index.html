@@ -318,7 +318,6 @@
   <!-- Firebase -->
   <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
   <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-messaging.js"></script>
 
   <!-- Chart.js -->
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -443,32 +442,6 @@
 
     firebase.initializeApp(firebaseConfig);
     const db = firebase.database();
-    const messaging = firebase.messaging();
-
-    // Registro del Service Worker y captura del Token FCM para Push en segundo plano
-    if ('serviceWorker' in navigator) {
-      navigator.serviceWorker.register('/firebase-messaging-sw.js')
-        .then((registration) => {
-          messaging.useServiceWorker(registration);
-          return Notification.requestPermission();
-        })
-        .then((permission) => {
-          if (permission === 'granted') {
-            return messaging.getToken();
-          }
-        })
-        .then((token) => {
-          if (token) {
-            db.ref('tokens/' + token.replace(/[^a-zA-Z0-9]/g, "_")).set(true);
-          }
-        })
-        .catch((err) => console.log('Error de Service Worker/Push:', err));
-    }
-
-    // Notificación emergente si la app está ABIERTA en primer plano
-    messaging.onMessage((payload) => {
-      alert(`${payload.notification.title}\n${payload.notification.body}`);
-    });
 
     // Fechas
     const today = new Date();
@@ -675,7 +648,7 @@
 
       // Totales del Día
       document.getElementById('dailyTotalIngresos').innerText = `$${dailyTotalIng.toLocaleString()}`;
-      document.getElementById('dailyTotalGastos').innerText = `$${dailyTotalGastos.toLocaleString()}`;
+      document.getElementById('dailyTotalGastos').innerText = `$${dailyTotalGas.toLocaleString()}`;
 
       // Balance Neto del Día
       const dailyBalance = dailyTotalIng - dailyTotalGas;
@@ -691,7 +664,7 @@
 
       // Totales del Mes
       document.getElementById('monthlyTotalIngresos').innerText = `$${monthlyTotalIng.toLocaleString()}`;
-      document.getElementById('monthlyTotalGastos').innerText = `$${monthlyTotalGastos.toLocaleString()}`;
+      document.getElementById('monthlyTotalGastos').innerText = `$${monthlyTotalGas.toLocaleString()}`;
 
       // Balance Neto del Mes
       const monthlyBalance = monthlyTotalIng - monthlyTotalGas;
