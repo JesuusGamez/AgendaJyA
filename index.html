@@ -196,6 +196,7 @@
     .items-list.ingresos li { border-left-color: var(--green); }
     .items-list.gastos li { border-left-color: var(--red); }
 
+    /* Estilos Pendientes (Rojo vs Verde) */
     .pending-item {
       border-left: 3px solid var(--red) !important;
       background: rgba(239, 68, 68, 0.08) !important;
@@ -252,17 +253,7 @@
       background: var(--accent);
     }
 
-    .notify-btn {
-      background: transparent;
-      border: 1px solid var(--border);
-      color: var(--text-muted);
-      font-size: 0.75rem;
-      padding: 6px;
-      border-radius: 6px;
-      cursor: pointer;
-      margin-top: 4px;
-    }
-
+    /* Tarjetas de Resumen */
     .summary-card {
       background: #0f172a;
       border: 1px solid var(--border);
@@ -289,6 +280,7 @@
       font-weight: bold;
     }
 
+    /* Gráfica y Balance */
     .chart-container {
       background: #0f172a;
       border: 1px solid var(--border);
@@ -323,7 +315,7 @@
     }
   </style>
 
-  <!-- Firebase CDN -->
+  <!-- Firebase -->
   <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
   <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
   <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-messaging.js"></script>
@@ -336,16 +328,16 @@
   <div class="app-container">
     <header>
       <h1>Jesús <span>&</span> Ali</h1>
-      <button class="notify-btn" onclick="activarNotificaciones()">🔔 Activar Notificaciones</button>
     </header>
 
+    <!-- Navegación por pestañas -->
     <div class="tabs-nav">
       <button class="tab-btn active" onclick="switchTab('daily', event)">☀️ Hoy</button>
       <button class="tab-btn" onclick="switchTab('pending', event)">📌 Pendientes</button>
       <button class="tab-btn" onclick="switchTab('monthly', event)">📅 Consulta</button>
     </div>
 
-    <!-- PESTAÑA 1: HOY -->
+    <!-- PESTAÑA 1: DÍA A DÍA -->
     <div id="tab-daily" class="tab-content active">
       <div class="date-indicator" id="todayLabel"></div>
 
@@ -373,13 +365,14 @@
         </div>
       </div>
 
+      <!-- Balance Neto Diario -->
       <div class="balance-card">
         <span class="balance-title">Balance Neto de Hoy</span>
         <span class="balance-amount" id="dailyBalance">$0</span>
       </div>
     </div>
 
-    <!-- PESTAÑA 2: PENDIENTES -->
+    <!-- PESTAÑA 2: PENDIENTES DEL MES -->
     <div id="tab-pending" class="tab-content">
       <div class="columns-grid">
         <div class="col">
@@ -406,7 +399,7 @@
       </div>
     </div>
 
-    <!-- PESTAÑA 3: CONSULTA -->
+    <!-- PESTAÑA 3: CONSULTA MENSUAL -->
     <div id="tab-monthly" class="tab-content">
       <div class="filter-box">
         <label for="monthPicker">Seleccionar Mes a Consultar</label>
@@ -450,48 +443,34 @@
 
     firebase.initializeApp(firebaseConfig);
     const db = firebase.database();
-    let messaging = null;
+    const messaging = firebase.messaging();
 
-    try {
-      if (firebase.messaging.isSupported()) {
-        messaging = firebase.messaging();
-      }
-    } catch (e) {
-      console.log("Messaging no soportado en este entorno");
-    }
-
-    // Función segura para activar notificaciones manualmente
-    async function activarNotificaciones() {
-      if (!messaging) {
-        alert("Las notificaciones no están soportadas en este navegador.");
-        return;
-      }
-      try {
-        const permission = await Notification.requestPermission();
-        if (permission === 'granted') {
-          const reg = await navigator.serviceWorker.register('/firebase-messaging-sw.js');
-          messaging.useServiceWorker(reg);
-          const token = await messaging.getToken();
-          if (token) {
-            await db.ref('tokens/' + token.replace(/[^a-zA-Z0-9]/g, "_")).set(true);
-            alert("¡Notificaciones activadas con éxito!");
+    // Registro del Service Worker y captura del Token FCM para Push en segundo plano
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('/firebase-messaging-sw.js')
+        .then((registration) => {
+          messaging.useServiceWorker(registration);
+          return Notification.requestPermission();
+        })
+        .then((permission) => {
+          if (permission === 'granted') {
+            return messaging.getToken();
           }
-        } else {
-          alert("Permiso de notificaciones denegado.");
-        }
-      } catch (err) {
-        console.error("Error al activar notificaciones:", err);
-        alert("Asegúrate de estar navegando por HTTPS para habilitar notificaciones.");
-      }
+        })
+        .then((token) => {
+          if (token) {
+            db.ref('tokens/' + token.replace(/[^a-zA-Z0-9]/g, "_")).set(true);
+          }
+        })
+        .catch((err) => console.log('Error de Service Worker/Push:', err));
     }
 
-    if (messaging) {
-      messaging.onMessage((payload) => {
-        alert(`${payload.notification.title}\n${payload.notification.body}`);
-      });
-    }
+    // Notificación emergente si la app está ABIERTA en primer plano
+    messaging.onMessage((payload) => {
+      alert(`${payload.notification.title}\n${payload.notification.body}`);
+    });
 
-    // Manejo de Fechas
+    // Fechas
     const today = new Date();
     const todayStr = today.toISOString().slice(0, 10);
     const currentMonthStr = today.toISOString().slice(0, 7);
@@ -525,6 +504,7 @@
       renderPendings();
     });
 
+    // Añadir Registro Normal
     function addRecord(type) {
       const desc = prompt(`Descripción del ${type}:`);
       if (!desc) return;
@@ -543,6 +523,7 @@
       });
     }
 
+    // Añadir Pendiente (Deuda)
     function addPending(owner) {
       const desc = prompt(`Deuda / Pendiente de ${owner}:`);
       if (!desc) return;
@@ -562,6 +543,7 @@
       });
     }
 
+    // Cambiar estado de Pendiente (Chulito ✓)
     function togglePending(key) {
       const p = allPendings[key];
       if (!p) return;
@@ -593,6 +575,7 @@
       }
     }
 
+    // Eliminar Pendiente
     function deletePending(key) {
       if (confirm("¿Eliminar este pendiente?")) {
         const p = allPendings[key];
@@ -603,12 +586,14 @@
       }
     }
 
+    // Eliminar Registro Diario
     function deleteRecord(id) {
       if (confirm("¿Estás seguro de borrar este registro?")) {
         db.ref('registros/' + id).remove();
       }
     }
 
+    // Renderizar Pestaña Pendientes
     function renderPendings() {
       const listJesus = document.getElementById('pendingJesusList');
       const listAli = document.getElementById('pendingAliList');
@@ -644,13 +629,16 @@
       document.getElementById('totalPendingAli').innerText = `$${totalAli.toLocaleString()}`;
     }
 
+    // Renderizar Datos Diarios y Mensuales
     function renderData() {
+      // Día
       const dailyIngresos = document.getElementById('dailyIngresosList');
       const dailyGastos = document.getElementById('dailyGastosList');
       dailyIngresos.innerHTML = '';
       dailyGastos.innerHTML = '';
       let dailyTotalIng = 0, dailyTotalGas = 0;
 
+      // Mes
       const selectedMonth = monthPicker.value;
       let monthlyTotalIng = 0, monthlyTotalGas = 0;
 
@@ -659,6 +647,7 @@
         const itemDateStr = item.date ? item.date.slice(0, 10) : "";
         const itemMonthStr = item.date ? item.date.slice(0, 7) : "";
 
+        // Solo Hoy
         if (itemDateStr === todayStr) {
           const li = document.createElement('li');
           li.innerHTML = `
@@ -674,6 +663,7 @@
           }
         }
 
+        // Totales del Mes Seleccionado
         if (itemMonthStr === selectedMonth) {
           if (item.type === 'ingreso') {
             monthlyTotalIng += item.amount;
@@ -683,9 +673,11 @@
         }
       });
 
+      // Totales del Día
       document.getElementById('dailyTotalIngresos').innerText = `$${dailyTotalIng.toLocaleString()}`;
-      document.getElementById('dailyTotalGastos').innerText = `$${dailyTotalGas.toLocaleString()}`;
+      document.getElementById('dailyTotalGastos').innerText = `$${dailyTotalGastos.toLocaleString()}`;
 
+      // Balance Neto del Día
       const dailyBalance = dailyTotalIng - dailyTotalGas;
       const dailyBalanceElem = document.getElementById('dailyBalance');
 
@@ -697,9 +689,11 @@
         dailyBalanceElem.innerText = `-$${Math.abs(dailyBalance).toLocaleString()}`;
       }
 
+      // Totales del Mes
       document.getElementById('monthlyTotalIngresos').innerText = `$${monthlyTotalIng.toLocaleString()}`;
-      document.getElementById('monthlyTotalGastos').innerText = `$${monthlyTotalGas.toLocaleString()}`;
+      document.getElementById('monthlyTotalGastos').innerText = `$${monthlyTotalGastos.toLocaleString()}`;
 
+      // Balance Neto del Mes
       const monthlyBalance = monthlyTotalIng - monthlyTotalGas;
       const monthlyBalanceElem = document.getElementById('monthlyBalance');
       
@@ -714,6 +708,7 @@
       renderChart(monthlyTotalIng, monthlyTotalGas);
     }
 
+    // Gráfica de Torta
     function renderChart(ingresos, gastos) {
       const ctx = document.getElementById('monthlyChart').getContext('2d');
 
