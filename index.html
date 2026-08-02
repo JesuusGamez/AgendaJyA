@@ -186,7 +186,6 @@
       display: flex;
       flex-direction: column;
       gap: 6px;
-      /* Se eliminó el límite de altura para que crezcan libremente con scroll externo de la app si es necesario */
     }
 
     .items-list li {
@@ -545,10 +544,17 @@
     firebase.initializeApp(firebaseConfig);
     const db = firebase.database();
 
-    // Fechas
+    // FUNCIÓN AUXILIAR: Obtiene la fecha local exacta YYYY-MM-DD del dispositivo
+    function getLocalDateStr(dateObj = new Date()) {
+      const year = dateObj.getFullYear();
+      const month = String(dateObj.getMonth() + 1).padStart(2, '0');
+      const day = String(dateObj.getDate()).padStart(2, '0');
+      return `${year}-${month}-${day}`;
+    }
+
     const today = new Date();
-    const todayStr = today.toISOString().slice(0, 10);
-    const currentMonthStr = today.toISOString().slice(0, 7);
+    const todayStr = getLocalDateStr(today);
+    const currentMonthStr = todayStr.slice(0, 7);
 
     document.getElementById('todayLabel').innerText = `Hoy: ${today.toLocaleDateString('es-ES', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}`;
     
@@ -596,7 +602,7 @@
         owner: owner,
         description: desc,
         amount: amount,
-        date: new Date().toISOString()
+        date: getLocalDateStr() // Se guarda como YYYY-MM-DD local exacto
       });
     }
 
@@ -633,7 +639,7 @@
         owner: p.owner,
         description: `[Deuda ${p.owner}] ${p.description}`,
         amount: p.amount,
-        date: new Date().toISOString()
+        date: getLocalDateStr() // Se guarda como YYYY-MM-DD local exacto
       });
 
       db.ref('pendientes/' + key).update({
@@ -752,11 +758,13 @@
 
       Object.keys(allRecords).forEach(key => {
         const item = allRecords[key];
+        
+        // Extraer formato YYYY-MM-DD y YYYY-MM
         const itemDateStr = item.date ? item.date.slice(0, 10) : "";
         const itemMonthStr = item.date ? item.date.slice(0, 7) : "";
-        const owner = item.owner || 'Jesus'; // Fallback por defecto
+        const owner = item.owner || 'Jesus'; 
 
-        // Registros de Hoy
+        // Registros de Hoy (comparación exacta con fecha local)
         if (itemDateStr === todayStr) {
           const li = document.createElement('li');
           li.innerHTML = `
