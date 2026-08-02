@@ -171,7 +171,6 @@
       display: flex;
       flex-direction: column;
       justify-content: space-between;
-      min-height: 190px;
     }
 
     .col h2 {
@@ -184,12 +183,10 @@
 
     .items-list {
       list-style: none;
-      flex-grow: 1;
-      overflow-y: auto;
-      max-height: 160px;
       display: flex;
       flex-direction: column;
       gap: 6px;
+      /* Se eliminó el límite de altura para que crezcan libremente con scroll externo de la app si es necesario */
     }
 
     .items-list li {
@@ -259,7 +256,7 @@
     .add-btn {
       width: 100%;
       padding: 8px;
-      margin-top: 8px;
+      margin-top: 10px;
       border: 1px solid var(--border);
       border-radius: 8px;
       background: #1e293b;
