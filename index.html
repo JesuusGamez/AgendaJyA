@@ -17,6 +17,7 @@
       --jesus-color: #3b82f6;
       --ali-color: #ec4899;
       --savings-color: #06b6d4;
+      --gold: #f59e0b;
     }
 
     * {
@@ -361,7 +362,35 @@
       display: flex;
       flex-direction: column;
       align-items: center;
-      gap: 14px;
+      gap: 12px;
+    }
+
+    .savings-subtabs {
+      display: flex;
+      width: 100%;
+      background: #1e293b;
+      border-radius: 8px;
+      padding: 2px;
+      border: 1px solid var(--border);
+      gap: 2px;
+    }
+
+    .savings-subtab-btn {
+      flex: 1;
+      padding: 6px 2px;
+      background: transparent;
+      border: none;
+      color: var(--text-muted);
+      font-weight: 600;
+      font-size: 0.75rem;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+
+    .savings-subtab-btn.active {
+      background: #0f172a;
+      color: var(--text);
+      border: 1px solid var(--border);
     }
 
     .savings-header {
@@ -415,7 +444,7 @@
     /* CONTENEDOR VISUAL (CILINDRO / PINGÜINO) */
     .visual-box {
       width: 130px;
-      height: 220px;
+      height: 200px;
       position: relative;
       display: flex;
       justify-content: center;
@@ -532,6 +561,64 @@
     .savings-stats span {
       color: var(--text);
       font-weight: bold;
+    }
+
+    .break-piggy-btn {
+      width: 100%;
+      padding: 10px;
+      background: linear-gradient(135deg, #f59e0b, #e11d48);
+      border: none;
+      border-radius: 8px;
+      color: #fff;
+      font-weight: 700;
+      font-size: 0.85rem;
+      cursor: pointer;
+      box-shadow: 0 4px 12px rgba(225, 29, 72, 0.3);
+      transition: transform 0.2s, opacity 0.2s;
+    }
+
+    .break-piggy-btn:hover {
+      opacity: 0.95;
+    }
+
+    .break-piggy-btn:active {
+      transform: scale(0.97);
+    }
+
+    .achievements-box {
+      background: #0f172a;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .achievements-box h4 {
+      font-size: 0.85rem;
+      color: var(--gold);
+      text-align: center;
+    }
+
+    .achievements-list {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      max-height: 140px;
+      overflow-y: auto;
+    }
+
+    .achievements-list li {
+      background: #1e293b;
+      padding: 8px 10px;
+      border-radius: 6px;
+      font-size: 0.78rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-left: 3px solid var(--gold);
     }
   </style>
 
@@ -663,11 +750,19 @@
       </div>
     </div>
 
-    <!-- PESTAÑA 3: ALCANCÍA EN CONJUNTO -->
+    <!-- PESTAÑA 3: ALCANCÍA -->
     <div id="tab-savings" class="tab-content">
+
+      <!-- SUBPESTAÑAS DE ALCANCÍA (Conjunto / Jesús / Ali) -->
+      <div class="savings-subtabs">
+        <button class="savings-subtab-btn active" id="subtab-joint" onclick="switchSavingsMode('joint')">🤝 En Conjunto</button>
+        <button class="savings-subtab-btn" id="subtab-jesus" onclick="switchSavingsMode('jesus')">💙 Jesús</button>
+        <button class="savings-subtab-btn" id="subtab-ali" onclick="switchSavingsMode('ali')">🩷 Ali</button>
+      </div>
+
       <div class="savings-container">
         <div class="savings-header">
-          <h3>Fondo de Ahorro Conjunto</h3>
+          <h3 id="savingsTitleHeading">Fondo de Ahorro Conjunto</h3>
           <button class="meta-control" onclick="setSavingsGoal()">⚙️ Cambiar Meta</button>
         </div>
 
@@ -678,19 +773,30 @@
 
         <!-- CONTENEDOR GRÁFICO VISUAL -->
         <div class="visual-box" id="visualBoxContainer">
-          <!-- Se inyecta dinámicamente cilíndro o pingüino -->
+          <!-- Se inyecta dinámicamente cilindro o pingüino -->
         </div>
 
         <div class="savings-stats">
           Acumulado: <span id="savingsTotalAmount">$0</span> / Meta: <span id="savingsGoalAmount">$0</span>
           <br><span id="savingsPercentage" style="font-size:0.8rem; color:var(--savings-color);">0% alcanzado</span>
         </div>
+
+        <!-- BOTÓN ROMPER ALCANCÍA (se muestra dinámicamente cuando meta alcanzada) -->
+        <button class="break-piggy-btn" id="breakPiggyBtn" style="display:none;" onclick="breakPiggyBank()">
+          🔨 ¡Romper Alcancía y Guardar Logro!
+        </button>
       </div>
 
-      <div class="section-divider title-savings">Historial de Aportes al Fondo</div>
+      <div class="section-divider title-savings" id="savingsHistoryTitle">Historial de Aportes al Fondo</div>
       <div class="col" style="width: 100%;">
         <ul class="items-list ahorros" id="savingsList"></ul>
-        <button class="add-btn" onclick="addSavingsRecord()">+ Ingresar Ahorro</button>
+        <button class="add-btn" id="addSavingsBtn" onclick="addSavingsRecord()">+ Ingresar Ahorro</button>
+      </div>
+
+      <!-- HISTORIAL DE LOGROS CUMPLIDOS -->
+      <div class="achievements-box">
+        <h4>🏆 Logros de Metas Cumplidas</h4>
+        <ul class="achievements-list" id="achievementsList"></ul>
       </div>
     </div>
 
@@ -781,7 +887,16 @@
 
     let allRecords = {};
     let allPendings = {};
-    let savingsConfig = { goal: 100000, style: 'cylinder' };
+    let allAchievements = {};
+    let savingsConfigs = {
+      joint: { goal: 100000, style: 'cylinder' },
+      jesus: { goal: 50000, style: 'cylinder' },
+      ali: { goal: 50000, style: 'cylinder' }
+    };
+    
+    // Modo de Alcancía Activo: 'joint' | 'jesus' | 'ali'
+    let currentSavingsMode = 'joint';
+
     let chartJesusInstance = null;
     let chartAliInstance = null;
 
@@ -792,6 +907,16 @@
 
       e.target.classList.add('active');
       document.getElementById(`tab-${tab}`).classList.add('active');
+    }
+
+    // Cambiar Subpestaña de Alcancía
+    function switchSavingsMode(mode) {
+      currentSavingsMode = mode;
+      document.querySelectorAll('.savings-subtab-btn').forEach(btn => btn.classList.remove('active'));
+      document.getElementById(`subtab-${mode}`).classList.add('active');
+      
+      updateVisualSelectorUI();
+      renderSavings();
     }
 
     // Escuchar Firebase
@@ -805,11 +930,22 @@
       renderPendings();
     });
 
-    db.ref('alcanciaConfig').on('value', (snapshot) => {
-      savingsConfig = snapshot.val() || { goal: 100000, style: 'cylinder' };
-      if(!savingsConfig.style) savingsConfig.style = 'cylinder';
+    db.ref('alcanciaConfigs').on('value', (snapshot) => {
+      const val = snapshot.val();
+      if (val) {
+        savingsConfigs = {
+          joint: val.joint || { goal: 100000, style: 'cylinder' },
+          jesus: val.jesus || { goal: 50000, style: 'cylinder' },
+          ali: val.ali || { goal: 50000, style: 'cylinder' }
+        };
+      }
       updateVisualSelectorUI();
       renderSavings();
+    });
+
+    db.ref('logrosAlcancia').on('value', (snapshot) => {
+      allAchievements = snapshot.val() || {};
+      renderAchievements();
     });
 
     // Añadir Registro Normal (Ingreso / Gasto)
@@ -832,22 +968,33 @@
       });
     }
 
-    // Añadir Ahorro al Fondo en Conjunto
+    // Añadir Ahorro a la Alcancía Activa
     function addSavingsRecord() {
-      let ownerInput = prompt("¿Quién aporta el ahorro? (Escribe 'Jesus' o 'Ali'):");
-      if (!ownerInput) return;
-      ownerInput = ownerInput.trim();
-      if (ownerInput.toLowerCase() !== 'jesus' && ownerInput.toLowerCase() !== 'ali') {
-        alert("Debes escribir exactamente 'Jesus' o 'Ali'.");
-        return;
-      }
-      // Capitalizar bien
-      const owner = ownerInput.toLowerCase() === 'jesus' ? 'Jesus' : 'Ali';
+      let owner = 'Jesus';
+      let scope = 'joint';
 
-      const desc = prompt(`Motivo o descripción del ahorro (${owner}):`, "Ahorro conjunto");
+      if (currentSavingsMode === 'joint') {
+        let ownerInput = prompt("¿Quién aporta el ahorro? (Escribe 'Jesus' o 'Ali'):");
+        if (!ownerInput) return;
+        ownerInput = ownerInput.trim().toLowerCase();
+        if (ownerInput !== 'jesus' && ownerInput !== 'ali') {
+          alert("Debes escribir exactamente 'Jesus' o 'Ali'.");
+          return;
+        }
+        owner = ownerInput === 'jesus' ? 'Jesus' : 'Ali';
+        scope = 'joint';
+      } else if (currentSavingsMode === 'jesus') {
+        owner = 'Jesus';
+        scope = 'jesus';
+      } else {
+        owner = 'Ali';
+        scope = 'ali';
+      }
+
+      const desc = prompt(`Motivo o descripción del ahorro:`, scope === 'joint' ? "Ahorro conjunto" : `Ahorro ${owner}`);
       if (desc === null) return;
 
-      const amount = parseFloat(prompt(`Monto a aportar al fondo ($):`));
+      const amount = parseFloat(prompt(`Monto a aportar ($):`));
       if (isNaN(amount) || amount <= 0) {
         alert("Ingresa un monto válido.");
         return;
@@ -856,35 +1003,100 @@
       db.ref('registros').push({
         type: 'ahorro',
         owner: owner,
-        description: desc ? desc : 'Ahorro conjunto',
+        scope: scope, // 'joint', 'jesus', o 'ali'
+        description: desc ? desc : (scope === 'joint' ? 'Ahorro conjunto' : `Ahorro ${owner}`),
         amount: amount,
         date: getLocalDateStr()
       });
     }
 
-    // Cambiar Meta del Fondo
+    // Cambiar Meta del Fondo Activo
     function setSavingsGoal() {
-      const newGoal = parseFloat(prompt("Establece la meta monetaria para la alcancía ($):", savingsConfig.goal || 100000));
+      const currentConfig = savingsConfigs[currentSavingsMode] || { goal: 100000 };
+      const newGoal = parseFloat(prompt("Establece la meta monetaria ($):", currentConfig.goal || 100000));
       if (!isNaN(newGoal) && newGoal > 0) {
-        db.ref('alcanciaConfig').update({ goal: newGoal });
+        db.ref(`alcanciaConfigs/${currentSavingsMode}`).update({ goal: newGoal });
       }
     }
 
     // Cambiar Estilo Visual (Cilindro / Pingüino)
     function changeVisual(style) {
-      db.ref('alcanciaConfig').update({ style: style });
+      db.ref(`alcanciaConfigs/${currentSavingsMode}`).update({ style: style });
     }
 
     function updateVisualSelectorUI() {
+      const config = savingsConfigs[currentSavingsMode] || { style: 'cylinder' };
       const btnCyl = document.getElementById('btnCylinder');
       const btnPen = document.getElementById('btnPenguin');
-      if(savingsConfig.style === 'penguin') {
+      if (config.style === 'penguin') {
         btnPen.classList.add('active');
         btnCyl.classList.remove('active');
       } else {
         btnCyl.classList.add('active');
         btnPen.classList.remove('active');
       }
+    }
+
+    // Romper Alcancía y Guardar Logro
+    function breakPiggyBank() {
+      let currentTotal = 0;
+      let recordKeys = [];
+
+      Object.keys(allRecords).forEach(key => {
+        const item = allRecords[key];
+        if (item.type === 'ahorro') {
+          const scope = item.scope || 'joint';
+          if (scope === currentSavingsMode) {
+            currentTotal += item.amount;
+            recordKeys.push(key);
+          }
+        }
+      });
+
+      const modeNames = { joint: 'Conjunto', jesus: 'Jesús', ali: 'Ali' };
+      const modeName = modeNames[currentSavingsMode];
+
+      if (confirm(`🎉 ¡Felicidades! Has completado la meta de la Alcancía ${modeName}.\n\n¿Deseas romper la alcancía, registrar un logro por $${currentTotal.toLocaleString()} y reiniciar la meta?`)) {
+        // 1. Guardar logro
+        db.ref('logrosAlcancia').push({
+          type: currentSavingsMode,
+          amount: currentTotal,
+          date: getLocalDateStr(),
+          description: `Alcancía ${modeName} completada con éxito`
+        });
+
+        // 2. Eliminar registros de ahorro de esta alcancía para reiniciarla a 0
+        recordKeys.forEach(key => {
+          db.ref('registros/' + key).remove();
+        });
+
+        alert(`✨ ¡Alcancía ${modeName} reiniciada! Se ha registrado el logro histórico. ¡A por la siguiente meta!`);
+      }
+    }
+
+    // Renderizar Logros
+    function renderAchievements() {
+      const list = document.getElementById('achievementsList');
+      list.innerHTML = '';
+
+      const modeNames = { joint: 'Conjunto', jesus: 'Jesús', ali: 'Ali' };
+
+      const keys = Object.keys(allAchievements).reverse(); // Los más recientes primero
+      if (keys.length === 0) {
+        list.innerHTML = '<li style="justify-content:center; color:var(--text-muted);">Sin logros aún. ¡Ahorra y rompe tu primera alcancía!</li>';
+        return;
+      }
+
+      keys.forEach(key => {
+        const ach = allAchievements[key];
+        const li = document.createElement('li');
+        const scopeName = modeNames[ach.type] || 'Conjunto';
+        li.innerHTML = `
+          <span><b>[${scopeName}]</b> ${ach.description} (<b>$${ach.amount.toLocaleString()}</b>)</span>
+          <span style="font-size:0.7rem; color:var(--text-muted);">${ach.date || ''}</span>
+        `;
+        list.appendChild(li);
+      });
     }
 
     // Añadir Deuda Pendiente
@@ -1006,53 +1218,89 @@
       document.getElementById('totalPendingAli').innerText = `$${totalAli.toLocaleString()}`;
     }
 
-    // Renderizar Alcancía
+    // Renderizar Alcancía Activa
     function renderSavings() {
       const savingsList = document.getElementById('savingsList');
       savingsList.innerHTML = '';
 
       let totalSavings = 0;
 
+      // Títulos dinámicos según el modo seleccionado
+      const headings = {
+        joint: "Fondo de Ahorro Conjunto",
+        jesus: "Alcancía Indiv. Jesús 💙",
+        ali: "Alcancía Indiv. Ali 🩷"
+      };
+      const btnTexts = {
+        joint: "+ Ingresar Ahorro Conjunto",
+        jesus: "+ Ingresar Ahorro Jesús",
+        ali: "+ Ingresar Ahorro Ali"
+      };
+      const histTitles = {
+        joint: "Historial Aportes Conjuntos",
+        jesus: "Historial Ahorros Jesús",
+        ali: "Historial Ahorros Ali"
+      };
+
+      document.getElementById('savingsTitleHeading').innerText = headings[currentSavingsMode];
+      document.getElementById('addSavingsBtn').innerText = btnTexts[currentSavingsMode];
+      document.getElementById('savingsHistoryTitle').innerText = histTitles[currentSavingsMode];
+
       Object.keys(allRecords).forEach(key => {
         const item = allRecords[key];
         if (item.type === 'ahorro') {
-          totalSavings += item.amount;
-          const li = document.createElement('li');
-          li.innerHTML = `
-            <span><b>[${item.owner}]</b> ${item.description} (<b>$${item.amount.toLocaleString()}</b>)</span>
-            <span class="delete-btn" onclick="deleteRecord('${key}')">✕</span>
-          `;
-          savingsList.appendChild(li);
+          // Si no tiene 'scope', asumir por defecto 'joint' (compatibilidad previa)
+          const scope = item.scope || 'joint';
+          
+          if (scope === currentSavingsMode) {
+            totalSavings += item.amount;
+            const li = document.createElement('li');
+            li.innerHTML = `
+              <span><b>[${item.owner}]</b> ${item.description} (<b>$${item.amount.toLocaleString()}</b>)</span>
+              <span class="delete-btn" onclick="deleteRecord('${key}')">✕</span>
+            `;
+            savingsList.appendChild(li);
+          }
         }
       });
 
-      const goal = savingsConfig.goal || 100000;
+      const config = savingsConfigs[currentSavingsMode] || { goal: 100000, style: 'cylinder' };
+      const goal = config.goal || 100000;
       let percentage = Math.round((totalSavings / goal) * 100);
+      let displayPercentage = percentage;
       if (percentage > 100) percentage = 100;
 
       document.getElementById('savingsTotalAmount').innerText = `$${totalSavings.toLocaleString()}`;
       document.getElementById('savingsGoalAmount').innerText = `$${goal.toLocaleString()}`;
-      document.getElementById('savingsPercentage').innerText = `${percentage}% alcanzado`;
+      document.getElementById('savingsPercentage').innerText = `${displayPercentage}% alcanzado`;
+
+      // Mostrar u ocultar botón de romper alcancía si alcanzó o superó el 100%
+      const breakBtn = document.getElementById('breakPiggyBtn');
+      if (displayPercentage >= 100) {
+        breakBtn.style.display = 'block';
+      } else {
+        breakBtn.style.display = 'none';
+      }
 
       // Renderizar diseño gráfico visual (Cilindro o Pingüino)
       const container = document.getElementById('visualBoxContainer');
       container.innerHTML = '';
 
-      if (savingsConfig.style === 'penguin') {
+      if (config.style === 'penguin') {
         container.innerHTML = `
           <div class="penguin-body">
             <div class="penguin-face">
               <div class="eyes"><div class="eye"></div><div class="eye"></div></div>
               <div class="beak"></div>
             </div>
-            <div class="penguin-text">${percentage}%</div>
+            <div class="penguin-text">${displayPercentage}%</div>
             <div class="penguin-fill" style="height: ${percentage}%;"></div>
           </div>
         `;
       } else {
         container.innerHTML = `
           <div class="cylinder-body">
-            <div class="cylinder-text">${percentage}%</div>
+            <div class="cylinder-text">${displayPercentage}%</div>
             <div class="cylinder-fill" style="height: ${percentage}%;"></div>
           </div>
         `;
