@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Jesús & Ali - Finanzas</title>
+  <title>Jesús & Ali - Finanzas y Alcancía</title>
   <style>
     :root {
       --bg: #0f172a;
@@ -16,6 +16,7 @@
       --border: #334155;
       --jesus-color: #3b82f6;
       --ali-color: #ec4899;
+      --savings-color: #06b6d4;
     }
 
     * {
@@ -75,12 +76,12 @@
 
     .tab-btn {
       flex: 1;
-      padding: 8px 4px;
+      padding: 8px 2px;
       background: transparent;
       border: none;
       color: var(--text-muted);
       font-weight: 600;
-      font-size: 0.8rem;
+      font-size: 0.75rem;
       border-radius: 8px;
       cursor: pointer;
       transition: all 0.2s;
@@ -131,7 +132,7 @@
       text-transform: uppercase;
     }
 
-    input[type="month"] {
+    input[type="month"], input[type="number"], input[type="text"] {
       background: #1e293b;
       border: 1px solid var(--accent);
       color: var(--text);
@@ -155,6 +156,7 @@
 
     .title-jesus { color: var(--jesus-color); }
     .title-ali { color: var(--ali-color); }
+    .title-savings { color: var(--savings-color); }
 
     /* Columnas Grid */
     .columns-grid {
@@ -186,6 +188,8 @@
       display: flex;
       flex-direction: column;
       gap: 6px;
+      max-height: 180px;
+      overflow-y: auto;
     }
 
     .items-list li {
@@ -201,8 +205,8 @@
 
     .items-list.ingresos li { border-left-color: var(--green); }
     .items-list.gastos li { border-left-color: var(--red); }
+    .items-list.ahorros li { border-left-color: var(--savings-color); }
 
-    /* Estilos Pendientes y Pagados */
     .pending-item {
       border-left: 3px solid var(--red) !important;
       background: rgba(239, 68, 68, 0.08) !important;
@@ -347,6 +351,188 @@
       background: #1e293b;
       margin-top: 2px;
     }
+
+    /* CONTENEDOR SECCIÓN ALCANCÍA */
+    .savings-container {
+      background: #0f172a;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 14px;
+    }
+
+    .savings-header {
+      display: flex;
+      justify-content: space-between;
+      width: 100%;
+      align-items: center;
+    }
+
+    .savings-header h3 {
+      font-size: 1rem;
+      color: var(--savings-color);
+    }
+
+    .meta-control {
+      font-size: 0.75rem;
+      background: #1e293b;
+      border: 1px solid var(--border);
+      padding: 4px 8px;
+      border-radius: 6px;
+      cursor: pointer;
+      color: var(--text-muted);
+    }
+    .meta-control:hover { color: var(--text); }
+
+    .visual-selector {
+      display: flex;
+      gap: 8px;
+      background: #1e293b;
+      padding: 4px;
+      border-radius: 8px;
+      border: 1px solid var(--border);
+    }
+
+    .select-style-btn {
+      background: transparent;
+      border: none;
+      color: var(--text-muted);
+      font-size: 0.75rem;
+      padding: 4px 10px;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+
+    .select-style-btn.active {
+      background: var(--savings-color);
+      color: #0f172a;
+      font-weight: bold;
+    }
+
+    /* CONTENEDOR VISUAL (CILINDRO / PINGÜINO) */
+    .visual-box {
+      width: 130px;
+      height: 220px;
+      position: relative;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    /* Estilo Cilindro */
+    .cylinder-body {
+      width: 90px;
+      height: 100%;
+      background: #1e293b;
+      border: 3px solid var(--savings-color);
+      border-radius: 12px;
+      position: relative;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
+    }
+
+    .cylinder-fill {
+      width: 100%;
+      background: linear-gradient(to top, rgba(6, 182, 212, 0.8), rgba(6, 182, 212, 0.4));
+      transition: height 0.5s ease-in-out;
+      position: absolute;
+      bottom: 0;
+    }
+
+    .cylinder-text {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: bold;
+      font-size: 0.85rem;
+      z-index: 2;
+      text-shadow: 0 1px 3px rgba(0,0,0,0.8);
+    }
+
+    /* Estilo Pingüino 🐧 */
+    .penguin-body {
+      width: 100px;
+      height: 190px;
+      background: #1e293b;
+      border: 3px solid #38bdf8;
+      border-radius: 50px 50px 30px 30px;
+      position: relative;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
+    }
+
+    .penguin-fill {
+      width: 100%;
+      background: linear-gradient(to top, rgba(56, 189, 248, 0.85), rgba(56, 189, 248, 0.4));
+      transition: height 0.5s ease-in-out;
+      position: absolute;
+      bottom: 0;
+    }
+
+    .penguin-face {
+      position: absolute;
+      top: 10px;
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      z-index: 3;
+      pointer-events: none;
+    }
+
+    .eyes {
+      display: flex;
+      gap: 20px;
+    }
+
+    .eye {
+      width: 8px;
+      height: 8px;
+      background: #f8fafc;
+      border-radius: 50%;
+    }
+
+    .beak {
+      width: 12px;
+      height: 8px;
+      background: #f59e0b;
+      border-radius: 2px;
+      margin-top: 4px;
+    }
+
+    .penguin-text {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: bold;
+      font-size: 0.8rem;
+      z-index: 2;
+      text-shadow: 0 1px 3px rgba(0,0,0,0.8);
+    }
+
+    .savings-stats {
+      text-align: center;
+      font-size: 0.85rem;
+      color: var(--text-muted);
+    }
+
+    .savings-stats span {
+      color: var(--text);
+      font-weight: bold;
+    }
   </style>
 
   <!-- Firebase -->
@@ -367,10 +553,11 @@
     <div class="tabs-nav">
       <button class="tab-btn active" onclick="switchTab('daily', event)">☀️ Hoy</button>
       <button class="tab-btn" onclick="switchTab('pending', event)">📌 Pendientes</button>
+      <button class="tab-btn" onclick="switchTab('savings', event)">🐷 Alcancía</button>
       <button class="tab-btn" onclick="switchTab('monthly', event)">📅 Consulta</button>
     </div>
 
-    <!-- PESTAÑA 1: DÍA A DÍA (DESGLOSADO JESÚS & ALI) -->
+    <!-- PESTAÑA 1: DÍA A DÍA -->
     <div id="tab-daily" class="tab-content active">
       <div class="date-indicator" id="todayLabel"></div>
 
@@ -409,7 +596,7 @@
         <div class="user-summary-card jesus-card">
           <h3 class="title-jesus">Resumen Jesús</h3>
           <div class="summary-metrics">
-            <div class="summary-item"><span class="label">Ing.</span><span class="value" id="dailyIngJesus" style="color:var(--green)">$0</span></div>
+            <div class="summary-item"><span class="label">Ing. Netos</span><span class="value" id="dailyIngJesus" style="color:var(--green)">$0</span></div>
             <div class="summary-item"><span class="label">Gas.</span><span class="value" id="dailyGasJesus" style="color:var(--red)">$0</span></div>
           </div>
           <div style="text-align: center; margin-top: 4px;">
@@ -421,7 +608,7 @@
         <div class="user-summary-card ali-card">
           <h3 class="title-ali">Resumen Ali</h3>
           <div class="summary-metrics">
-            <div class="summary-item"><span class="label">Ing.</span><span class="value" id="dailyIngAli" style="color:var(--green)">$0</span></div>
+            <div class="summary-item"><span class="label">Ing. Netos</span><span class="value" id="dailyIngAli" style="color:var(--green)">$0</span></div>
             <div class="summary-item"><span class="label">Gas.</span><span class="value" id="dailyGasAli" style="color:var(--red)">$0</span></div>
           </div>
           <div style="text-align: center; margin-top: 4px;">
@@ -476,7 +663,38 @@
       </div>
     </div>
 
-    <!-- PESTAÑA 3: CONSULTA MENSUAL (DUPLICADA PARA JESÚS Y ALI) -->
+    <!-- PESTAÑA 3: ALCANCÍA EN CONJUNTO -->
+    <div id="tab-savings" class="tab-content">
+      <div class="savings-container">
+        <div class="savings-header">
+          <h3>Fondo de Ahorro Conjunto</h3>
+          <button class="meta-control" onclick="setSavingsGoal()">⚙️ Cambiar Meta</button>
+        </div>
+
+        <div class="visual-selector">
+          <button class="select-style-btn active" id="btnCylinder" onclick="changeVisual('cylinder')">Cilindro</button>
+          <button class="select-style-btn" id="btnPenguin" onclick="changeVisual('penguin')">Pingüino 🐧</button>
+        </div>
+
+        <!-- CONTENEDOR GRÁFICO VISUAL -->
+        <div class="visual-box" id="visualBoxContainer">
+          <!-- Se inyecta dinámicamente cilíndro o pingüino -->
+        </div>
+
+        <div class="savings-stats">
+          Acumulado: <span id="savingsTotalAmount">$0</span> / Meta: <span id="savingsGoalAmount">$0</span>
+          <br><span id="savingsPercentage" style="font-size:0.8rem; color:var(--savings-color);">0% alcanzado</span>
+        </div>
+      </div>
+
+      <div class="section-divider title-savings">Historial de Aportes al Fondo</div>
+      <div class="col" style="width: 100%;">
+        <ul class="items-list ahorros" id="savingsList"></ul>
+        <button class="add-btn" onclick="addSavingsRecord()">+ Ingresar Ahorro</button>
+      </div>
+    </div>
+
+    <!-- PESTAÑA 4: CONSULTA MENSUAL -->
     <div id="tab-monthly" class="tab-content">
       <div class="filter-box">
         <label for="monthPicker">Seleccionar Mes a Consultar</label>
@@ -504,7 +722,7 @@
         <div class="user-summary-card jesus-card">
           <h3 class="title-jesus">Mes Jesús</h3>
           <div class="summary-metrics">
-            <div class="summary-item"><span class="label">Ingresos</span><span class="value" id="monthlyIngJesus" style="color:var(--green)">$0</span></div>
+            <div class="summary-item"><span class="label">Ing. Netos</span><span class="value" id="monthlyIngJesus" style="color:var(--green)">$0</span></div>
             <div class="summary-item"><span class="label">Gastos</span><span class="value" id="monthlyGasJesus" style="color:var(--red)">$0</span></div>
           </div>
           <div style="text-align: center; margin-top: 4px;">
@@ -516,7 +734,7 @@
         <div class="user-summary-card ali-card">
           <h3 class="title-ali">Mes Ali</h3>
           <div class="summary-metrics">
-            <div class="summary-item"><span class="label">Ingresos</span><span class="value" id="monthlyIngAli" style="color:var(--green)">$0</span></div>
+            <div class="summary-item"><span class="label">Ing. Netos</span><span class="value" id="monthlyIngAli" style="color:var(--green)">$0</span></div>
             <div class="summary-item"><span class="label">Gastos</span><span class="value" id="monthlyGasAli" style="color:var(--red)">$0</span></div>
           </div>
           <div style="text-align: center; margin-top: 4px;">
@@ -544,7 +762,7 @@
     firebase.initializeApp(firebaseConfig);
     const db = firebase.database();
 
-    // FUNCIÓN AUXILIAR: Obtiene la fecha local exacta YYYY-MM-DD del dispositivo
+    // Fecha local del dispositivo exactas YYYY-MM-DD
     function getLocalDateStr(dateObj = new Date()) {
       const year = dateObj.getFullYear();
       const month = String(dateObj.getMonth() + 1).padStart(2, '0');
@@ -563,6 +781,7 @@
 
     let allRecords = {};
     let allPendings = {};
+    let savingsConfig = { goal: 100000, style: 'cylinder' };
     let chartJesusInstance = null;
     let chartAliInstance = null;
 
@@ -575,7 +794,7 @@
       document.getElementById(`tab-${tab}`).classList.add('active');
     }
 
-    // Escuchar Registros y Pendientes
+    // Escuchar Firebase
     db.ref('registros').on('value', (snapshot) => {
       allRecords = snapshot.val() || {};
       renderData();
@@ -586,7 +805,14 @@
       renderPendings();
     });
 
-    // Añadir Registro Normal (Con Dueño)
+    db.ref('alcanciaConfig').on('value', (snapshot) => {
+      savingsConfig = snapshot.val() || { goal: 100000, style: 'cylinder' };
+      if(!savingsConfig.style) savingsConfig.style = 'cylinder';
+      updateVisualSelectorUI();
+      renderSavings();
+    });
+
+    // Añadir Registro Normal (Ingreso / Gasto)
     function addRecord(type, owner) {
       const desc = prompt(`Descripción del ${type} (${owner}):`);
       if (!desc) return;
@@ -602,11 +828,66 @@
         owner: owner,
         description: desc,
         amount: amount,
-        date: getLocalDateStr() // Se guarda como YYYY-MM-DD local exacto
+        date: getLocalDateStr()
       });
     }
 
-    // Añadir Pendiente (Deuda)
+    // Añadir Ahorro al Fondo en Conjunto
+    function addSavingsRecord() {
+      let ownerInput = prompt("¿Quién aporta el ahorro? (Escribe 'Jesus' o 'Ali'):");
+      if (!ownerInput) return;
+      ownerInput = ownerInput.trim();
+      if (ownerInput.toLowerCase() !== 'jesus' && ownerInput.toLowerCase() !== 'ali') {
+        alert("Debes escribir exactamente 'Jesus' o 'Ali'.");
+        return;
+      }
+      // Capitalizar bien
+      const owner = ownerInput.toLowerCase() === 'jesus' ? 'Jesus' : 'Ali';
+
+      const desc = prompt(`Motivo o descripción del ahorro (${owner}):`, "Ahorro conjunto");
+      if (desc === null) return;
+
+      const amount = parseFloat(prompt(`Monto a aportar al fondo ($):`));
+      if (isNaN(amount) || amount <= 0) {
+        alert("Ingresa un monto válido.");
+        return;
+      }
+
+      db.ref('registros').push({
+        type: 'ahorro',
+        owner: owner,
+        description: desc ? desc : 'Ahorro conjunto',
+        amount: amount,
+        date: getLocalDateStr()
+      });
+    }
+
+    // Cambiar Meta del Fondo
+    function setSavingsGoal() {
+      const newGoal = parseFloat(prompt("Establece la meta monetaria para la alcancía ($):", savingsConfig.goal || 100000));
+      if (!isNaN(newGoal) && newGoal > 0) {
+        db.ref('alcanciaConfig').update({ goal: newGoal });
+      }
+    }
+
+    // Cambiar Estilo Visual (Cilindro / Pingüino)
+    function changeVisual(style) {
+      db.ref('alcanciaConfig').update({ style: style });
+    }
+
+    function updateVisualSelectorUI() {
+      const btnCyl = document.getElementById('btnCylinder');
+      const btnPen = document.getElementById('btnPenguin');
+      if(savingsConfig.style === 'penguin') {
+        btnPen.classList.add('active');
+        btnCyl.classList.remove('active');
+      } else {
+        btnCyl.classList.add('active');
+        btnPen.classList.remove('active');
+      }
+    }
+
+    // Añadir Deuda Pendiente
     function addPending(owner) {
       const desc = prompt(`Deuda / Pendiente de ${owner}:`);
       if (!desc) return;
@@ -626,7 +907,6 @@
       });
     }
 
-    // Marcar como Pagado
     function markAsPaid(key) {
       const p = allPendings[key];
       if (!p || p.paid) return;
@@ -639,7 +919,7 @@
         owner: p.owner,
         description: `[Deuda ${p.owner}] ${p.description}`,
         amount: p.amount,
-        date: getLocalDateStr() // Se guarda como YYYY-MM-DD local exacto
+        date: getLocalDateStr()
       });
 
       db.ref('pendientes/' + key).update({
@@ -648,7 +928,6 @@
       });
     }
 
-    // Deshacer Pago
     function undoPayment(key) {
       const p = allPendings[key];
       if (!p || !p.paid) return;
@@ -663,7 +942,6 @@
       });
     }
 
-    // Eliminar registro de Pendiente
     function deletePending(key) {
       if (confirm("¿Eliminar este registro permanentemente?")) {
         const p = allPendings[key];
@@ -674,14 +952,13 @@
       }
     }
 
-    // Eliminar Registro Diario
     function deleteRecord(id) {
       if (confirm("¿Estás seguro de borrar este registro?")) {
         db.ref('registros/' + id).remove();
       }
     }
 
-    // Renderizar Pestaña Pendientes
+    // Renderizar Pendientes
     function renderPendings() {
       const listJesus = document.getElementById('pendingJesusList');
       const listAli = document.getElementById('pendingAliList');
@@ -709,29 +986,19 @@
               <span class="delete-btn" title="Eliminar" onclick="deletePending('${key}')">🗑️</span>
             </div>
           `;
-
-          if (p.owner === 'Jesus') {
-            listJesus.appendChild(li);
-            totalJesus += p.amount;
-          } else {
-            listAli.appendChild(li);
-            totalAli += p.amount;
-          }
+          if (p.owner === 'Jesus') { listJesus.appendChild(li); totalJesus += p.amount; }
+          else { listAli.appendChild(li); totalAli += p.amount; }
         } else {
           li.className = 'paid-item';
           li.innerHTML = `
             <span>${p.description} (<b>$${p.amount.toLocaleString()}</b>)</span>
             <div class="actions">
-              <span class="undo-btn" title="Deshacer pago" onclick="undoPayment('${key}')">✕</span>
+              <span class="undo-btn" title="Deshacer" onclick="undoPayment('${key}')">✕</span>
               <span class="delete-btn" title="Eliminar" onclick="deletePending('${key}')">🗑️</span>
             </div>
           `;
-
-          if (p.owner === 'Jesus') {
-            listPaidJesus.appendChild(li);
-          } else {
-            listPaidAli.appendChild(li);
-          }
+          if (p.owner === 'Jesus') { listPaidJesus.appendChild(li); }
+          else { listPaidAli.appendChild(li); }
         }
       });
 
@@ -739,9 +1006,61 @@
       document.getElementById('totalPendingAli').innerText = `$${totalAli.toLocaleString()}`;
     }
 
-    // Renderizar Datos Diarios y Mensuales
+    // Renderizar Alcancía
+    function renderSavings() {
+      const savingsList = document.getElementById('savingsList');
+      savingsList.innerHTML = '';
+
+      let totalSavings = 0;
+
+      Object.keys(allRecords).forEach(key => {
+        const item = allRecords[key];
+        if (item.type === 'ahorro') {
+          totalSavings += item.amount;
+          const li = document.createElement('li');
+          li.innerHTML = `
+            <span><b>[${item.owner}]</b> ${item.description} (<b>$${item.amount.toLocaleString()}</b>)</span>
+            <span class="delete-btn" onclick="deleteRecord('${key}')">✕</span>
+          `;
+          savingsList.appendChild(li);
+        }
+      });
+
+      const goal = savingsConfig.goal || 100000;
+      let percentage = Math.round((totalSavings / goal) * 100);
+      if (percentage > 100) percentage = 100;
+
+      document.getElementById('savingsTotalAmount').innerText = `$${totalSavings.toLocaleString()}`;
+      document.getElementById('savingsGoalAmount').innerText = `$${goal.toLocaleString()}`;
+      document.getElementById('savingsPercentage').innerText = `${percentage}% alcanzado`;
+
+      // Renderizar diseño gráfico visual (Cilindro o Pingüino)
+      const container = document.getElementById('visualBoxContainer');
+      container.innerHTML = '';
+
+      if (savingsConfig.style === 'penguin') {
+        container.innerHTML = `
+          <div class="penguin-body">
+            <div class="penguin-face">
+              <div class="eyes"><div class="eye"></div><div class="eye"></div></div>
+              <div class="beak"></div>
+            </div>
+            <div class="penguin-text">${percentage}%</div>
+            <div class="penguin-fill" style="height: ${percentage}%;"></div>
+          </div>
+        `;
+      } else {
+        container.innerHTML = `
+          <div class="cylinder-body">
+            <div class="cylinder-text">${percentage}%</div>
+            <div class="cylinder-fill" style="height: ${percentage}%;"></div>
+          </div>
+        `;
+      }
+    }
+
+    // Renderizar Datos Principales, Diarios y Mensuales
     function renderData() {
-      // Listas Diarias
       const ingJesus = document.getElementById('dailyIngresosJesus');
       const ingAli = document.getElementById('dailyIngresosAli');
       const gasJesus = document.getElementById('dailyGastosJesus');
@@ -750,7 +1069,6 @@
       ingJesus.innerHTML = ''; ingAli.innerHTML = '';
       gasJesus.innerHTML = ''; gasAli.innerHTML = '';
 
-      // Totales
       let dIngJesus = 0, dGasJesus = 0, dIngAli = 0, dGasAli = 0;
       let mIngJesus = 0, mGasJesus = 0, mIngAli = 0, mGasAli = 0;
 
@@ -758,42 +1076,47 @@
 
       Object.keys(allRecords).forEach(key => {
         const item = allRecords[key];
-        
-        // Extraer formato YYYY-MM-DD y YYYY-MM
         const itemDateStr = item.date ? item.date.slice(0, 10) : "";
         const itemMonthStr = item.date ? item.date.slice(0, 7) : "";
         const owner = item.owner || 'Jesus'; 
 
-        // Registros de Hoy (comparación exacta con fecha local)
+        // Registros de Hoy
         if (itemDateStr === todayStr) {
-          const li = document.createElement('li');
-          li.innerHTML = `
-            <span>${item.description} (<b>$${item.amount.toLocaleString()}</b>)</span>
-            <span class="delete-btn" onclick="deleteRecord('${key}')">✕</span>
-          `;
-
           if (item.type === 'ingreso') {
-            if (owner === 'Jesus') { ingJesus.appendChild(li); dIngJesus += item.amount; }
-            else { ingAli.appendChild(li); dIngAli += item.amount; }
-          } else {
-            if (owner === 'Jesus') { gasJesus.appendChild(li); dGasJesus += item.amount; }
-            else { gasAli.appendChild(li); dGasAli += item.amount; }
+            const li = document.createElement('li');
+            li.innerHTML = `<span>${item.description} (<b>$${item.amount.toLocaleString()}</b>)</span><span class="delete-btn" onclick="deleteRecord('${key}')">✕</span>`;
+            if (owner === 'Jesus') { ingJesus.appendChild(li); } else { ingAli.appendChild(li); }
+          } else if (item.type === 'gasto') {
+            const li = document.createElement('li');
+            li.innerHTML = `<span>${item.description} (<b>$${item.amount.toLocaleString()}</b>)</span><span class="delete-btn" onclick="deleteRecord('${key}')">✕</span>`;
+            if (owner === 'Jesus') { gasJesus.appendChild(li); } else { gasAli.appendChild(li); }
           }
         }
 
-        // Registros del Mes Seleccionado
+        // Totales del Día (Ingresos reales = ingresos brutos - ahorros del día)
+        if (itemDateStr === todayStr) {
+          if (item.type === 'ingreso') {
+            if (owner === 'Jesus') dIngJesus += item.amount; else dIngAli += item.amount;
+          } else if (item.type === 'ahorro') {
+            if (owner === 'Jesus') dIngJesus -= item.amount; else dIngAli -= item.amount;
+          } else if (item.type === 'gasto') {
+            if (owner === 'Jesus') dGasJesus += item.amount; else dGasAli += item.amount;
+          }
+        }
+
+        // Totales del Mes (Ingresos del mes netos de ahorros, sin contar ahorros como gastos)
         if (itemMonthStr === selectedMonth) {
           if (item.type === 'ingreso') {
-            if (owner === 'Jesus') mIngJesus += item.amount;
-            else mIngAli += item.amount;
-          } else {
-            if (owner === 'Jesus') mGasJesus += item.amount;
-            else mGasAli += item.amount;
+            if (owner === 'Jesus') mIngJesus += item.amount; else mIngAli += item.amount;
+          } else if (item.type === 'ahorro') {
+            if (owner === 'Jesus') mIngJesus -= item.amount; else mIngAli -= item.amount;
+          } else if (item.type === 'gasto') {
+            if (owner === 'Jesus') mGasJesus += item.amount; else mGasAli += item.amount;
           }
         }
       });
 
-      // --- ACTUALIZAR HOY ---
+      // Actualizar DOM Hoy
       document.getElementById('dailyIngJesus').innerText = `$${dIngJesus.toLocaleString()}`;
       document.getElementById('dailyGasJesus').innerText = `$${dGasJesus.toLocaleString()}`;
       updateBalanceBadge('dailyBalJesus', dIngJesus - dGasJesus);
@@ -802,7 +1125,7 @@
       document.getElementById('dailyGasAli').innerText = `$${dGasAli.toLocaleString()}`;
       updateBalanceBadge('dailyBalAli', dIngAli - dGasAli);
 
-      // --- ACTUALIZAR MES ---
+      // Actualizar DOM Mes
       document.getElementById('monthlyIngJesus').innerText = `$${mIngJesus.toLocaleString()}`;
       document.getElementById('monthlyGasJesus').innerText = `$${mGasJesus.toLocaleString()}`;
       updateBalanceBadge('monthlyBalJesus', mIngJesus - mGasJesus);
@@ -811,11 +1134,11 @@
       document.getElementById('monthlyGasAli').innerText = `$${mGasAli.toLocaleString()}`;
       updateBalanceBadge('monthlyBalAli', mIngAli - mGasAli);
 
-      // Renderizar Gráficas
+      // Actualizar Gráficas y Alcancía
       renderCharts(mIngJesus, mGasJesus, mIngAli, mGasAli);
+      renderSavings();
     }
 
-    // Auxiliar para Badges de Balance
     function updateBalanceBadge(elemId, balance) {
       const elem = document.getElementById(elemId);
       if (balance >= 0) {
@@ -827,7 +1150,6 @@
       }
     }
 
-    // Crear / Actualizar Gráficas de Torta Independientes
     function renderCharts(ingJesus, gasJesus, ingAli, gasAli) {
       const ctxJesus = document.getElementById('chartJesus').getContext('2d');
       const ctxAli = document.getElementById('chartAli').getContext('2d');
@@ -838,15 +1160,13 @@
       const commonOptions = {
         responsive: true,
         maintainAspectRatio: false,
-        plugins: {
-          legend: { display: false }
-        }
+        plugins: { legend: { display: false } }
       };
 
       chartJesusInstance = new Chart(ctxJesus, {
         type: 'doughnut',
         data: {
-          labels: ['Ingresos', 'Gastos'],
+          labels: ['Ingresos Netos', 'Gastos'],
           datasets: [{
             data: [ingJesus, gasJesus],
             backgroundColor: ['#22c55e', '#ef4444'],
@@ -860,7 +1180,7 @@
       chartAliInstance = new Chart(ctxAli, {
         type: 'doughnut',
         data: {
-          labels: ['Ingresos', 'Gastos'],
+          labels: ['Ingresos Netos', 'Gastos'],
           datasets: [{
             data: [ingAli, gasAli],
             backgroundColor: ['#22c55e', '#ef4444'],
