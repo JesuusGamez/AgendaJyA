@@ -213,13 +213,23 @@
 
     .category-badge {
       font-size: 0.65rem;
-      padding: 2px 5px;
+      padding: 2px 6px;
       border-radius: 4px;
       margin-top: 3px;
       display: inline-block;
       font-weight: 600;
       background: #334155;
       color: #cbd5e1;
+      transition: transform 0.1s ease, opacity 0.1s ease;
+    }
+
+    .category-badge.clickable {
+      cursor: pointer;
+    }
+
+    .category-badge.clickable:hover {
+      transform: scale(1.05);
+      opacity: 0.9;
     }
 
     .cat-necesidades { background: rgba(239, 68, 68, 0.2); color: #fca5a5; border: 1px solid rgba(239, 68, 68, 0.4); }
@@ -970,16 +980,17 @@
 
       <!-- Historial detallado de días anteriores -->
       <div class="section-divider">📋 Desglose diario del mes</div>
+      <p style="font-size: 0.7rem; color: var(--text-muted); text-align: center; margin-bottom: 4px;">💡 Toca sobre la etiqueta de color (🔴/🟣/🔵) para cambiar de prioridad</p>
       <div class="col" style="width: 100%;">
         <ul class="items-list" id="monthlyDetailList"></ul>
       </div>
     </div>
   </div>
 
-  <!-- MODAL PARA CATEGORIZAR GASTOS (SOLO NECESIDADES Y GUSTOS) -->
+  <!-- MODAL PARA CATEGORIZAR GASTOS -->
   <div class="modal-overlay" id="categoryModal">
     <div class="modal-card">
-      <h3>Selecciona el tipo de gasto</h3>
+      <h3 id="modalCategoryTitle">Selecciona la categoría</h3>
       <button class="modal-btn" onclick="confirmCategory('necesidades')">
         🔴 Necesidades y Prioridades (50%)
         <span>Comida básica, servicios, arriendo, transporte obligatorio.</span>
@@ -988,6 +999,11 @@
         🟣 Gustos o Deseos (25%)
         <span>Salidas, hobbies, compras personales, ocio.</span>
       </button>
+      <button class="modal-btn" id="modalBtnSavings" onclick="confirmCategory('ahorros')" style="display:none;">
+        🔵 Ahorros Alcancía (25%)
+        <span>Transferir o reclasificar como ahorro.</span>
+      </button>
+      <button class="add-btn" onclick="closeCategoryModal()" style="margin-top: 5px; background:#0f172a;">Cancelar</button>
     </div>
   </div>
 
@@ -1038,6 +1054,7 @@
     
     let currentSavingsMode = 'joint';
     let pendingGastoContext = null;
+    let editingRecordKey = null;
 
     let chartJesusInstance = null;
     let chartAliInstance = null;
@@ -1118,18 +1135,60 @@
         }
       }
 
+      editingRecordKey = null;
       pendingGastoContext = { owner, desc, amount, pendingKey };
+      
+      document.getElementById('modalCategoryTitle').innerText = 'Selecciona el tipo de gasto';
+      document.getElementById('modalBtnSavings').style.display = 'none';
       document.getElementById('categoryModal').style.display = 'flex';
+    }
+
+    // Modal para editar la prioridad desde la lista de desglose mensual
+    function changeCategoryFromHistory(recordKey) {
+      const record = allRecords[recordKey];
+      if (!record) return;
+
+      editingRecordKey = recordKey;
+      pendingGastoContext = null;
+
+      document.getElementById('modalCategoryTitle').innerText = `Cambiar prioridad: "${record.description}"`;
+      document.getElementById('modalBtnSavings').style.display = 'flex';
+      document.getElementById('categoryModal').style.display = 'flex';
+    }
+
+    function closeCategoryModal() {
+      document.getElementById('categoryModal').style.display = 'none';
+      editingRecordKey = null;
+      pendingGastoContext = null;
     }
 
     function confirmCategory(category) {
       document.getElementById('categoryModal').style.display = 'none';
+
+      // MODO EDICIÓN DIRECTA DESDE HISTORIAL
+      if (editingRecordKey) {
+        const record = allRecords[editingRecordKey];
+        if (record) {
+          const updates = { category: category };
+          // Si cambia a o desde ahorro, se ajusta el tipo de registro
+          if (category === 'ahorros') {
+            updates.type = 'ahorro';
+          } else {
+            updates.type = 'gasto';
+          }
+
+          db.ref('registros/' + editingRecordKey).update(updates);
+        }
+        editingRecordKey = null;
+        return;
+      }
+
+      // MODO CREACIÓN
       if (!pendingGastoContext) return;
 
       const { owner, desc, amount, pendingKey } = pendingGastoContext;
 
       if (pendingKey) {
-        // Viene de marcar una deuda como pagada
         const newExpenseRef = db.ref('registros').push();
         const newExpenseKey = newExpenseRef.key;
 
@@ -1147,7 +1206,6 @@
           expenseId: newExpenseKey
         });
       } else {
-        // Gasto directo
         db.ref('registros').push({
           type: 'gasto',
           owner: owner,
@@ -1161,7 +1219,7 @@
       pendingGastoContext = null;
     }
 
-    // Añadir Ahorro a la Alcancía (Categoría 'ahorros' asignada automáticamente)
+    // Añadir Ahorro a la Alcancía
     function addSavingsRecord() {
       let owner = 'Jesus';
       let scope = 'joint';
@@ -1193,7 +1251,6 @@
         return;
       }
 
-      // Se asigna automáticamente la categoría 'ahorros'
       db.ref('registros').push({
         type: 'ahorro',
         owner: owner,
@@ -1422,10 +1479,17 @@
       }
     }
 
-    function getCatBadgeHTML(cat) {
-      if (cat === 'necesidades') return '<span class="category-badge cat-necesidades">🔴 Necesidad</span>';
-      if (cat === 'gustos') return '<span class="category-badge cat-gustos">🟣 Gusto</span>';
-      if (cat === 'ahorros') return '<span class="category-badge cat-ahorros">🔵 Ahorro Alcancía</span>';
+    // Retorna HTML de badge, con opción de hacer interactivo (clickable)
+    function getCatBadgeHTML(cat, recordKey = null) {
+      const isClickable = recordKey ? 'clickable' : '';
+      const onclickAttr = recordKey ? `onclick="changeCategoryFromHistory('${recordKey}')"` : '';
+
+      if (cat === 'necesidades') return `<span class="category-badge cat-necesidades ${isClickable}" ${onclickAttr}>🔴 Necesidad</span>`;
+      if (cat === 'gustos') return `<span class="category-badge cat-gustos ${isClickable}" ${onclickAttr}>🟣 Gusto</span>`;
+      if (cat === 'ahorros') return `<span class="category-badge cat-ahorros ${isClickable}" ${onclickAttr}>🔵 Ahorro Alcancía</span>`;
+      
+      // Fallback si no tiene categoría asignada
+      if (recordKey) return `<span class="category-badge ${isClickable}" ${onclickAttr}>⚠️ Sin Categoría</span>`;
       return '';
     }
 
@@ -1500,10 +1564,12 @@
             if (owner === 'Jesus') mGasJesus += item.amount; else mGasAli += item.amount;
           }
 
-          // Insertar en historial de desglose diario de Consulta
+          // Insertar en historial de desglose diario de Consulta (con badge interactivo)
           const liHist = document.createElement('li');
           let typeIcon = item.type === 'ingreso' ? '🟢' : (item.type === 'ahorro' ? '🔵' : '🔴');
-          let badgeHist = getCatBadgeHTML(item.category);
+          
+          // Se pasa el 'key' del registro para hacer interactivo el badge
+          let badgeHist = (item.type === 'gasto' || item.type === 'ahorro') ? getCatBadgeHTML(item.category, key) : '';
           
           liHist.innerHTML = `
             <div style="display:flex; flex-direction:column;">
@@ -1524,10 +1590,11 @@
             totalNetIncomeRule += item.amount;
           } else if (item.type === 'ahorro') {
             totalNetIncomeRule -= item.amount;
-            totalSavingsRule += item.amount; // Los ahorros entran directo a la regla del 25%
+            totalSavingsRule += item.amount;
           } else if (item.type === 'gasto') {
             if (item.category === 'necesidades') totalNeedsRule += item.amount;
             else if (item.category === 'gustos') totalWantsRule += item.amount;
+            else if (item.category === 'ahorros') totalSavingsRule += item.amount;
             else totalNeedsRule += item.amount; // fallback
           }
         }
