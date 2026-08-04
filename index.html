@@ -19,6 +19,7 @@
       --savings-color: #06b6d4;
       --gold: #f59e0b;
       --purple: #a855f7;
+      --unused-color: #64748b;
     }
 
     * {
@@ -220,16 +221,6 @@
       font-weight: 600;
       background: #334155;
       color: #cbd5e1;
-      transition: transform 0.1s ease, opacity 0.1s ease;
-    }
-
-    .category-badge.clickable {
-      cursor: pointer;
-    }
-
-    .category-badge.clickable:hover {
-      transform: scale(1.05);
-      opacity: 0.9;
     }
 
     .cat-necesidades { background: rgba(239, 68, 68, 0.2); color: #fca5a5; border: 1px solid rgba(239, 68, 68, 0.4); }
@@ -584,7 +575,7 @@
       cursor: pointer;
     }
 
-    /* Modal emergente para seleccionar categoría */
+    /* Modal emergente para seleccionar categoría al agregar gasto */
     .modal-overlay {
       position: fixed;
       top: 0; left: 0; width: 100%; height: 100%;
@@ -682,6 +673,7 @@
     .rule-card-item.needs-card { border-left: 4px solid var(--red); }
     .rule-card-item.wants-card { border-left: 4px solid var(--purple); }
     .rule-card-item.savings-card { border-left: 4px solid var(--savings-color); }
+    .rule-card-item.unused-card { border-left: 4px solid var(--unused-color); }
 
     .rule-card-info {
       display: flex;
@@ -889,7 +881,7 @@
         <div class="chart-box">
           <h3>Real Actual</h3>
           <p style="font-size: 0.68rem; color: var(--text-muted); text-align:center;">
-            Distribución Real de Gastos
+            Distribución Real de Ingresos
           </p>
           <div class="chart-wrapper">
             <canvas id="chartRuleReal"></canvas>
@@ -901,8 +893,8 @@
       <div class="rule-cards-container">
         <div class="rule-card-item needs-card">
           <div class="rule-card-info">
-            <span class="rule-card-title" style="color:#f87171;">🔴 Necesidades (Máx 50%)</span>
-            <span class="rule-card-ideal">Límite Ideal: <span id="idealNeeds">$0</span></span>
+            <span class="rule-card-title" style="color:#f87171;">🔴 Necesidades (Gastado + Sin usar)</span>
+            <span class="rule-card-ideal">Límite Ideal (50%): <span id="idealNeeds">$0</span></span>
           </div>
           <span class="rule-card-val" id="valNeeds">$0</span>
         </div>
@@ -910,7 +902,7 @@
         <div class="rule-card-item wants-card">
           <div class="rule-card-info">
             <span class="rule-card-title" style="color:#c084fc;">🟣 Gustos / Deseos (Máx 25%)</span>
-            <span class="rule-card-ideal">Límite Ideal: <span id="idealWants">$0</span></span>
+            <span class="rule-card-ideal">Límite Ideal (25%): <span id="idealWants">$0</span></span>
           </div>
           <span class="rule-card-val" id="valWants">$0</span>
         </div>
@@ -918,9 +910,17 @@
         <div class="rule-card-item savings-card">
           <div class="rule-card-info">
             <span class="rule-card-title" style="color:#22d3ee;">🔵 Ahorros Alcancía (Mín 25%)</span>
-            <span class="rule-card-ideal">Meta Ideal: <span id="idealSavings">$0</span></span>
+            <span class="rule-card-ideal">Meta Ideal (25%): <span id="idealSavings">$0</span></span>
           </div>
           <span class="rule-card-val" id="valSavings">$0</span>
+        </div>
+
+        <div class="rule-card-item unused-card">
+          <div class="rule-card-info">
+            <span class="rule-card-title" style="color:#94a3b8;">⚪ Dinero Sin Usar (Disponible)</span>
+            <span class="rule-card-ideal">Disponible del Ingreso Neto</span>
+          </div>
+          <span class="rule-card-val" id="valUnused">$0</span>
         </div>
       </div>
 
@@ -980,7 +980,6 @@
 
       <!-- Historial detallado de días anteriores -->
       <div class="section-divider">📋 Desglose diario del mes</div>
-      <p style="font-size: 0.7rem; color: var(--text-muted); text-align: center; margin-bottom: 4px;">💡 Toca sobre la etiqueta de color (🔴/🟣/🔵) para cambiar de prioridad</p>
       <div class="col" style="width: 100%;">
         <ul class="items-list" id="monthlyDetailList"></ul>
       </div>
@@ -998,10 +997,6 @@
       <button class="modal-btn" onclick="confirmCategory('gustos')">
         🟣 Gustos o Deseos (25%)
         <span>Salidas, hobbies, compras personales, ocio.</span>
-      </button>
-      <button class="modal-btn" id="modalBtnSavings" onclick="confirmCategory('ahorros')" style="display:none;">
-        🔵 Ahorros Alcancía (25%)
-        <span>Transferir o reclasificar como ahorro.</span>
       </button>
       <button class="add-btn" onclick="closeCategoryModal()" style="margin-top: 5px; background:#0f172a;">Cancelar</button>
     </div>
@@ -1054,7 +1049,6 @@
     
     let currentSavingsMode = 'joint';
     let pendingGastoContext = null;
-    let editingRecordKey = null;
 
     let chartJesusInstance = null;
     let chartAliInstance = null;
@@ -1135,55 +1129,20 @@
         }
       }
 
-      editingRecordKey = null;
       pendingGastoContext = { owner, desc, amount, pendingKey };
       
       document.getElementById('modalCategoryTitle').innerText = 'Selecciona el tipo de gasto';
-      document.getElementById('modalBtnSavings').style.display = 'none';
-      document.getElementById('categoryModal').style.display = 'flex';
-    }
-
-    // Modal para editar la prioridad desde la lista de desglose mensual
-    function changeCategoryFromHistory(recordKey) {
-      const record = allRecords[recordKey];
-      if (!record) return;
-
-      editingRecordKey = recordKey;
-      pendingGastoContext = null;
-
-      document.getElementById('modalCategoryTitle').innerText = `Cambiar prioridad: "${record.description}"`;
-      document.getElementById('modalBtnSavings').style.display = 'flex';
       document.getElementById('categoryModal').style.display = 'flex';
     }
 
     function closeCategoryModal() {
       document.getElementById('categoryModal').style.display = 'none';
-      editingRecordKey = null;
       pendingGastoContext = null;
     }
 
     function confirmCategory(category) {
       document.getElementById('categoryModal').style.display = 'none';
 
-      // MODO EDICIÓN DIRECTA DESDE HISTORIAL
-      if (editingRecordKey) {
-        const record = allRecords[editingRecordKey];
-        if (record) {
-          const updates = { category: category };
-          // Si cambia a o desde ahorro, se ajusta el tipo de registro
-          if (category === 'ahorros') {
-            updates.type = 'ahorro';
-          } else {
-            updates.type = 'gasto';
-          }
-
-          db.ref('registros/' + editingRecordKey).update(updates);
-        }
-        editingRecordKey = null;
-        return;
-      }
-
-      // MODO CREACIÓN
       if (!pendingGastoContext) return;
 
       const { owner, desc, amount, pendingKey } = pendingGastoContext;
@@ -1479,17 +1438,11 @@
       }
     }
 
-    // Retorna HTML de badge, con opción de hacer interactivo (clickable)
-    function getCatBadgeHTML(cat, recordKey = null) {
-      const isClickable = recordKey ? 'clickable' : '';
-      const onclickAttr = recordKey ? `onclick="changeCategoryFromHistory('${recordKey}')"` : '';
-
-      if (cat === 'necesidades') return `<span class="category-badge cat-necesidades ${isClickable}" ${onclickAttr}>🔴 Necesidad</span>`;
-      if (cat === 'gustos') return `<span class="category-badge cat-gustos ${isClickable}" ${onclickAttr}>🟣 Gusto</span>`;
-      if (cat === 'ahorros') return `<span class="category-badge cat-ahorros ${isClickable}" ${onclickAttr}>🔵 Ahorro Alcancía</span>`;
-      
-      // Fallback si no tiene categoría asignada
-      if (recordKey) return `<span class="category-badge ${isClickable}" ${onclickAttr}>⚠️ Sin Categoría</span>`;
+    // Retorna HTML de badge estático (solo lectura)
+    function getCatBadgeHTML(cat) {
+      if (cat === 'necesidades') return `<span class="category-badge cat-necesidades">🔴 Necesidad</span>`;
+      if (cat === 'gustos') return `<span class="category-badge cat-gustos">🟣 Gusto</span>`;
+      if (cat === 'ahorros') return `<span class="category-badge cat-ahorros">🔵 Ahorro Alcancía</span>`;
       return '';
     }
 
@@ -1564,12 +1517,10 @@
             if (owner === 'Jesus') mGasJesus += item.amount; else mGasAli += item.amount;
           }
 
-          // Insertar en historial de desglose diario de Consulta (con badge interactivo)
+          // Insertar en historial de desglose diario (Badge estático)
           const liHist = document.createElement('li');
           let typeIcon = item.type === 'ingreso' ? '🟢' : (item.type === 'ahorro' ? '🔵' : '🔴');
-          
-          // Se pasa el 'key' del registro para hacer interactivo el badge
-          let badgeHist = (item.type === 'gasto' || item.type === 'ahorro') ? getCatBadgeHTML(item.category, key) : '';
+          let badgeHist = (item.type === 'gasto' || item.type === 'ahorro') ? getCatBadgeHTML(item.category) : '';
           
           liHist.innerHTML = `
             <div style="display:flex; flex-direction:column;">
@@ -1685,6 +1636,10 @@
     function renderRule502525(netIncome, needs, wants, savings) {
       document.getElementById('ruleNetIncomeVal').innerText = `$${netIncome.toLocaleString()}`;
 
+      // Calcular dinero sin usar (fondos disponibles)
+      const totalUsed = needs + wants + savings;
+      const unused = Math.max(0, netIncome - totalUsed);
+
       // Valores ideales
       const idealNeedsVal = netIncome * 0.50;
       const idealWantsVal = netIncome * 0.25;
@@ -1697,15 +1652,17 @@
       document.getElementById('valNeeds').innerText = `$${needs.toLocaleString()}`;
       document.getElementById('valWants').innerText = `$${wants.toLocaleString()}`;
       document.getElementById('valSavings').innerText = `$${savings.toLocaleString()}`;
+      document.getElementById('valUnused').innerText = `$${unused.toLocaleString()}`;
 
-      // Comprobar si se cumple la regla
+      // Comprobar cumplimiento
       let isCompliant = false;
       if (netIncome > 0) {
-        const needsPct = (needs / netIncome) * 100;
-        const wantsPct = (wants / netIncome) * 100;
-        const savingsPct = (savings / netIncome) * 100;
+        // En necesidades evaluamos sólo los gastos reales efectuados
+        const needsPctReal = (needs / netIncome) * 100;
+        const wantsPctReal = (wants / netIncome) * 100;
+        const savingsPctReal = (savings / netIncome) * 100;
 
-        if (needsPct <= 50.1 && wantsPct <= 25.1 && savingsPct >= 24.9) {
+        if (needsPctReal <= 50.1 && wantsPctReal <= 25.1 && savingsPctReal >= 24.9) {
           isCompliant = true;
         }
       }
@@ -1745,23 +1702,33 @@
       const ctxReal = document.getElementById('chartRuleReal').getContext('2d');
       if (chartRuleRealInstance) chartRuleRealInstance.destroy();
 
-      const totalSpentAndSaved = needs + wants + savings;
-      let dataReal = [0, 0, 0];
-      if (totalSpentAndSaved > 0) {
-        dataReal = [
-          Math.round((needs / totalSpentAndSaved) * 100),
-          Math.round((wants / totalSpentAndSaved) * 100),
-          Math.round((savings / totalSpentAndSaved) * 100)
-        ];
+      let needsPct = 0;
+      let wantsPct = 0;
+      let savingsPct = 0;
+      let unusedPct = 0;
+
+      if (netIncome > 0) {
+        let needsSpentPct = Math.round((needs / netIncome) * 100);
+        wantsPct = Math.round((wants / netIncome) * 100);
+        savingsPct = Math.round((savings / netIncome) * 100);
+        unusedPct = Math.round((unused / netIncome) * 100);
+
+        // El porcentaje de Dinero Sin Usar se suma al porcentaje de Necesidades
+        needsPct = needsSpentPct + unusedPct;
       }
 
       chartRuleRealInstance = new Chart(ctxReal, {
         type: 'doughnut',
         data: {
-          labels: ['Necesidades %', 'Gustos %', 'Ahorros %'],
+          labels: [
+            `Necesidades + Disponible (${needsPct}%)`, 
+            `Gustos (${wantsPct}%)`, 
+            `Ahorros (${savingsPct}%)`, 
+            `Dinero Sin Usar (${unusedPct}%)`
+          ],
           datasets: [{
-            data: dataReal.every(v => v === 0) ? [1, 1, 1] : dataReal,
-            backgroundColor: ['#ef4444', '#a855f7', '#06b6d4'],
+            data: (netIncome === 0) ? [1, 1, 1, 1] : [needs, wants, savings, unused],
+            backgroundColor: ['#ef4444', '#a855f7', '#06b6d4', '#64748b'],
             borderColor: '#1e293b',
             borderWidth: 2
           }]
