@@ -651,6 +651,48 @@
       color: #f87171;
       border-color: rgba(239, 68, 68, 0.4);
     }
+
+    /* Tarjetas ordenadas para Regla 50/25/25 */
+    .rule-cards-container {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .rule-card-item {
+      background: #0f172a;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 10px 14px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .rule-card-item.needs-card { border-left: 4px solid var(--red); }
+    .rule-card-item.wants-card { border-left: 4px solid var(--purple); }
+    .rule-card-item.savings-card { border-left: 4px solid var(--savings-color); }
+
+    .rule-card-info {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+
+    .rule-card-title {
+      font-size: 0.82rem;
+      font-weight: 700;
+    }
+
+    .rule-card-ideal {
+      font-size: 0.7rem;
+      color: var(--text-muted);
+    }
+
+    .rule-card-val {
+      font-size: 0.95rem;
+      font-weight: 800;
+    }
   </style>
 
   <!-- Firebase v8 -->
@@ -845,19 +887,30 @@
         </div>
       </div>
 
-      <!-- Resumen Numérico por Categoría -->
-      <div class="col" style="gap:8px;">
-        <div style="font-size:0.8rem; display:flex; justify-content:space-between; align-items:center;">
-          <span>🔴 Necesidades (Máx 50%):</span>
-          <span><b id="valNeeds">$0</b> / Ideal: <span id="idealNeeds" style="color:var(--text-muted);">$0</span></span>
+      <!-- Resumen Numérico Organizado en Tarjetas -->
+      <div class="rule-cards-container">
+        <div class="rule-card-item needs-card">
+          <div class="rule-card-info">
+            <span class="rule-card-title" style="color:#f87171;">🔴 Necesidades (Máx 50%)</span>
+            <span class="rule-card-ideal">Límite Ideal: <span id="idealNeeds">$0</span></span>
+          </div>
+          <span class="rule-card-val" id="valNeeds">$0</span>
         </div>
-        <div style="font-size:0.8rem; display:flex; justify-content:space-between; align-items:center;">
-          <span>🟣 Gustos/Deseos (Máx 25%):</span>
-          <span><b id="valWants">$0</b> / Ideal: <span id="idealWants" style="color:var(--text-muted);">$0</span></span>
+
+        <div class="rule-card-item wants-card">
+          <div class="rule-card-info">
+            <span class="rule-card-title" style="color:#c084fc;">🟣 Gustos / Deseos (Máx 25%)</span>
+            <span class="rule-card-ideal">Límite Ideal: <span id="idealWants">$0</span></span>
+          </div>
+          <span class="rule-card-val" id="valWants">$0</span>
         </div>
-        <div style="font-size:0.8rem; display:flex; justify-content:space-between; align-items:center;">
-          <span>🔵 Ahorros Alcancía (Mín 25%):</span>
-          <span><b id="valSavings">$0</b> / Ideal: <span id="idealSavings" style="color:var(--text-muted);">$0</span></span>
+
+        <div class="rule-card-item savings-card">
+          <div class="rule-card-info">
+            <span class="rule-card-title" style="color:#22d3ee;">🔵 Ahorros Alcancía (Mín 25%)</span>
+            <span class="rule-card-ideal">Meta Ideal: <span id="idealSavings">$0</span></span>
+          </div>
+          <span class="rule-card-val" id="valSavings">$0</span>
         </div>
       </div>
 
