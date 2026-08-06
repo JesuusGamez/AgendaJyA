@@ -1,0 +1,2139 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Jesús & Ali - Finanzas y Alcancía</title>
+  
+  <!-- Tipografía Moderna -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --bg: #0f172a;
+      --card-bg: rgba(30, 41, 59, 0.75);
+      --accent: #e11d48;
+      --text: #f8fafc;
+      --text-muted: #94a3b8;
+      --green: #22c55e;
+      --red: #ef4444;
+      --border: rgba(255, 255, 255, 0.08);
+      --jesus-color: #3b82f6;
+      --jesus-glow: rgba(59, 130, 246, 0.25);
+      --ali-color: #ec4899;
+      --ali-glow: rgba(236, 72, 153, 0.25);
+      --gold: #f59e0b;
+      --gold-glow: rgba(245, 158, 11, 0.25);
+      --purple: #a855f7;
+      --unused-color: #64748b;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    body {
+      background-color: var(--bg);
+      color: var(--text);
+      display: flex;
+      justify-content: center;
+      padding: 15px;
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    .app-container {
+      width: 100%;
+      max-width: 540px;
+      background: var(--card-bg);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border: 1px solid var(--border);
+      border-radius: 24px;
+      padding: 20px;
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.6);
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      position: relative;
+    }
+
+    header {
+      text-align: center;
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 12px;
+    }
+
+    header h1 {
+      font-size: 1.6rem;
+      color: var(--text);
+      font-weight: 800;
+      letter-spacing: -0.5px;
+    }
+
+    header h1 span {
+      background: linear-gradient(135deg, var(--jesus-color), var(--ali-color));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    /* Pestañas */
+    .tabs-nav {
+      display: flex;
+      background: rgba(15, 23, 42, 0.8);
+      border-radius: 12px;
+      padding: 4px;
+      border: 1px solid var(--border);
+      gap: 4px;
+      overflow-x: auto;
+    }
+
+    .tab-btn {
+      flex: 1;
+      padding: 9px 6px;
+      background: transparent;
+      border: none;
+      color: var(--text-muted);
+      font-weight: 700;
+      font-size: 0.73rem;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+      white-space: nowrap;
+    }
+
+    .tab-btn:hover {
+      color: var(--text);
+    }
+
+    .tab-btn.active {
+      background: rgba(30, 41, 59, 0.9);
+      color: var(--text);
+      border: 1px solid var(--border);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    }
+
+    .tab-content {
+      display: none;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .tab-content.active {
+      display: flex;
+      animation: fadeInSlide 0.25s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    }
+
+    @keyframes fadeInSlide {
+      from { opacity: 0; transform: translateY(8px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .date-indicator {
+      text-align: center;
+      font-size: 0.82rem;
+      font-weight: 600;
+      color: var(--text-muted);
+      background: rgba(15, 23, 42, 0.6);
+      padding: 8px 12px;
+      border-radius: 10px;
+      border: 1px solid var(--border);
+    }
+
+    .filter-box {
+      background: rgba(15, 23, 42, 0.6);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 12px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .filter-box label {
+      font-size: 0.75rem;
+      font-weight: 700;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    input[type="month"], input[type="number"], input[type="text"], select {
+      background: #1e293b;
+      border: 1px solid var(--border);
+      color: var(--text);
+      padding: 10px 14px;
+      border-radius: 10px;
+      font-size: 0.9rem;
+      outline: none;
+      width: 100%;
+      text-align: center;
+      transition: border-color 0.2s;
+    }
+
+    input:focus, select:focus {
+      border-color: var(--jesus-color);
+    }
+
+    .section-divider {
+      text-align: center;
+      font-size: 0.8rem;
+      font-weight: 800;
+      letter-spacing: 0.8px;
+      margin-top: 4px;
+      margin-bottom: -4px;
+      text-transform: uppercase;
+    }
+
+    .title-jesus { color: var(--jesus-color); }
+    .title-ali { color: var(--ali-color); }
+    .title-savings { color: var(--gold); }
+
+    .columns-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+
+    .col {
+      background: rgba(15, 23, 42, 0.6);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 12px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+
+    .col h2 {
+      font-size: 0.85rem;
+      font-weight: 700;
+      text-align: center;
+      margin-bottom: 8px;
+      padding-bottom: 6px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .items-list {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      max-height: 220px;
+      overflow-y: auto;
+    }
+
+    .items-list li {
+      background: rgba(30, 41, 59, 0.8);
+      padding: 8px 10px;
+      border-radius: 8px;
+      font-size: 0.78rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-left: 3px solid var(--border);
+      transition: transform 0.15s ease;
+    }
+
+    .items-list li:hover {
+      transform: translateX(2px);
+    }
+
+    .items-list.ingresos li { border-left-color: var(--green); }
+    .items-list.gastos li { border-left-color: var(--red); }
+    .items-list.ahorros li { border-left-color: var(--gold); }
+
+    .category-badge {
+      font-size: 0.65rem;
+      padding: 2px 6px;
+      border-radius: 4px;
+      margin-top: 3px;
+      display: inline-block;
+      font-weight: 700;
+      background: #334155;
+      color: #cbd5e1;
+    }
+
+    .cat-necesidades { background: rgba(239, 68, 68, 0.2); color: #fca5a5; border: 1px solid rgba(239, 68, 68, 0.4); }
+    .cat-gustos { background: rgba(168, 85, 247, 0.2); color: #e9d5ff; border: 1px solid rgba(168, 85, 247, 0.4); }
+    .cat-ahorros { background: rgba(245, 158, 11, 0.2); color: #fde68a; border: 1px solid rgba(245, 158, 11, 0.4); }
+
+    .pending-item {
+      border-left: 3px solid var(--red) !important;
+      background: rgba(239, 68, 68, 0.08) !important;
+    }
+
+    .paid-item {
+      border-left: 3px solid var(--green) !important;
+      background: rgba(34, 197, 94, 0.08) !important;
+    }
+
+    .actions {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .check-btn {
+      color: var(--green);
+      cursor: pointer;
+      font-weight: bold;
+      font-size: 0.9rem;
+      padding: 2px 6px;
+      border-radius: 4px;
+      background: rgba(34, 197, 94, 0.15);
+    }
+
+    .undo-btn {
+      color: var(--red);
+      cursor: pointer;
+      font-weight: bold;
+      font-size: 0.9rem;
+      padding: 2px 6px;
+      border-radius: 4px;
+      background: rgba(239, 68, 68, 0.15);
+    }
+
+    .delete-btn {
+      color: var(--text-muted);
+      cursor: pointer;
+      font-weight: bold;
+      padding: 2px 6px;
+      border-radius: 4px;
+      transition: all 0.2s;
+    }
+
+    .delete-btn:hover { 
+      color: var(--red);
+      background: rgba(239, 68, 68, 0.15);
+    }
+
+    .add-btn {
+      width: 100%;
+      padding: 9px;
+      margin-top: 10px;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      background: #1e293b;
+      color: var(--text);
+      font-weight: 700;
+      font-size: 0.8rem;
+      cursor: pointer;
+      transition: transform 0.15s ease, background-color 0.2s;
+    }
+
+    .add-btn:active {
+      transform: scale(0.97);
+      background: rgba(255, 255, 255, 0.1);
+    }
+
+    .user-summary-card {
+      background: rgba(15, 23, 42, 0.6);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      transition: box-shadow 0.3s ease;
+    }
+
+    .user-summary-card.jesus-card { 
+      border-top: 3px solid var(--jesus-color); 
+      box-shadow: 0 4px 20px var(--jesus-glow);
+    }
+    .user-summary-card.ali-card { 
+      border-top: 3px solid var(--ali-color); 
+      box-shadow: 0 4px 20px var(--ali-glow);
+    }
+
+    .user-summary-card h3 {
+      font-size: 0.85rem;
+      font-weight: 700;
+      text-align: center;
+    }
+
+    .summary-metrics {
+      display: flex;
+      justify-content: space-around;
+      text-align: center;
+    }
+
+    .summary-item {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+
+    .summary-item .label {
+      font-size: 0.7rem;
+      color: var(--text-muted);
+      font-weight: 600;
+    }
+
+    .summary-item .value {
+      font-size: 0.95rem;
+      font-weight: 800;
+    }
+
+    .charts-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+
+    .chart-box {
+      background: rgba(15, 23, 42, 0.6);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 12px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .chart-box h3 {
+      font-size: 0.85rem;
+      font-weight: 700;
+      text-align: center;
+    }
+
+    .chart-wrapper {
+      position: relative;
+      width: 100%;
+      height: 150px;
+    }
+
+    .balance-badge {
+      font-size: 0.85rem;
+      font-weight: 800;
+      padding: 4px 10px;
+      border-radius: 8px;
+      background: #1e293b;
+      margin-top: 2px;
+      display: inline-block;
+    }
+
+    /* ESTILOS ALCANCÍA */
+    .savings-container {
+      background: rgba(15, 23, 42, 0.6);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 12px;
+      position: relative;
+      box-shadow: 0 8px 24px var(--gold-glow);
+    }
+
+    .savings-subtabs {
+      display: flex;
+      width: 100%;
+      background: #1e293b;
+      border-radius: 10px;
+      padding: 3px;
+      border: 1px solid var(--border);
+      gap: 3px;
+    }
+
+    .savings-subtab-btn {
+      flex: 1;
+      padding: 6px 2px;
+      background: transparent;
+      border: none;
+      color: var(--text-muted);
+      font-weight: 700;
+      font-size: 0.75rem;
+      border-radius: 7px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .savings-subtab-btn.active {
+      background: #0f172a;
+      color: var(--text);
+      border: 1px solid var(--gold);
+    }
+
+    .savings-header {
+      display: flex;
+      justify-content: space-between;
+      width: 100%;
+      align-items: center;
+    }
+
+    .savings-header h3 {
+      font-size: 0.95rem;
+      font-weight: 800;
+      color: var(--gold);
+    }
+
+    .meta-control {
+      font-size: 0.75rem;
+      font-weight: 600;
+      background: #1e293b;
+      border: 1px solid var(--border);
+      padding: 5px 10px;
+      border-radius: 8px;
+      cursor: pointer;
+      color: var(--text-muted);
+      transition: all 0.2s ease;
+    }
+
+    .meta-control:hover {
+      color: var(--text);
+      border-color: var(--gold);
+    }
+
+    .visual-selector {
+      display: flex;
+      gap: 6px;
+      background: #1e293b;
+      padding: 4px;
+      border-radius: 10px;
+      border: 1px solid var(--border);
+    }
+
+    .select-style-btn {
+      background: transparent;
+      border: none;
+      color: var(--text-muted);
+      font-size: 0.75rem;
+      font-weight: 700;
+      padding: 5px 12px;
+      border-radius: 7px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .select-style-btn.active {
+      background: var(--gold);
+      color: #0f172a;
+    }
+
+    .visual-box {
+      width: 140px;
+      height: 180px;
+      position: relative;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      overflow: visible;
+    }
+
+    .cylinder-body {
+      width: 100px;
+      height: 100%;
+      background: #1a2332;
+      border: 2px solid var(--gold);
+      border-radius: 16px;
+      position: relative;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
+      box-shadow: inset 0 0 10px rgba(0,0,0,0.8);
+    }
+
+    .penguin-body {
+      width: 110px;
+      height: 170px;
+      background: #1a2332;
+      border: 2px solid var(--gold);
+      border-radius: 55px 55px 35px 35px;
+      position: relative;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
+      box-shadow: inset 0 0 12px rgba(0,0,0,0.8);
+    }
+
+    .coins-fill-container {
+      width: 100%;
+      position: absolute;
+      bottom: 0;
+      display: flex;
+      flex-wrap: wrap-reverse;
+      justify-content: center;
+      align-content: flex-end;
+      gap: 3px;
+      padding: 6px 4px;
+      background: rgba(245, 158, 11, 0.18);
+      border-top: 2px solid var(--gold);
+      transition: height 0.5s ease-in-out;
+      overflow: hidden;
+    }
+
+    .coin-icon {
+      font-size: 18px;
+      line-height: 1;
+      user-select: none;
+      filter: drop-shadow(0 2px 3px rgba(0,0,0,0.8));
+      animation: coinStack 0.3s ease-out;
+    }
+
+    @keyframes coinStack {
+      0% { transform: scale(1.4); }
+      100% { transform: scale(1); }
+    }
+
+    .cylinder-text, .penguin-text {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 800;
+      font-size: 1rem;
+      z-index: 10;
+      text-shadow: 0 2px 6px rgba(0,0,0,0.9), 0 0 4px rgba(0,0,0,0.9);
+      color: #ffffff;
+      pointer-events: none;
+    }
+
+    .penguin-face {
+      position: absolute;
+      top: 14px;
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      z-index: 11;
+      pointer-events: none;
+    }
+
+    .eyes { display: flex; gap: 22px; }
+    .eye { width: 8px; height: 8px; background: #f8fafc; border-radius: 50%; box-shadow: 0 0 2px #000; }
+    .beak { width: 14px; height: 9px; background: #f59e0b; border-radius: 3px; margin-top: 3px; }
+
+    /* ANIMACIÓN MONEDA CAIDA */
+    @keyframes dropCoinAnim {
+      0% {
+        top: -40px;
+        opacity: 0;
+        transform: translateX(-50%) scale(0.5) rotate(0deg);
+      }
+      20% { opacity: 1; }
+      80% { opacity: 1; }
+      100% {
+        top: 130px;
+        opacity: 0;
+        transform: translateX(-50%) scale(1.1) rotate(360deg);
+      }
+    }
+
+    .falling-coin {
+      position: absolute;
+      font-size: 32px;
+      z-index: 99;
+      left: 50%;
+      pointer-events: none;
+      animation: dropCoinAnim 0.75s cubic-bezier(0.55, 0.085, 0.68, 0.53) forwards;
+      filter: drop-shadow(0 4px 8px rgba(0,0,0,0.8));
+    }
+
+    .savings-stats {
+      text-align: center;
+      font-size: 0.85rem;
+      color: var(--text-muted);
+    }
+
+    .savings-stats span {
+      color: var(--text);
+      font-weight: bold;
+    }
+
+    .break-piggy-btn {
+      width: 100%;
+      padding: 12px;
+      background: linear-gradient(135deg, #f59e0b, #e11d48);
+      border: none;
+      border-radius: 12px;
+      color: #fff;
+      font-weight: 800;
+      font-size: 0.85rem;
+      cursor: pointer;
+      box-shadow: 0 4px 15px rgba(225, 29, 72, 0.4);
+      transition: transform 0.15s ease;
+    }
+
+    .break-piggy-btn:active {
+      transform: scale(0.97);
+    }
+
+    /* MODALES Y CAPAS SUPERPUESTAS */
+    .modal-overlay {
+      position: fixed;
+      top: 0; left: 0; width: 100%; height: 100%;
+      background: rgba(0, 0, 0, 0.75);
+      backdrop-filter: blur(8px);
+      display: none;
+      justify-content: center;
+      align-items: flex-end;
+      z-index: 1000;
+      padding: 0;
+      transition: opacity 0.25s ease;
+    }
+
+    .modal-overlay.active {
+      display: flex;
+    }
+
+    .modal-card {
+      background: #1e293b;
+      border-top: 1px solid var(--border);
+      border-radius: 28px 28px 0 0;
+      width: 100%;
+      max-width: 540px;
+      padding: 24px;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      animation: slideUp 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    }
+
+    @keyframes slideUp {
+      from { transform: translateY(100%); }
+      to { transform: translateY(0); }
+    }
+
+    .modal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .modal-card h3 {
+      font-size: 1.1rem;
+      font-weight: 800;
+      color: var(--text);
+    }
+
+    .close-btn {
+      background: rgba(255, 255, 255, 0.1);
+      border: none;
+      color: white;
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      cursor: pointer;
+      font-weight: bold;
+    }
+
+    .form-group {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .form-group label {
+      font-size: 0.78rem;
+      color: var(--text-muted);
+      font-weight: 700;
+    }
+
+    .modal-btn {
+      padding: 12px 14px;
+      border-radius: 12px;
+      border: 1px solid var(--border);
+      background: #0f172a;
+      color: var(--text);
+      font-weight: 700;
+      font-size: 0.85rem;
+      cursor: pointer;
+      text-align: left;
+      display: flex;
+      flex-direction: column;
+      gap: 3px;
+      transition: all 0.2s;
+    }
+
+    .modal-btn:hover {
+      border-color: var(--accent);
+      background: rgba(225, 29, 72, 0.1);
+    }
+
+    .modal-btn span {
+      font-size: 0.7rem;
+      color: var(--text-muted);
+      font-weight: normal;
+    }
+
+    .rule-result-box {
+      text-align: center;
+      padding: 14px;
+      border-radius: 12px;
+      font-weight: 800;
+      font-size: 0.9rem;
+      border: 1px solid var(--border);
+      margin-top: 5px;
+    }
+
+    .rule-pass {
+      background: rgba(34, 197, 94, 0.15);
+      color: #4ade80;
+      border-color: rgba(34, 197, 94, 0.4);
+    }
+
+    .rule-fail {
+      background: rgba(239, 68, 68, 0.15);
+      color: #f87171;
+      border-color: rgba(239, 68, 68, 0.4);
+    }
+
+    .rule-cards-container {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .rule-card-item {
+      background: rgba(15, 23, 42, 0.6);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 10px 14px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .rule-card-item.needs-card { border-left: 4px solid var(--red); }
+    .rule-card-item.wants-card { border-left: 4px solid var(--purple); }
+    .rule-card-item.savings-card { border-left: 4px solid var(--gold); }
+    .rule-card-item.unused-card { border-left: 4px solid var(--unused-color); }
+
+    .rule-card-info {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+
+    .rule-card-title {
+      font-size: 0.82rem;
+      font-weight: 800;
+    }
+
+    .rule-card-ideal {
+      font-size: 0.7rem;
+      color: var(--text-muted);
+    }
+
+    .rule-card-val {
+      font-size: 0.95rem;
+      font-weight: 800;
+    }
+
+    /* CONTENEDOR DE NOTIFICACIONES TOAST */
+    #toast-container {
+      position: fixed;
+      top: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 2000;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      width: 90%;
+      max-width: 420px;
+      pointer-events: none;
+    }
+
+    .toast {
+      background: #1e293b;
+      border: 1px solid var(--border);
+      color: white;
+      padding: 12px 16px;
+      border-radius: 14px;
+      font-size: 0.85rem;
+      font-weight: 700;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.5);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      animation: toastIn 0.3s ease forwards, toastOut 0.3s ease 2.7s forwards;
+    }
+
+    @keyframes toastIn {
+      from { opacity: 0; transform: translateY(-20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes toastOut {
+      from { opacity: 1; transform: translateY(0); }
+      to { opacity: 0; transform: translateY(-20px); }
+    }
+  </style>
+
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+
+  <div class="app-container">
+    <header>
+      <h1>Jesús <span>&</span> Ali</h1>
+    </header>
+
+    <div class="tabs-nav">
+      <button class="tab-btn active" onclick="switchTab('daily', event)">☀️ Hoy</button>
+      <button class="tab-btn" onclick="switchTab('pending', event)">📌 Pendientes</button>
+      <button class="tab-btn" onclick="switchTab('savings', event)">🐷 Alcancía</button>
+      <button class="tab-btn" onclick="switchTab('rule', event)">📊 50/25/25</button>
+      <button class="tab-btn" onclick="switchTab('monthly', event)">📅 Consulta</button>
+    </div>
+
+    <!-- PESTAÑA 1: DÍA A DÍA -->
+    <div id="tab-daily" class="tab-content active">
+      <div class="date-indicator" id="todayLabel"></div>
+
+      <div class="section-divider title-ingresos">🟢 Ingresos de Hoy</div>
+      <div class="columns-grid">
+        <div class="col">
+          <h2 class="title-jesus">Jesús</h2>
+          <ul class="items-list ingresos" id="dailyIngresosJesus"></ul>
+          <button class="add-btn" onclick="addRecord('ingreso', 'Jesus')">+ Jesús</button>
+        </div>
+        <div class="col">
+          <h2 class="title-ali">Ali</h2>
+          <ul class="items-list ingresos" id="dailyIngresosAli"></ul>
+          <button class="add-btn" onclick="addRecord('ingreso', 'Ali')">+ Ali</button>
+        </div>
+      </div>
+
+      <div class="section-divider title-gastos">🔴 Gastos de Hoy</div>
+      <div class="columns-grid">
+        <div class="col">
+          <h2 class="title-jesus">Jesús</h2>
+          <ul class="items-list gastos" id="dailyGastosJesus"></ul>
+          <button class="add-btn" onclick="promptAddGasto('Jesus')">+ Jesús</button>
+        </div>
+        <div class="col">
+          <h2 class="title-ali">Ali</h2>
+          <ul class="items-list gastos" id="dailyGastosAli"></ul>
+          <button class="add-btn" onclick="promptAddGasto('Ali')">+ Ali</button>
+        </div>
+      </div>
+
+      <div class="columns-grid">
+        <div class="user-summary-card jesus-card">
+          <h3 class="title-jesus">Resumen Jesús</h3>
+          <div class="summary-metrics">
+            <div class="summary-item"><span class="label">Ing. Netos</span><span class="value" id="dailyIngJesus" style="color:var(--green)">$0</span></div>
+            <div class="summary-item"><span class="label">Gas.</span><span class="value" id="dailyGasJesus" style="color:var(--red)">$0</span></div>
+          </div>
+          <div style="text-align: center; margin-top: 4px;">
+            <span class="summary-item"><span class="label">Balance Neto</span></span>
+            <div class="balance-badge" id="dailyBalJesus">$0</div>
+          </div>
+        </div>
+
+        <div class="user-summary-card ali-card">
+          <h3 class="title-ali">Resumen Ali</h3>
+          <div class="summary-metrics">
+            <div class="summary-item"><span class="label">Ing. Netos</span><span class="value" id="dailyIngAli" style="color:var(--green)">$0</span></div>
+            <div class="summary-item"><span class="label">Gas.</span><span class="value" id="dailyGasAli" style="color:var(--red)">$0</span></div>
+          </div>
+          <div style="text-align: center; margin-top: 4px;">
+            <span class="summary-item"><span class="label">Balance Neto</span></span>
+            <div class="balance-badge" id="dailyBalAli">$0</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- PESTAÑA 2: PENDIENTES -->
+    <div id="tab-pending" class="tab-content">
+      <div class="section-divider">🔴 Deudas Pendientes</div>
+      <div class="columns-grid">
+        <div class="col">
+          <h2 class="title-jesus">Jesús (Pendiente)</h2>
+          <ul class="items-list" id="pendingJesusList"></ul>
+          <button class="add-btn" onclick="addPending('Jesus')">+ Deuda</button>
+        </div>
+        <div class="col">
+          <h2 class="title-ali">Ali (Pendiente)</h2>
+          <ul class="items-list" id="pendingAliList"></ul>
+          <button class="add-btn" onclick="addPending('Ali')">+ Deuda</button>
+        </div>
+      </div>
+
+      <div class="section-divider">🟢 Deudas Pagadas</div>
+      <div class="columns-grid">
+        <div class="col">
+          <h2 class="title-jesus">Jesús (Pagado)</h2>
+          <ul class="items-list" id="paidJesusList"></ul>
+        </div>
+        <div class="col">
+          <h2 class="title-ali">Ali (Pagado)</h2>
+          <ul class="items-list" id="paidAliList"></ul>
+        </div>
+      </div>
+
+      <div class="columns-grid">
+        <div class="user-summary-card jesus-card">
+          <h3 class="title-jesus">Total Pendiente</h3>
+          <div style="text-align:center;" class="summary-item">
+            <span class="value" id="totalPendingJesus" style="color: var(--red); font-size:1.1rem;">$0</span>
+          </div>
+        </div>
+        <div class="user-summary-card ali-card">
+          <h3 class="title-ali">Total Pendiente</h3>
+          <div style="text-align:center;" class="summary-item">
+            <span class="value" id="totalPendingAli" style="color: var(--red); font-size:1.1rem;">$0</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- PESTAÑA 3: ALCANCÍA -->
+    <div id="tab-savings" class="tab-content">
+      <div class="savings-subtabs">
+        <button class="savings-subtab-btn active" id="subtab-joint" onclick="switchSavingsMode('joint')">🤝 En Conjunto</button>
+        <button class="savings-subtab-btn" id="subtab-jesus" onclick="switchSavingsMode('jesus')">💙 Jesús</button>
+        <button class="savings-subtab-btn" id="subtab-ali" onclick="switchSavingsMode('ali')">🩷 Ali</button>
+      </div>
+
+      <div class="savings-container" id="savingsContainer">
+        <div class="savings-header">
+          <h3 id="savingsTitleHeading">Fondo de Ahorro Conjunto</h3>
+          <button class="meta-control" onclick="setSavingsGoal()">⚙️ Cambiar Meta</button>
+        </div>
+
+        <div class="visual-selector">
+          <button class="select-style-btn" id="btnCylinder" onclick="changeVisual('cylinder')">Cilindro</button>
+          <button class="select-style-btn active" id="btnPenguin" onclick="changeVisual('penguin')">Pingüino 🐧</button>
+        </div>
+
+        <div class="visual-box" id="visualBoxContainer"></div>
+
+        <div class="savings-stats">
+          Acumulado: <span id="savingsTotalAmount">$0</span> / Meta: <span id="savingsGoalAmount">$0</span>
+          <br><span id="savingsPercentage" style="font-size:0.8rem; color:var(--gold);">0% alcanzado</span>
+        </div>
+
+        <button class="break-piggy-btn" id="breakPiggyBtn" style="display:none;" onclick="breakPiggyBank()">
+          🔨 ¡Romper Alcancía y Guardar Logro!
+        </button>
+      </div>
+
+      <div class="section-divider title-savings" id="savingsHistoryTitle">HISTORIAL APORTES CONJUNTOS</div>
+      <div class="col" style="width: 100%;">
+        <ul class="items-list ahorros" id="savingsList"></ul>
+        <button class="add-btn" id="addSavingsBtn" onclick="addSavingsRecord()">+ Ingresar Ahorro</button>
+      </div>
+    </div>
+
+    <!-- PESTAÑA 4: ESTRATEGIA 50 / 25 / 25 -->
+    <div id="tab-rule" class="tab-content">
+      <div class="filter-box">
+        <label>Evaluar Mes</label>
+        <input type="month" id="ruleMonthPicker" onchange="renderData()">
+      </div>
+
+      <div class="charts-grid">
+        <div class="chart-box">
+          <h3>Meta Teórica (Ideal)</h3>
+          <p style="font-size: 0.68rem; color: var(--text-muted); text-align:center;">
+            Basado en Ingresos Netos: <b id="ruleNetIncomeVal">$0</b>
+          </p>
+          <div class="chart-wrapper">
+            <canvas id="chartRuleIdeal"></canvas>
+          </div>
+        </div>
+        <div class="chart-box">
+          <h3>Real Actual</h3>
+          <p style="font-size: 0.68rem; color: var(--text-muted); text-align:center;">
+            Distribución Real de Ingresos
+          </p>
+          <div class="chart-wrapper">
+            <canvas id="chartRuleReal"></canvas>
+          </div>
+        </div>
+      </div>
+
+      <div class="rule-cards-container">
+        <div class="rule-card-item needs-card">
+          <div class="rule-card-info">
+            <span class="rule-card-title" style="color:#f87171;">🔴 Necesidades (Gastado Real)</span>
+            <span class="rule-card-ideal">Límite Ideal (50%): <span id="idealNeeds">$0</span></span>
+          </div>
+          <span class="rule-card-val" id="valNeeds">$0</span>
+        </div>
+
+        <div class="rule-card-item wants-card">
+          <div class="rule-card-info">
+            <span class="rule-card-title" style="color:#c084fc;">🟣 Gustos / Deseos (Máx 25%)</span>
+            <span class="rule-card-ideal">Límite Ideal (25%): <span id="idealWants">$0</span></span>
+          </div>
+          <span class="rule-card-val" id="valWants">$0</span>
+        </div>
+
+        <div class="rule-card-item savings-card">
+          <div class="rule-card-info">
+            <span class="rule-card-title" style="color:#f59e0b;">🟡 Ahorros Alcancía (Mín 25%)</span>
+            <span class="rule-card-ideal">Meta Ideal (25%): <span id="idealSavings">$0</span></span>
+          </div>
+          <span class="rule-card-val" id="valSavings">$0</span>
+        </div>
+
+        <div class="rule-card-item unused-card">
+          <div class="rule-card-info">
+            <span class="rule-card-title" style="color:#94a3b8;">⚪ Dinero Sin Usar (Disponible)</span>
+            <span class="rule-card-ideal">Disponible del Ingreso Neto</span>
+          </div>
+          <span class="rule-card-val" id="valUnused">$0</span>
+        </div>
+      </div>
+
+      <div id="ruleStatusBanner" class="rule-result-box">
+        Evaluando estrategia...
+      </div>
+    </div>
+
+    <!-- PESTAÑA 5: CONSULTA MENSUAL -->
+    <div id="tab-monthly" class="tab-content">
+      <div class="filter-box">
+        <label for="monthPicker">Seleccionar Mes a Consultar</label>
+        <input type="month" id="monthPicker" onchange="syncMonthPickers(this.value); renderData();">
+      </div>
+
+      <div class="charts-grid">
+        <div class="chart-box">
+          <h3 class="title-jesus">Jesús</h3>
+          <div class="chart-wrapper">
+            <canvas id="chartJesus"></canvas>
+          </div>
+        </div>
+        <div class="chart-box">
+          <h3 class="title-ali">Ali</h3>
+          <div class="chart-wrapper">
+            <canvas id="chartAli"></canvas>
+          </div>
+        </div>
+      </div>
+
+      <div class="columns-grid">
+        <div class="user-summary-card jesus-card">
+          <h3 class="title-jesus">Mes Jesús</h3>
+          <div class="summary-metrics">
+            <div class="summary-item"><span class="label">Ing. Netos</span><span class="value" id="monthlyIngJesus" style="color:var(--green)">$0</span></div>
+            <div class="summary-item"><span class="label">Gastos</span><span class="value" id="monthlyGasJesus" style="color:var(--red)">$0</span></div>
+          </div>
+          <div style="text-align: center; margin-top: 4px;">
+            <span class="summary-item"><span class="label">Balance Mes</span></span>
+            <div class="balance-badge" id="monthlyBalJesus">$0</div>
+          </div>
+        </div>
+
+        <div class="user-summary-card ali-card">
+          <h3 class="title-ali">Mes Ali</h3>
+          <div class="summary-metrics">
+            <div class="summary-item"><span class="label">Ing. Netos</span><span class="value" id="monthlyIngAli" style="color:var(--green)">$0</span></div>
+            <div class="summary-item"><span class="label">Gastos</span><span class="value" id="monthlyGasAli" style="color:var(--red)">$0</span></div>
+          </div>
+          <div style="text-align: center; margin-top: 4px;">
+            <span class="summary-item"><span class="label">Balance Mes</span></span>
+            <div class="balance-badge" id="monthlyBalAli">$0</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="section-divider">📋 Desglose diario del mes</div>
+      <div class="col" style="width: 100%;">
+        <ul class="items-list" id="monthlyDetailList"></ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL SELECCIÓN CATEGORÍA GASTO -->
+  <div class="modal-overlay" id="categoryModal">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h3 id="modalCategoryTitle">Selecciona el tipo de gasto</h3>
+        <button class="close-btn" onclick="closeCategoryModal()">✕</button>
+      </div>
+      <button class="modal-btn" onclick="confirmCategory('necesidades')">
+        🔴 Necesidades y Prioridades (50%)
+        <span>Comida básica, servicios, arriendo, transporte obligatorio.</span>
+      </button>
+      <button class="modal-btn" onclick="confirmCategory('gustos')">
+        🟣 Gustos o Deseos (25%)
+        <span>Salidas, hobbies, compras personales, ocio.</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- MODAL GENÉRICO DE ENTRADA -->
+  <div class="modal-overlay" id="inputModal">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h3 id="inputModalTitle">Nuevo Registro</h3>
+        <button class="close-btn" onclick="closeInputModal()">✕</button>
+      </div>
+      <form id="inputModalForm" onsubmit="handleInputModalSubmit(event)">
+        <div id="inputModalFields"></div>
+        <button type="submit" class="add-btn" style="margin-top: 10px; background: linear-gradient(135deg, #3b82f6, #2563eb);">Guardar</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- MODAL CONFIRMACIÓN -->
+  <div class="modal-overlay" id="confirmModal">
+    <div class="modal-card" style="text-align: center;">
+      <h3 id="confirmModalTitle">¿Confirmar acción?</h3>
+      <p id="confirmModalText" style="font-size: 0.85rem; color: var(--text-muted);"></p>
+      <div style="display: flex; gap: 10px; margin-top: 10px;">
+        <button class="add-btn" style="background:#334155;" onclick="closeConfirmModal(false)">Cancelar</button>
+        <button class="add-btn" style="background: linear-gradient(135deg, #e11d48, #be123c);" onclick="closeConfirmModal(true)">Aceptar</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- CONTENEDOR TOAST NOTIFICACIONES -->
+  <div id="toast-container"></div>
+
+  <script>
+    const firebaseConfig = {
+      apiKey: "AIzaSyCbsHxOR1w4gDjQCAV0cdej3CEp83-WQs0",
+      authDomain: "agendajya-94e6c.firebaseapp.com",
+      databaseURL: "https://agendajya-94e6c-default-rtdb.firebaseio.com",
+      projectId: "agendajya-94e6c",
+      storageBucket: "agendajya-94e6c.firebasestorage.app",
+      messagingSenderId: "195399447529",
+      appId: "1:195399447529:web:b708fb0ff0da63ac481178",
+      measurementId: "G-7B1H0QLFRG"
+    };
+
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.database();
+
+    let audioCtx = null;
+
+    function initAudio() {
+      if (!audioCtx) {
+        audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+      }
+      if (audioCtx.state === 'suspended') {
+        audioCtx.resume();
+      }
+    }
+
+    function playCoinSound() {
+      initAudio();
+      if (!audioCtx) return;
+
+      const now = audioCtx.currentTime;
+
+      const osc1 = audioCtx.createOscillator();
+      const gain1 = audioCtx.createGain();
+      osc1.type = 'sine';
+      osc1.frequency.setValueAtTime(1400, now);
+      osc1.frequency.exponentialRampToValueAtTime(1800, now + 0.08);
+      gain1.gain.setValueAtTime(0.3, now);
+      gain1.gain.exponentialRampToValueAtTime(0.01, now + 0.35);
+
+      const osc2 = audioCtx.createOscillator();
+      const gain2 = audioCtx.createGain();
+      osc2.type = 'triangle';
+      osc2.frequency.setValueAtTime(2800, now + 0.05);
+      gain2.gain.setValueAtTime(0.2, now + 0.05);
+      gain2.gain.exponentialRampToValueAtTime(0.01, now + 0.3);
+
+      osc1.connect(gain1);
+      gain1.connect(audioCtx.destination);
+      osc2.connect(gain2);
+      gain2.connect(audioCtx.destination);
+
+      osc1.start(now);
+      osc1.stop(now + 0.35);
+      osc2.start(now + 0.05);
+      osc2.stop(now + 0.35);
+    }
+
+    function playBreakSound() {
+      initAudio();
+      if (!audioCtx) return;
+
+      const now = audioCtx.currentTime;
+
+      const bufferSize = audioCtx.sampleRate * 0.4;
+      const buffer = audioCtx.createBuffer(1, bufferSize, audioCtx.sampleRate);
+      const data = buffer.getChannelData(0);
+      for (let i = 0; i < bufferSize; i++) {
+        data[i] = Math.random() * 2 - 1;
+      }
+
+      const noise = audioCtx.createBufferSource();
+      noise.buffer = buffer;
+
+      const filter = audioCtx.createBiquadFilter();
+      filter.type = 'highpass';
+      filter.frequency.value = 1000;
+
+      const noiseGain = audioCtx.createGain();
+      noiseGain.gain.setValueAtTime(0.5, now);
+      noiseGain.gain.exponentialRampToValueAtTime(0.01, now + 0.4);
+
+      noise.connect(filter);
+      filter.connect(noiseGain);
+      noiseGain.connect(audioCtx.destination);
+
+      noise.start(now);
+
+      for (let i = 0; i < 6; i++) {
+        const delay = i * 0.06;
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+
+        osc.type = 'sine';
+        osc.frequency.setValueAtTime(1200 + Math.random() * 800, now + delay);
+
+        gain.gain.setValueAtTime(0.25, now + delay);
+        gain.gain.exponentialRampToValueAtTime(0.01, now + delay + 0.2);
+
+        osc.connect(gain);
+        gain.connect(audioCtx.destination);
+
+        osc.start(now + delay);
+        osc.stop(now + delay + 0.2);
+      }
+    }
+
+    function triggerCoinAnimation() {
+      const box = document.getElementById('visualBoxContainer');
+      if (!box) return;
+
+      playCoinSound();
+
+      const coin = document.createElement('div');
+      coin.className = 'falling-coin';
+      coin.innerText = '🪙';
+
+      box.appendChild(coin);
+
+      setTimeout(() => {
+        coin.remove();
+        renderSavings();
+      }, 750);
+    }
+
+    function showToast(message) {
+      const container = document.getElementById('toast-container');
+      const toast = document.createElement('div');
+      toast.className = 'toast';
+      toast.innerHTML = `<span>✨</span> <span>${message}</span>`;
+      container.appendChild(toast);
+      setTimeout(() => { toast.remove(); }, 3000);
+    }
+
+    function getLocalDateStr(dateObj = new Date()) {
+      const year = dateObj.getFullYear();
+      const month = String(dateObj.getMonth() + 1).padStart(2, '0');
+      const day = String(dateObj.getDate()).padStart(2, '0');
+      return `${year}-${month}-${day}`;
+    }
+
+    const today = new Date();
+    const todayStr = getLocalDateStr(today);
+    const currentMonthStr = todayStr.slice(0, 7);
+
+    document.getElementById('todayLabel').innerText = `Hoy: ${today.toLocaleDateString('es-ES', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}`;
+    
+    document.getElementById('monthPicker').value = currentMonthStr;
+    document.getElementById('ruleMonthPicker').value = currentMonthStr;
+
+    function syncMonthPickers(val) {
+      document.getElementById('monthPicker').value = val;
+      document.getElementById('ruleMonthPicker').value = val;
+    }
+
+    let allRecords = {};
+    let allPendings = {};
+    let savingsConfigs = {
+      joint: { goal: 300000, style: 'penguin' },
+      jesus: { goal: 50000, style: 'penguin' },
+      ali: { goal: 50000, style: 'penguin' }
+    };
+    
+    let currentSavingsMode = 'joint';
+    let pendingGastoContext = null;
+
+    let chartJesusInstance = null;
+    let chartAliInstance = null;
+    let chartRuleIdealInstance = null;
+    let chartRuleRealInstance = null;
+
+    // SISTEMA DE MODALES PERSONALIZADOS
+    let inputModalSubmitCallback = null;
+    let confirmModalCallback = null;
+
+    function openInputModal(title, fieldsHTML, onSubmit) {
+      document.getElementById('inputModalTitle').innerText = title;
+      document.getElementById('inputModalFields').innerHTML = fieldsHTML;
+      inputModalSubmitCallback = onSubmit;
+      document.getElementById('inputModal').classList.add('active');
+    }
+
+    function closeInputModal() {
+      document.getElementById('inputModal').classList.remove('active');
+      inputModalSubmitCallback = null;
+    }
+
+    function handleInputModalSubmit(e) {
+      e.preventDefault();
+      if (inputModalSubmitCallback) {
+        inputModalSubmitCallback();
+      }
+      closeInputModal();
+    }
+
+    function customConfirm(title, text, onConfirm) {
+      document.getElementById('confirmModalTitle').innerText = title;
+      document.getElementById('confirmModalText').innerText = text;
+      confirmModalCallback = onConfirm;
+      document.getElementById('confirmModal').classList.add('active');
+    }
+
+    function closeConfirmModal(result) {
+      document.getElementById('confirmModal').classList.remove('active');
+      if (result && confirmModalCallback) {
+        confirmModalCallback();
+      }
+      confirmModalCallback = null;
+    }
+
+    function switchTab(tab, e) {
+      document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+      document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
+
+      e.target.classList.add('active');
+      document.getElementById(`tab-${tab}`).classList.add('active');
+    }
+
+    function switchSavingsMode(mode) {
+      currentSavingsMode = mode;
+      document.querySelectorAll('.savings-subtab-btn').forEach(btn => btn.classList.remove('active'));
+      document.getElementById(`subtab-${mode}`).classList.add('active');
+      updateVisualSelectorUI();
+      renderSavings();
+    }
+
+    db.ref('registros').on('value', (snapshot) => {
+      allRecords = snapshot.val() || {};
+      renderData();
+    });
+
+    db.ref('pendientes').on('value', (snapshot) => {
+      allPendings = snapshot.val() || {};
+      renderPendings();
+    });
+
+    db.ref('alcanciaConfigs').on('value', (snapshot) => {
+      const val = snapshot.val();
+      if (val) {
+        savingsConfigs = {
+          joint: val.joint || { goal: 300000, style: 'penguin' },
+          jesus: val.jesus || { goal: 50000, style: 'penguin' },
+          ali: val.ali || { goal: 50000, style: 'penguin' }
+        };
+      }
+      updateVisualSelectorUI();
+      renderSavings();
+    });
+
+    function addRecord(type, owner) {
+      const html = `
+        <div class="form-group">
+          <label>Descripción del ${type} (${owner})</label>
+          <input type="text" id="modalDesc" placeholder="Ej: Sueldo, Venta, Freelance" required autofocus />
+        </div>
+        <div class="form-group">
+          <label>Monto ($)</label>
+          <input type="number" id="modalAmount" placeholder="Ej: 50000" required />
+        </div>
+      `;
+
+      openInputModal(`Nuevo ${type} (${owner})`, html, () => {
+        const desc = document.getElementById('modalDesc').value.trim();
+        const amount = parseFloat(document.getElementById('modalAmount').value);
+
+        if (desc && !isNaN(amount) && amount > 0) {
+          db.ref('registros').push({
+            type: type,
+            owner: owner,
+            description: desc,
+            amount: amount,
+            date: getLocalDateStr()
+          });
+          showToast(`Ingreso guardado para ${owner}`);
+        }
+      });
+    }
+
+    function promptAddGasto(owner, preDesc = null, preAmount = null, pendingKey = null) {
+      if (preDesc && preAmount) {
+        pendingGastoContext = { owner, desc: preDesc, amount: preAmount, pendingKey };
+        document.getElementById('modalCategoryTitle').innerText = 'Selecciona el tipo de gasto';
+        document.getElementById('categoryModal').classList.add('active');
+        return;
+      }
+
+      const html = `
+        <div class="form-group">
+          <label>Descripción del gasto (${owner})</label>
+          <input type="text" id="modalGastoDesc" placeholder="Ej: Almuerzo, Uber, Cine" required autofocus />
+        </div>
+        <div class="form-group">
+          <label>Monto ($)</label>
+          <input type="number" id="modalGastoAmount" placeholder="Ej: 20000" required />
+        </div>
+      `;
+
+      openInputModal(`Nuevo Gasto (${owner})`, html, () => {
+        const desc = document.getElementById('modalGastoDesc').value.trim();
+        const amount = parseFloat(document.getElementById('modalGastoAmount').value);
+
+        if (desc && !isNaN(amount) && amount > 0) {
+          pendingGastoContext = { owner, desc, amount, pendingKey };
+          document.getElementById('modalCategoryTitle').innerText = 'Selecciona el tipo de gasto';
+          document.getElementById('categoryModal').classList.add('active');
+        }
+      });
+    }
+
+    function closeCategoryModal() {
+      document.getElementById('categoryModal').classList.remove('active');
+      pendingGastoContext = null;
+    }
+
+    function confirmCategory(category) {
+      document.getElementById('categoryModal').classList.remove('active');
+      if (!pendingGastoContext) return;
+
+      const { owner, desc, amount, pendingKey } = pendingGastoContext;
+
+      if (pendingKey) {
+        const newExpenseRef = db.ref('registros').push();
+        const newExpenseKey = newExpenseRef.key;
+
+        newExpenseRef.set({
+          type: 'gasto',
+          owner: owner,
+          category: category,
+          description: `[Deuda ${owner}] ${desc}`,
+          amount: amount,
+          date: getLocalDateStr()
+        });
+
+        db.ref('pendientes/' + pendingKey).update({
+          paid: true,
+          expenseId: newExpenseKey
+        });
+        showToast(`Deuda saldada y registrada como gasto`);
+      } else {
+        db.ref('registros').push({
+          type: 'gasto',
+          owner: owner,
+          category: category,
+          description: desc,
+          amount: amount,
+          date: getLocalDateStr()
+        });
+        showToast(`Gasto registrado para ${owner}`);
+      }
+
+      pendingGastoContext = null;
+    }
+
+    function addSavingsRecord() {
+      let isJoint = currentSavingsMode === 'joint';
+      
+      const html = `
+        ${isJoint ? `
+        <div class="form-group">
+          <label>¿Quién aporta el ahorro?</label>
+          <select id="modalSavingsOwner">
+            <option value="Jesus">Jesús</option>
+            <option value="Ali">Ali</option>
+          </select>
+        </div>` : ''}
+        <div class="form-group">
+          <label>Motivo o Descripción</label>
+          <input type="text" id="modalSavingsDesc" value="${isJoint ? 'Ahorro conjunto' : 'Ahorro ' + (currentSavingsMode === 'jesus' ? 'Jesús' : 'Ali')}" required />
+        </div>
+        <div class="form-group">
+          <label>Monto a aportar ($)</label>
+          <input type="number" id="modalSavingsAmount" placeholder="Ej: 30000" required autofocus />
+        </div>
+      `;
+
+      openInputModal('Ingresar Ahorro', html, () => {
+        let owner = currentSavingsMode === 'jesus' ? 'Jesus' : (currentSavingsMode === 'ali' ? 'Ali' : 'Jesus');
+        if (isJoint) {
+          owner = document.getElementById('modalSavingsOwner').value;
+        }
+
+        const desc = document.getElementById('modalSavingsDesc').value.trim();
+        const amount = parseFloat(document.getElementById('modalSavingsAmount').value);
+
+        if (!isNaN(amount) && amount > 0) {
+          db.ref('registros').push({
+            type: 'ahorro',
+            owner: owner,
+            scope: currentSavingsMode,
+            category: 'ahorros',
+            description: desc || (isJoint ? 'Ahorro conjunto' : `Ahorro ${owner}`),
+            amount: amount,
+            date: getLocalDateStr()
+          });
+
+          triggerCoinAnimation();
+          showToast(`Ahorro aportado por ${owner}`);
+        }
+      });
+    }
+
+    function setSavingsGoal() {
+      const currentConfig = savingsConfigs[currentSavingsMode] || { goal: 300000 };
+      const html = `
+        <div class="form-group">
+          <label>Establecer Nueva Meta ($)</label>
+          <input type="number" id="modalGoalAmount" value="${currentConfig.goal || 300000}" required autofocus />
+        </div>
+      `;
+
+      openInputModal('Cambiar Meta de Alcancía', html, () => {
+        const newGoal = parseFloat(document.getElementById('modalGoalAmount').value);
+        if (!isNaN(newGoal) && newGoal > 0) {
+          db.ref(`alcanciaConfigs/${currentSavingsMode}`).update({ goal: newGoal });
+          showToast('Meta actualizada');
+        }
+      });
+    }
+
+    function changeVisual(style) {
+      db.ref(`alcanciaConfigs/${currentSavingsMode}`).update({ style: style });
+    }
+
+    function updateVisualSelectorUI() {
+      const config = savingsConfigs[currentSavingsMode] || { style: 'penguin' };
+      const btnCyl = document.getElementById('btnCylinder');
+      const btnPen = document.getElementById('btnPenguin');
+      if (config.style === 'penguin') {
+        btnPen.classList.add('active');
+        btnCyl.classList.remove('active');
+      } else {
+        btnCyl.classList.add('active');
+        btnPen.classList.remove('active');
+      }
+    }
+
+    function breakPiggyBank() {
+      let currentTotal = 0;
+      let recordKeys = [];
+
+      Object.keys(allRecords).forEach(key => {
+        const item = allRecords[key];
+        if (item.type === 'ahorro') {
+          const scope = item.scope || 'joint';
+          if (scope === currentSavingsMode) {
+            currentTotal += item.amount;
+            recordKeys.push(key);
+          }
+        }
+      });
+
+      const modeNames = { joint: 'Conjunto', jesus: 'Jesús', ali: 'Ali' };
+      const modeName = modeNames[currentSavingsMode];
+
+      playBreakSound();
+
+      customConfirm(
+        `🎉 ¡Meta Alcanzada!`,
+        `¿Deseas romper la Alcancía ${modeName} y reiniciar el saldo acumulado?`,
+        () => {
+          recordKeys.forEach(key => {
+            db.ref('registros/' + key).remove();
+          });
+          showToast(`¡Alcancía ${modeName} reiniciada! 🎉`);
+        }
+      );
+    }
+
+    function addPending(owner) {
+      const html = `
+        <div class="form-group">
+          <label>Descripción de la Deuda (${owner})</label>
+          <input type="text" id="modalPendingDesc" placeholder="Ej: Préstamo, Tarjeta" required autofocus />
+        </div>
+        <div class="form-group">
+          <label>Monto ($)</label>
+          <input type="number" id="modalPendingAmount" placeholder="Ej: 45000" required />
+        </div>
+      `;
+
+      openInputModal(`Registrar Deuda (${owner})`, html, () => {
+        const desc = document.getElementById('modalPendingDesc').value.trim();
+        const amount = parseFloat(document.getElementById('modalPendingAmount').value);
+
+        if (desc && !isNaN(amount) && amount > 0) {
+          db.ref('pendientes').push({
+            owner: owner,
+            description: desc,
+            amount: amount,
+            paid: false,
+            expenseId: null
+          });
+          showToast(`Deuda registrada a ${owner}`);
+        }
+      });
+    }
+
+    function markAsPaid(key) {
+      const p = allPendings[key];
+      if (!p || p.paid) return;
+      promptAddGasto(p.owner, p.description, p.amount, key);
+    }
+
+    function undoPayment(key) {
+      const p = allPendings[key];
+      if (!p || !p.paid) return;
+
+      if (p.expenseId) {
+        db.ref('registros/' + p.expenseId).remove();
+      }
+
+      db.ref('pendientes/' + key).update({
+        paid: false,
+        expenseId: null
+      });
+      showToast('Pago deshecho');
+    }
+
+    function deletePending(key) {
+      customConfirm('¿Eliminar deudores?', 'Se eliminará este registro permanentemente.', () => {
+        const p = allPendings[key];
+        if (p && p.paid && p.expenseId) {
+          db.ref('registros/' + p.expenseId).remove();
+        }
+        db.ref('pendientes/' + key).remove();
+        showToast('Registro eliminado');
+      });
+    }
+
+    function deleteRecord(id) {
+      customConfirm('¿Eliminar registro?', 'Esta acción no se puede deshacer.', () => {
+        db.ref('registros/' + id).remove();
+        showToast('Registro eliminado');
+      });
+    }
+
+    function renderPendings() {
+      const listJesus = document.getElementById('pendingJesusList');
+      const listAli = document.getElementById('pendingAliList');
+      const listPaidJesus = document.getElementById('paidJesusList');
+      const listPaidAli = document.getElementById('paidAliList');
+
+      listJesus.innerHTML = ''; listAli.innerHTML = '';
+      listPaidJesus.innerHTML = ''; listPaidAli.innerHTML = '';
+
+      let totalJesus = 0, totalAli = 0;
+
+      Object.keys(allPendings).forEach(key => {
+        const p = allPendings[key];
+        const li = document.createElement('li');
+
+        if (!p.paid) {
+          li.className = 'pending-item';
+          li.innerHTML = `
+            <span>${p.description} (<b>$${p.amount.toLocaleString()}</b>)</span>
+            <div class="actions">
+              <span class="check-btn" title="Marcar como Pagado" onclick="markAsPaid('${key}')">✓</span>
+              <span class="delete-btn" title="Eliminar" onclick="deletePending('${key}')">🗑️</span>
+            </div>
+          `;
+          if (p.owner === 'Jesus') { listJesus.appendChild(li); totalJesus += p.amount; }
+          else { listAli.appendChild(li); totalAli += p.amount; }
+        } else {
+          li.className = 'paid-item';
+          li.innerHTML = `
+            <span>${p.description} (<b>$${p.amount.toLocaleString()}</b>)</span>
+            <div class="actions">
+              <span class="undo-btn" title="Deshacer" onclick="undoPayment('${key}')">✕</span>
+              <span class="delete-btn" title="Eliminar" onclick="deletePending('${key}')">🗑️</span>
+            </div>
+          `;
+          if (p.owner === 'Jesus') { listPaidJesus.appendChild(li); }
+          else { listPaidAli.appendChild(li); }
+        }
+      });
+
+      document.getElementById('totalPendingJesus').innerText = `$${totalJesus.toLocaleString()}`;
+      document.getElementById('totalPendingAli').innerText = `$${totalAli.toLocaleString()}`;
+    }
+
+    function renderSavings() {
+      const savingsList = document.getElementById('savingsList');
+      savingsList.innerHTML = '';
+
+      let totalSavings = 0;
+
+      const headings = { joint: "Fondo de Ahorro Conjunto", jesus: "Alcancía Indiv. Jesús 💙", ali: "Alcancía Indiv. Ali 🩷" };
+      const btnTexts = { joint: "+ Ingresar Ahorro Conjunto", jesus: "+ Ingresar Ahorro Jesús", ali: "+ Ingresar Ahorro Ali" };
+      const histTitles = { joint: "HISTORIAL APORTES CONJUNTOS", jesus: "HISTORIAL AHORROS JESÚS", ali: "HISTORIAL AHORROS ALI" };
+
+      document.getElementById('savingsTitleHeading').innerText = headings[currentSavingsMode];
+      document.getElementById('addSavingsBtn').innerText = btnTexts[currentSavingsMode];
+      document.getElementById('savingsHistoryTitle').innerText = histTitles[currentSavingsMode];
+
+      Object.keys(allRecords).forEach(key => {
+        const item = allRecords[key];
+        if (item.type === 'ahorro') {
+          const scope = item.scope || 'joint';
+          if (scope === currentSavingsMode) {
+            totalSavings += item.amount;
+            const li = document.createElement('li');
+            li.innerHTML = `
+              <span><b>[${item.owner}]</b> ${item.description} (<b>$${item.amount.toLocaleString()}</b>)</span>
+              <span class="delete-btn" onclick="deleteRecord('${key}')">✕</span>
+            `;
+            savingsList.appendChild(li);
+          }
+        }
+      });
+
+      const config = savingsConfigs[currentSavingsMode] || { goal: 300000, style: 'penguin' };
+      const goal = config.goal || 300000;
+      let percentage = Math.round((totalSavings / goal) * 100);
+      let displayPercentage = percentage;
+      if (percentage > 100) percentage = 100;
+
+      document.getElementById('savingsTotalAmount').innerText = `$${totalSavings.toLocaleString()}`;
+      document.getElementById('savingsGoalAmount').innerText = `$${goal.toLocaleString()}`;
+      document.getElementById('savingsPercentage').innerText = `${displayPercentage}% alcanzado`;
+
+      const breakBtn = document.getElementById('breakPiggyBtn');
+      breakBtn.style.display = displayPercentage >= 100 ? 'block' : 'none';
+
+      const container = document.getElementById('visualBoxContainer');
+      container.innerHTML = '';
+
+      const fillHeight = totalSavings > 0 ? Math.max(18, percentage) : 0;
+      const coinCount = totalSavings > 0 ? Math.max(2, Math.min(28, Math.ceil((percentage / 100) * 24))) : 0;
+      let coinsHTML = '';
+      for (let i = 0; i < coinCount; i++) {
+        coinsHTML += `<span class="coin-icon">🪙</span>`;
+      }
+
+      if (config.style === 'penguin') {
+        container.innerHTML = `
+          <div class="penguin-body">
+            <div class="penguin-face">
+              <div class="eyes"><div class="eye"></div><div class="eye"></div></div>
+              <div class="beak"></div>
+            </div>
+            <div class="penguin-text">${displayPercentage}%</div>
+            <div class="coins-fill-container" style="height: ${fillHeight}%;">
+              ${coinsHTML}
+            </div>
+          </div>
+        `;
+      } else {
+        container.innerHTML = `
+          <div class="cylinder-body">
+            <div class="cylinder-text">${displayPercentage}%</div>
+            <div class="coins-fill-container" style="height: ${fillHeight}%;">
+              ${coinsHTML}
+            </div>
+          </div>
+        `;
+      }
+    }
+
+    function getCatBadgeHTML(cat) {
+      if (cat === 'necesidades') return `<span class="category-badge cat-necesidades">🔴 Necesidad</span>`;
+      if (cat === 'gustos') return `<span class="category-badge cat-gustos">🟣 Gusto</span>`;
+      if (cat === 'ahorros') return `<span class="category-badge cat-ahorros">🟡 Ahorro Alcancía</span>`;
+      return '';
+    }
+
+    function renderData() {
+      const ingJesus = document.getElementById('dailyIngresosJesus');
+      const ingAli = document.getElementById('dailyIngresosAli');
+      const gasJesus = document.getElementById('dailyGastosJesus');
+      const gasAli = document.getElementById('dailyGastosAli');
+
+      ingJesus.innerHTML = ''; ingAli.innerHTML = '';
+      gasJesus.innerHTML = ''; gasAli.innerHTML = '';
+
+      let dIngJesus = 0, dGasJesus = 0, dIngAli = 0, dGasAli = 0;
+      let mIngJesus = 0, mGasJesus = 0, mIngAli = 0, mGasAli = 0;
+
+      const selectedMonth = document.getElementById('monthPicker').value;
+      const ruleMonth = document.getElementById('ruleMonthPicker').value;
+
+      let totalNetIncomeRule = 0;
+      let totalNeedsRule = 0;
+      let totalWantsRule = 0;
+      let totalSavingsRule = 0;
+
+      const monthlyDetailList = document.getElementById('monthlyDetailList');
+      monthlyDetailList.innerHTML = '';
+
+      const sortedKeys = Object.keys(allRecords).sort((a,b) => {
+        return (allRecords[b].date || '').localeCompare(allRecords[a].date || '');
+      });
+
+      sortedKeys.forEach(key => {
+        const item = allRecords[key];
+        const itemDateStr = item.date ? item.date.slice(0, 10) : "";
+        const itemMonthStr = item.date ? item.date.slice(0, 7) : "";
+        const owner = item.owner || 'Jesus'; 
+
+        if (itemDateStr === todayStr) {
+          const badge = getCatBadgeHTML(item.category);
+          if (item.type === 'ingreso') {
+            const li = document.createElement('li');
+            li.innerHTML = `<span>${item.description} (<b>$${item.amount.toLocaleString()}</b>)</span><span class="delete-btn" onclick="deleteRecord('${key}')">✕</span>`;
+            if (owner === 'Jesus') { ingJesus.appendChild(li); } else { ingAli.appendChild(li); }
+          } else if (item.type === 'gasto' || item.type === 'ahorro') {
+            const li = document.createElement('li');
+            li.innerHTML = `<span>${item.description} ${badge} (<b>$${item.amount.toLocaleString()}</b>)</span><span class="delete-btn" onclick="deleteRecord('${key}')">✕</span>`;
+            if (owner === 'Jesus') { gasJesus.appendChild(li); } else { gasAli.appendChild(li); }
+          }
+        }
+
+        if (itemDateStr === todayStr) {
+          if (item.type === 'ingreso') {
+            if (owner === 'Jesus') dIngJesus += item.amount; else dIngAli += item.amount;
+          } else if (item.type === 'gasto' || item.type === 'ahorro') {
+            if (owner === 'Jesus') dGasJesus += item.amount; else dGasAli += item.amount;
+          }
+        }
+
+        if (itemMonthStr === selectedMonth) {
+          if (item.type === 'ingreso') {
+            if (owner === 'Jesus') mIngJesus += item.amount; else mIngAli += item.amount;
+          } else if (item.type === 'gasto' || item.type === 'ahorro') {
+            if (owner === 'Jesus') mGasJesus += item.amount; else mGasAli += item.amount;
+          }
+
+          const liHist = document.createElement('li');
+          let typeIcon = item.type === 'ingreso' ? '🟢' : (item.type === 'ahorro' ? '🟡' : '🔴');
+          let badgeHist = (item.type === 'gasto' || item.type === 'ahorro') ? getCatBadgeHTML(item.category) : '';
+          
+          liHist.innerHTML = `
+            <div style="display:flex; flex-direction:column;">
+              <span><b>${typeIcon} [${owner}]</b> ${item.description} ${badgeHist}</span>
+              <span style="font-size:0.68rem; color:var(--text-muted);">${itemDateStr}</span>
+            </div>
+            <div style="display:flex; align-items:center; gap:6px;">
+              <b>$${item.amount.toLocaleString()}</b>
+              <span class="delete-btn" onclick="deleteRecord('${key}')">✕</span>
+            </div>
+          `;
+          monthlyDetailList.appendChild(liHist);
+        }
+
+        if (itemMonthStr === ruleMonth) {
+          if (item.type === 'ingreso') {
+            totalNetIncomeRule += item.amount;
+          } else if (item.type === 'ahorro') {
+            totalSavingsRule += item.amount;
+          } else if (item.type === 'gasto') {
+            if (item.category === 'necesidades') totalNeedsRule += item.amount;
+            else if (item.category === 'gustos') totalWantsRule += item.amount;
+            else if (item.category === 'ahorros') totalSavingsRule += item.amount;
+            else totalNeedsRule += item.amount;
+          }
+        }
+      });
+
+      if (monthlyDetailList.children.length === 0) {
+        monthlyDetailList.innerHTML = '<li style="justify-content:center; color:var(--text-muted);">Sin movimientos registrados en este mes.</li>';
+      }
+
+      document.getElementById('dailyIngJesus').innerText = `$${dIngJesus.toLocaleString()}`;
+      document.getElementById('dailyGasJesus').innerText = `$${dGasJesus.toLocaleString()}`;
+      updateBalanceBadge('dailyBalJesus', dIngJesus - dGasJesus);
+
+      document.getElementById('dailyIngAli').innerText = `$${dIngAli.toLocaleString()}`;
+      document.getElementById('dailyGasAli').innerText = `$${dGasAli.toLocaleString()}`;
+      updateBalanceBadge('dailyBalAli', dIngAli - dGasAli);
+
+      document.getElementById('monthlyIngJesus').innerText = `$${mIngJesus.toLocaleString()}`;
+      document.getElementById('monthlyGasJesus').innerText = `$${mGasJesus.toLocaleString()}`;
+      updateBalanceBadge('monthlyBalJesus', mIngJesus - mGasJesus);
+
+      document.getElementById('monthlyIngAli').innerText = `$${mIngAli.toLocaleString()}`;
+      document.getElementById('monthlyGasAli').innerText = `$${mGasAli.toLocaleString()}`;
+      updateBalanceBadge('monthlyBalAli', mIngAli - mGasAli);
+
+      renderCharts(mIngJesus, mGasJesus, mIngAli, mGasAli);
+      renderRule502525(totalNetIncomeRule, totalNeedsRule, totalWantsRule, totalSavingsRule);
+      renderSavings();
+    }
+
+    function updateBalanceBadge(elemId, balance) {
+      const elem = document.getElementById(elemId);
+      if (balance >= 0) {
+        elem.style.color = 'var(--green)';
+        elem.innerText = `+$${balance.toLocaleString()}`;
+      } else {
+        elem.style.color = 'var(--red)';
+        elem.innerText = `-$${Math.abs(balance).toLocaleString()}`;
+      }
+    }
+
+    function renderCharts(ingJesus, gasJesus, ingAli, gasAli) {
+      const ctxJesus = document.getElementById('chartJesus').getContext('2d');
+      const ctxAli = document.getElementById('chartAli').getContext('2d');
+
+      if (chartJesusInstance) chartJesusInstance.destroy();
+      if (chartAliInstance) chartAliInstance.destroy();
+
+      const commonOptions = {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: { legend: { display: false } }
+      };
+
+      chartJesusInstance = new Chart(ctxJesus, {
+        type: 'doughnut',
+        data: {
+          labels: ['Ingresos Netos', 'Gastos'],
+          datasets: [{
+            data: [ingJesus, gasJesus],
+            backgroundColor: ['#22c55e', '#ef4444'],
+            borderColor: '#1e293b',
+            borderWidth: 2
+          }]
+        },
+        options: commonOptions
+      });
+
+      chartAliInstance = new Chart(ctxAli, {
+        type: 'doughnut',
+        data: {
+          labels: ['Ingresos Netos', 'Gastos'],
+          datasets: [{
+            data: [ingAli, gasAli],
+            backgroundColor: ['#22c55e', '#ef4444'],
+            borderColor: '#1e293b',
+            borderWidth: 2
+          }]
+        },
+        options: commonOptions
+      });
+    }
+
+    function renderRule502525(netIncome, needs, wants, savings) {
+      document.getElementById('ruleNetIncomeVal').innerText = `$${netIncome.toLocaleString()}`;
+
+      const totalSpent = needs + wants + savings;
+      const unused = Math.max(0, netIncome - totalSpent);
+
+      const idealNeedsVal = netIncome * 0.50;
+      const idealWantsVal = netIncome * 0.25;
+      const idealSavingsVal = netIncome * 0.25;
+
+      document.getElementById('idealNeeds').innerText = `$${idealNeedsVal.toLocaleString()}`;
+      document.getElementById('idealWants').innerText = `$${idealWantsVal.toLocaleString()}`;
+      document.getElementById('idealSavings').innerText = `$${idealSavingsVal.toLocaleString()}`;
+
+      document.getElementById('valNeeds').innerText = `$${needs.toLocaleString()}`;
+      document.getElementById('valWants').innerText = `$${wants.toLocaleString()}`;
+      document.getElementById('valSavings').innerText = `$${savings.toLocaleString()}`;
+      document.getElementById('valUnused').innerText = `$${unused.toLocaleString()}`;
+
+      let isCompliant = false;
+      if (netIncome > 0) {
+        if (needs <= idealNeedsVal && wants <= idealWantsVal && (savings + unused) >= idealSavingsVal) {
+          isCompliant = true;
+        }
+      }
+
+      const banner = document.getElementById('ruleStatusBanner');
+      if (isCompliant) {
+        banner.className = 'rule-result-box rule-pass';
+        banner.innerText = '🎉 ¡Este mes SÍ se cumplió la estrategia 50/25/25!';
+      } else {
+        banner.className = 'rule-result-box rule-fail';
+        banner.innerText = '⚠️ Este mes NO se cumplió la estrategia 50/25/25';
+      }
+
+      const ctxIdeal = document.getElementById('chartRuleIdeal').getContext('2d');
+      if (chartRuleIdealInstance) chartRuleIdealInstance.destroy();
+
+      chartRuleIdealInstance = new Chart(ctxIdeal, {
+        type: 'doughnut',
+        data: {
+          labels: ['Necesidades (50%)', 'Gustos/Deseos (25%)', 'Ahorros (25%)'],
+          datasets: [{
+            data: [50, 25, 25],
+            backgroundColor: ['#ef4444', '#a855f7', '#f59e0b'],
+            borderColor: '#1e293b',
+            borderWidth: 2
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: { legend: { display: false } }
+        }
+      });
+
+      const ctxReal = document.getElementById('chartRuleReal').getContext('2d');
+      if (chartRuleRealInstance) chartRuleRealInstance.destroy();
+
+      let needsPct = 0;
+      let wantsPct = 0;
+      let savingsPct = 0;
+      let unusedPct = 0;
+
+      if (netIncome > 0) {
+        needsPct = Math.round((needs / netIncome) * 100);
+        wantsPct = Math.round((wants / netIncome) * 100);
+        savingsPct = Math.round((savings / netIncome) * 100);
+        unusedPct = Math.round((unused / netIncome) * 100);
+      }
+
+      chartRuleRealInstance = new Chart(ctxReal, {
+        type: 'doughnut',
+        data: {
+          labels: [
+            `Necesidades (${needsPct}%)`, 
+            `Gustos (${wantsPct}%)`, 
+            `Ahorros (${savingsPct}%)`, 
+            `Dinero Sin Usar (${unusedPct}%)`
+          ],
+          datasets: [{
+            data: (netIncome === 0) ? [1, 1, 1, 1] : [needs, wants, savings, unused],
+            backgroundColor: ['#ef4444', '#a855f7', '#f59e0b', '#64748b'],
+            borderColor: '#1e293b',
+            borderWidth: 2
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: { legend: { display: false } }
+        }
+      });
+    }
+  </script>
+</body>
+</html>
