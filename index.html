@@ -6,17 +6,19 @@
   <title>Jesús & Ali - Finanzas y Alcancía</title>
   <style>
     :root {
-      --bg: #0f172a;
-      --card-bg: #1e293b;
+      --bg: #0b0f19;
+      --card-bg: #151c2c;
+      --card-inner: #1a233a;
       --accent: #e11d48;
       --text: #f8fafc;
       --text-muted: #94a3b8;
       --green: #22c55e;
       --red: #ef4444;
-      --border: #334155;
+      --border: #26334d;
       --jesus-color: #3b82f6;
       --ali-color: #ec4899;
       --gold: #f59e0b;
+      --gold-glow: rgba(245, 158, 11, 0.25);
       --purple: #a855f7;
       --unused-color: #64748b;
     }
@@ -33,19 +35,19 @@
       color: var(--text);
       display: flex;
       justify-content: center;
-      padding: 15px;
+      padding: 12px;
       min-height: 100vh;
       overflow-x: hidden;
     }
 
     .app-container {
       width: 100%;
-      max-width: 540px;
+      max-width: 520px;
       background: var(--card-bg);
       border: 1px solid var(--border);
-      border-radius: 16px;
-      padding: 20px;
-      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
+      border-radius: 20px;
+      padding: 18px;
+      box-shadow: 0 15px 35px rgba(0, 0, 0, 0.6);
       display: flex;
       flex-direction: column;
       gap: 16px;
@@ -54,14 +56,15 @@
 
     header {
       text-align: center;
+      padding-bottom: 8px;
       border-bottom: 1px solid var(--border);
-      padding-bottom: 10px;
     }
 
     header h1 {
-      font-size: 1.6rem;
+      font-size: 1.5rem;
       color: var(--text);
-      font-weight: 700;
+      font-weight: 800;
+      letter-spacing: -0.5px;
     }
 
     header h1 span {
@@ -70,33 +73,33 @@
 
     .tabs-nav {
       display: flex;
-      background: #0f172a;
-      border-radius: 10px;
+      background: #0d1322;
+      border-radius: 12px;
       padding: 4px;
       border: 1px solid var(--border);
-      gap: 2px;
+      gap: 3px;
       overflow-x: auto;
     }
 
     .tab-btn {
       flex: 1;
-      padding: 8px 4px;
+      padding: 9px 4px;
       background: transparent;
       border: none;
       color: var(--text-muted);
       font-weight: 600;
       font-size: 0.72rem;
-      border-radius: 8px;
+      border-radius: 9px;
       cursor: pointer;
-      transition: all 0.2s;
+      transition: all 0.2s ease;
       white-space: nowrap;
     }
 
     .tab-btn.active {
       background: var(--card-bg);
-      color: var(--text);
+      color: #ffffff;
       border: 1px solid var(--border);
-      box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.3);
     }
 
     .tab-content {
@@ -111,18 +114,18 @@
 
     .date-indicator {
       text-align: center;
-      font-size: 0.85rem;
+      font-size: 0.8rem;
       color: var(--text-muted);
-      background: #0f172a;
+      background: #0d1322;
       padding: 8px;
-      border-radius: 8px;
+      border-radius: 10px;
       border: 1px solid var(--border);
     }
 
     .filter-box {
-      background: #0f172a;
+      background: #0d1322;
       border: 1px solid var(--border);
-      border-radius: 12px;
+      border-radius: 14px;
       padding: 12px;
       display: flex;
       flex-direction: column;
@@ -131,14 +134,15 @@
     }
 
     .filter-box label {
-      font-size: 0.8rem;
+      font-size: 0.75rem;
       color: var(--text-muted);
       text-transform: uppercase;
+      letter-spacing: 0.5px;
     }
 
     input[type="month"], input[type="number"], input[type="text"], select {
-      background: #1e293b;
-      border: 1px solid var(--accent);
+      background: var(--card-inner);
+      border: 1px solid var(--border);
       color: var(--text);
       padding: 8px 12px;
       border-radius: 8px;
@@ -150,7 +154,7 @@
 
     .section-divider {
       text-align: center;
-      font-size: 0.85rem;
+      font-size: 0.8rem;
       font-weight: 700;
       letter-spacing: 0.5px;
       margin-top: 4px;
@@ -169,9 +173,9 @@
     }
 
     .col {
-      background: #0f172a;
+      background: #0d1322;
       border: 1px solid var(--border);
-      border-radius: 12px;
+      border-radius: 14px;
       padding: 12px;
       display: flex;
       flex-direction: column;
@@ -196,9 +200,9 @@
     }
 
     .items-list li {
-      background: #1e293b;
-      padding: 8px;
-      border-radius: 6px;
+      background: var(--card-inner);
+      padding: 8px 10px;
+      border-radius: 8px;
       font-size: 0.78rem;
       display: flex;
       justify-content: space-between;
@@ -276,24 +280,25 @@
 
     .add-btn {
       width: 100%;
-      padding: 8px;
+      padding: 9px;
       margin-top: 10px;
       border: 1px solid var(--border);
       border-radius: 8px;
-      background: #1e293b;
+      background: var(--card-inner);
       color: var(--text);
       font-weight: 600;
       font-size: 0.8rem;
       cursor: pointer;
+      transition: all 0.2s;
     }
 
     .add-btn:active {
-      transform: scale(0.98);
+      transform: scale(0.97);
       background: var(--accent);
     }
 
     .user-summary-card {
-      background: #0f172a;
+      background: #0d1322;
       border: 1px solid var(--border);
       border-radius: 12px;
       padding: 10px;
@@ -339,7 +344,7 @@
     }
 
     .chart-box {
-      background: #0f172a;
+      background: #0d1322;
       border: 1px solid var(--border);
       border-radius: 12px;
       padding: 10px;
@@ -365,49 +370,53 @@
       font-weight: 800;
       padding: 4px 8px;
       border-radius: 6px;
-      background: #1e293b;
+      background: var(--card-inner);
       margin-top: 2px;
     }
 
-    /* ESTILOS ALCANCÍA */
-    .savings-container {
-      background: #0f172a;
+    /* ========================================================
+       NUEVO DISEÑO PREMIUM Y MODERNO DE LA ALCANCÍA PINGÜINO
+       ======================================================== */
+    .savings-card-wrapper {
+      background: linear-gradient(145deg, #131b2e 0%, #0d1322 100%);
       border: 1px solid var(--border);
-      border-radius: 12px;
-      padding: 16px;
+      border-radius: 18px;
+      padding: 18px 14px;
       display: flex;
       flex-direction: column;
       align-items: center;
-      gap: 12px;
-      position: relative;
+      gap: 14px;
+      box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.05), 0 8px 20px rgba(0,0,0,0.4);
     }
 
     .savings-subtabs {
       display: flex;
       width: 100%;
-      background: #1e293b;
-      border-radius: 8px;
-      padding: 2px;
+      background: #090d17;
+      border-radius: 10px;
+      padding: 3px;
       border: 1px solid var(--border);
-      gap: 2px;
+      gap: 3px;
     }
 
     .savings-subtab-btn {
       flex: 1;
-      padding: 6px 2px;
+      padding: 7px 2px;
       background: transparent;
       border: none;
       color: var(--text-muted);
-      font-weight: 600;
+      font-weight: 700;
       font-size: 0.75rem;
-      border-radius: 6px;
+      border-radius: 7px;
       cursor: pointer;
+      transition: all 0.2s ease;
     }
 
     .savings-subtab-btn.active {
-      background: #0f172a;
-      color: var(--text);
+      background: #1e293b;
+      color: #ffffff;
       border: 1px solid var(--gold);
+      box-shadow: 0 0 10px var(--gold-glow);
     }
 
     .savings-header {
@@ -418,216 +427,298 @@
     }
 
     .savings-header h3 {
-      font-size: 0.95rem;
+      font-size: 1rem;
       color: var(--gold);
+      font-weight: 800;
+      letter-spacing: -0.3px;
     }
 
     .meta-control {
       font-size: 0.75rem;
-      background: #1e293b;
+      background: var(--card-inner);
       border: 1px solid var(--border);
-      padding: 4px 8px;
-      border-radius: 6px;
-      cursor: pointer;
-      color: var(--text-muted);
-    }
-
-    .visual-selector {
-      display: flex;
-      gap: 8px;
-      background: #1e293b;
-      padding: 4px;
+      padding: 5px 10px;
       border-radius: 8px;
-      border: 1px solid var(--border);
-    }
-
-    .select-style-btn {
-      background: transparent;
-      border: none;
-      color: var(--text-muted);
-      font-size: 0.75rem;
-      padding: 4px 10px;
-      border-radius: 6px;
       cursor: pointer;
+      color: var(--text);
+      font-weight: 600;
+      transition: all 0.2s;
     }
 
-    .select-style-btn.active {
-      background: var(--gold);
-      color: #0f172a;
-      font-weight: bold;
+    .meta-control:hover {
+      border-color: var(--gold);
     }
 
-    .visual-box {
-      width: 140px;
-      height: 180px;
+    /* CONTENEDOR DEL PINGÜINO */
+    .penguin-stage {
       position: relative;
+      width: 160px;
+      height: 210px;
       display: flex;
       justify-content: center;
-      align-items: center;
-      overflow: visible;
+      align-items: flex-end;
+      margin: 10px 0;
     }
 
-    .cylinder-body {
-      width: 100px;
-      height: 100%;
-      background: #1a2332;
-      border: 2px solid var(--gold);
-      border-radius: 16px;
-      position: relative;
-      overflow: hidden;
-      display: flex;
-      flex-direction: column;
-      justify-content: flex-end;
-      box-shadow: inset 0 0 10px rgba(0,0,0,0.8);
-    }
-
-    .penguin-body {
-      width: 110px;
-      height: 170px;
-      background: #1a2332;
-      border: 2px solid var(--gold);
-      border-radius: 55px 55px 35px 35px;
-      position: relative;
-      overflow: hidden;
-      display: flex;
-      flex-direction: column;
-      justify-content: flex-end;
-      box-shadow: inset 0 0 12px rgba(0,0,0,0.8);
-    }
-
-    .coins-fill-container {
-      width: 100%;
+    /* Ranura de Monedas Superior */
+    .coin-slot {
       position: absolute;
-      bottom: 0;
+      top: -6px;
+      width: 36px;
+      height: 6px;
+      background: #070a10;
+      border: 2px solid var(--gold);
+      border-radius: 4px;
+      z-index: 25;
+      box-shadow: 0 0 8px var(--gold-glow);
+    }
+
+    /* Cuerpo del Pingüino */
+    .penguin-character {
+      width: 140px;
+      height: 200px;
+      background: linear-gradient(180deg, #1e293b 0%, #0f172a 100%);
+      border: 3px solid #334155;
+      border-radius: 70px 70px 45px 45px;
+      position: relative;
+      overflow: hidden;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.6);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    /* Ojos y Rostro */
+    .penguin-face-elements {
+      position: absolute;
+      top: 18px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      z-index: 20;
+    }
+
+    .penguin-eyes {
+      display: flex;
+      gap: 26px;
+    }
+
+    .penguin-eye {
+      width: 10px;
+      height: 10px;
+      background: #ffffff;
+      border-radius: 50%;
+      position: relative;
+    }
+
+    .penguin-eye::after {
+      content: '';
+      position: absolute;
+      top: 2px;
+      right: 2px;
+      width: 4px;
+      height: 4px;
+      background: #0f172a;
+      border-radius: 50%;
+    }
+
+    .penguin-beak {
+      width: 18px;
+      height: 12px;
+      background: #f59e0b;
+      border-radius: 4px 4px 10px 10px;
+      margin-top: 4px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.3);
+    }
+
+    .penguin-cheeks {
+      position: absolute;
+      top: 26px;
+      width: 78px;
+      display: flex;
+      justify-content: space-between;
+    }
+
+    .cheek {
+      width: 10px;
+      height: 6px;
+      background: rgba(236, 72, 153, 0.4);
+      border-radius: 50%;
+    }
+
+    /* Panza Dorada / Contenedor de Monedas */
+    .penguin-belly {
+      position: absolute;
+      bottom: 12px;
+      width: 110px;
+      height: 135px;
+      background: rgba(15, 23, 42, 0.85);
+      border: 2px solid rgba(245, 158, 11, 0.5);
+      border-radius: 55px 55px 35px 35px;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
+      align-items: center;
+      box-shadow: inset 0 0 15px rgba(0,0,0,0.9);
+    }
+
+    /* Relleno Líquido/Monedas */
+    .coins-fill {
+      width: 100%;
+      background: linear-gradient(180deg, rgba(245, 158, 11, 0.35) 0%, rgba(217, 119, 6, 0.6) 100%);
+      border-top: 2px solid var(--gold);
+      box-shadow: 0 -4px 12px var(--gold-glow);
+      transition: height 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
       display: flex;
       flex-wrap: wrap-reverse;
       justify-content: center;
       align-content: flex-end;
-      gap: 3px;
       padding: 6px 4px;
-      background: rgba(245, 158, 11, 0.18);
-      border-top: 2px solid var(--gold);
-      transition: height 0.5s ease-in-out;
+      gap: 3px;
       overflow: hidden;
+      min-height: 24px;
     }
 
-    .coin-icon {
-      font-size: 18px;
+    .coin-symbol {
+      font-size: 16px;
       line-height: 1;
-      user-select: none;
       filter: drop-shadow(0 2px 3px rgba(0,0,0,0.8));
-      animation: coinStack 0.3s ease-out;
+      animation: popIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
     }
 
-    @keyframes coinStack {
-      0% { transform: scale(1.4); }
+    @keyframes popIn {
+      0% { transform: scale(0); }
       100% { transform: scale(1); }
     }
 
-    .cylinder-text, .penguin-text {
+    /* Porcentaje Grande sobre la Panza */
+    .penguin-percentage-badge {
       position: absolute;
-      width: 100%;
-      height: 100%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-weight: 800;
-      font-size: 1rem;
-      z-index: 10;
-      text-shadow: 0 2px 6px rgba(0,0,0,0.9), 0 0 4px rgba(0,0,0,0.9);
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      font-size: 1.1rem;
+      font-weight: 900;
       color: #ffffff;
+      text-shadow: 0 2px 8px rgba(0, 0, 0, 0.95), 0 0 4px #000;
+      z-index: 22;
       pointer-events: none;
     }
 
-    .penguin-face {
-      position: absolute;
-      top: 14px;
-      width: 100%;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      z-index: 11;
-      pointer-events: none;
-    }
-
-    .eyes { display: flex; gap: 22px; }
-    .eye { width: 8px; height: 8px; background: #f8fafc; border-radius: 50%; box-shadow: 0 0 2px #000; }
-    .beak { width: 14px; height: 9px; background: #f59e0b; border-radius: 3px; margin-top: 3px; }
-
-    /* ANIMACIÓN MONEDA CAIDA */
-    @keyframes dropCoinAnim {
+    /* Moneda Animada al Aportar */
+    @keyframes dropCoinToPenguin {
       0% {
-        top: -40px;
+        top: -30px;
         opacity: 0;
-        transform: translateX(-50%) scale(0.5) rotate(0deg);
+        transform: translateX(-50%) scale(0.6) rotate(0deg);
       }
-      20% {
+      30% {
         opacity: 1;
       }
       80% {
         opacity: 1;
       }
       100% {
-        top: 130px;
+        top: 100px;
         opacity: 0;
         transform: translateX(-50%) scale(1.1) rotate(360deg);
       }
     }
 
-    .falling-coin {
+    .animating-coin {
       position: absolute;
-      font-size: 32px;
-      z-index: 99;
+      font-size: 28px;
+      z-index: 100;
       left: 50%;
       pointer-events: none;
-      animation: dropCoinAnim 0.75s cubic-bezier(0.55, 0.085, 0.68, 0.53) forwards;
-      filter: drop-shadow(0 4px 8px rgba(0,0,0,0.8));
+      animation: dropCoinToPenguin 0.75s ease-in forwards;
+      filter: drop-shadow(0 4px 10px rgba(0,0,0,0.8));
     }
 
-    .savings-stats {
+    .savings-info-panel {
+      width: 100%;
+      background: #090d17;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 12px;
       text-align: center;
-      font-size: 0.85rem;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .savings-info-panel .amount-text {
+      font-size: 1.1rem;
+      font-weight: 800;
+      color: #ffffff;
+    }
+
+    .savings-info-panel .amount-text span {
+      color: var(--gold);
+    }
+
+    .savings-info-panel .goal-subtext {
+      font-size: 0.78rem;
       color: var(--text-muted);
     }
 
-    .savings-stats span {
-      color: var(--text);
-      font-weight: bold;
+    .btn-add-savings-main {
+      width: 100%;
+      padding: 12px;
+      background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+      border: none;
+      border-radius: 12px;
+      color: #0f172a;
+      font-weight: 800;
+      font-size: 0.9rem;
+      cursor: pointer;
+      box-shadow: 0 4px 15px rgba(245, 158, 11, 0.3);
+      transition: all 0.2s;
+    }
+
+    .btn-add-savings-main:active {
+      transform: scale(0.98);
+      box-shadow: 0 2px 8px rgba(245, 158, 11, 0.2);
     }
 
     .break-piggy-btn {
       width: 100%;
-      padding: 10px;
-      background: linear-gradient(135deg, #f59e0b, #e11d48);
+      padding: 12px;
+      background: linear-gradient(135deg, #10b981, #059669);
       border: none;
-      border-radius: 8px;
-      color: #fff;
-      font-weight: 700;
-      font-size: 0.85rem;
+      border-radius: 12px;
+      color: #ffffff;
+      font-weight: 800;
+      font-size: 0.88rem;
       cursor: pointer;
+      box-shadow: 0 4px 15px rgba(16, 185, 129, 0.3);
     }
 
+    /* MODAL CATEGORÍA */
     .modal-overlay {
       position: fixed;
       top: 0; left: 0; width: 100%; height: 100%;
-      background: rgba(0, 0, 0, 0.7);
+      background: rgba(0, 0, 0, 0.75);
+      backdrop-filter: blur(4px);
       display: none;
       justify-content: center;
       align-items: center;
-      z-index: 100;
+      z-index: 200;
       padding: 15px;
     }
 
     .modal-card {
-      background: #1e293b;
+      background: var(--card-bg);
       border: 1px solid var(--border);
-      border-radius: 12px;
+      border-radius: 16px;
       padding: 20px;
       width: 100%;
       max-width: 360px;
       display: flex;
       flex-direction: column;
       gap: 12px;
+      box-shadow: 0 20px 40px rgba(0,0,0,0.8);
     }
 
     .modal-card h3 {
@@ -638,9 +729,9 @@
 
     .modal-btn {
       padding: 12px;
-      border-radius: 8px;
+      border-radius: 10px;
       border: 1px solid var(--border);
-      background: #0f172a;
+      background: #0d1322;
       color: var(--text);
       font-weight: 600;
       font-size: 0.85rem;
@@ -652,8 +743,8 @@
     }
 
     .modal-btn:hover {
-      border-color: var(--accent);
-      background: #1a2436;
+      border-color: var(--gold);
+      background: #151d30;
     }
 
     .modal-btn span {
@@ -664,23 +755,23 @@
     .rule-result-box {
       text-align: center;
       padding: 14px;
-      border-radius: 10px;
+      border-radius: 12px;
       font-weight: bold;
-      font-size: 0.9rem;
+      font-size: 0.88rem;
       border: 1px solid var(--border);
       margin-top: 5px;
     }
 
     .rule-pass {
-      background: rgba(34, 197, 94, 0.15);
+      background: rgba(34, 197, 94, 0.12);
       color: #4ade80;
-      border-color: rgba(34, 197, 94, 0.4);
+      border-color: rgba(34, 197, 94, 0.3);
     }
 
     .rule-fail {
-      background: rgba(239, 68, 68, 0.15);
+      background: rgba(239, 68, 68, 0.12);
       color: #f87171;
-      border-color: rgba(239, 68, 68, 0.4);
+      border-color: rgba(239, 68, 68, 0.3);
     }
 
     .rule-cards-container {
@@ -690,7 +781,7 @@
     }
 
     .rule-card-item {
-      background: #0f172a;
+      background: #0d1322;
       border: 1px solid var(--border);
       border-radius: 10px;
       padding: 10px 14px;
@@ -740,7 +831,7 @@
     <div class="tabs-nav">
       <button class="tab-btn active" onclick="switchTab('daily', event)">☀️ Hoy</button>
       <button class="tab-btn" onclick="switchTab('pending', event)">📌 Pendientes</button>
-      <button class="tab-btn" onclick="switchTab('savings', event)">🐷 Alcancía</button>
+      <button class="tab-btn" onclick="switchTab('savings', event)">🐧 Alcancía</button>
       <button class="tab-btn" onclick="switchTab('rule', event)">📊 50/25/25</button>
       <button class="tab-btn" onclick="switchTab('monthly', event)">📅 Consulta</button>
     </div>
@@ -848,7 +939,7 @@
       </div>
     </div>
 
-    <!-- PESTAÑA 3: ALCANCÍA -->
+    <!-- PESTAÑA 3: ALCANCÍA PINGÜINO (REDISEÑADA COMPLETAMENTE) -->
     <div id="tab-savings" class="tab-content">
       <div class="savings-subtabs">
         <button class="savings-subtab-btn active" id="subtab-joint" onclick="switchSavingsMode('joint')">🤝 En Conjunto</button>
@@ -856,33 +947,51 @@
         <button class="savings-subtab-btn" id="subtab-ali" onclick="switchSavingsMode('ali')">🩷 Ali</button>
       </div>
 
-      <div class="savings-container" id="savingsContainer">
+      <div class="savings-card-wrapper">
         <div class="savings-header">
           <h3 id="savingsTitleHeading">Fondo de Ahorro Conjunto</h3>
-          <button class="meta-control" onclick="setSavingsGoal()">⚙️ Cambiar Meta</button>
+          <button class="meta-control" onclick="setSavingsGoal()">⚙️ Meta</button>
         </div>
 
-        <div class="visual-selector">
-          <button class="select-style-btn" id="btnCylinder" onclick="changeVisual('cylinder')">Cilindro</button>
-          <button class="select-style-btn active" id="btnPenguin" onclick="changeVisual('penguin')">Pingüino 🐧</button>
+        <!-- ESCENARIO DEL PINGÜINO -->
+        <div class="penguin-stage" id="penguinStage">
+          <div class="coin-slot"></div>
+          
+          <div class="penguin-character">
+            <div class="penguin-face-elements">
+              <div class="penguin-eyes">
+                <div class="penguin-eye"></div>
+                <div class="penguin-eye"></div>
+              </div>
+              <div class="penguin-beak"></div>
+              <div class="penguin-cheeks">
+                <div class="cheek"></div>
+                <div class="cheek"></div>
+              </div>
+            </div>
+
+            <div class="penguin-belly">
+              <div class="penguin-percentage-badge" id="savingsPercentageBadge">0%</div>
+              <div class="coins-fill" id="coinsFillContainer"></div>
+            </div>
+          </div>
         </div>
 
-        <div class="visual-box" id="visualBoxContainer"></div>
-
-        <div class="savings-stats">
-          Acumulado: <span id="savingsTotalAmount">$0</span> / Meta: <span id="savingsGoalAmount">$0</span>
-          <br><span id="savingsPercentage" style="font-size:0.8rem; color:var(--gold);">0% alcanzado</span>
+        <div class="savings-info-panel">
+          <div class="amount-text"><span id="savingsTotalAmount">$0</span></div>
+          <div class="goal-subtext">Meta propuesta: <b id="savingsGoalAmount" style="color:#ffffff;">$300,000</b></div>
         </div>
+
+        <button class="btn-add-savings-main" id="addSavingsBtn" onclick="addSavingsRecord()">+ Ingresar Ahorro</button>
 
         <button class="break-piggy-btn" id="breakPiggyBtn" style="display:none;" onclick="breakPiggyBank()">
-          🔨 ¡Romper Alcancía y Guardar Logro!
+          🎉 ¡Meta Cumplida! Reiniciar Alcancía
         </button>
       </div>
 
-      <div class="section-divider title-savings" id="savingsHistoryTitle">HISTORIAL APORTES CONJUNTOS</div>
+      <div class="section-divider title-savings" id="savingsHistoryTitle">HISTORIAL DE APORTES</div>
       <div class="col" style="width: 100%;">
         <ul class="items-list ahorros" id="savingsList"></ul>
-        <button class="add-btn" id="addSavingsBtn" onclick="addSavingsRecord()">+ Ingresar Ahorro</button>
       </div>
     </div>
 
@@ -897,7 +1006,7 @@
         <div class="chart-box">
           <h3>Meta Teórica (Ideal)</h3>
           <p style="font-size: 0.68rem; color: var(--text-muted); text-align:center;">
-            Basado en Ingresos Netos: <b id="ruleNetIncomeVal">$0</b>
+            Ingresos Netos: <b id="ruleNetIncomeVal">$0</b>
           </p>
           <div class="chart-wrapper">
             <canvas id="chartRuleIdeal"></canvas>
@@ -906,7 +1015,7 @@
         <div class="chart-box">
           <h3>Real Actual</h3>
           <p style="font-size: 0.68rem; color: var(--text-muted); text-align:center;">
-            Distribución Real de Ingresos
+            Distribución Real
           </p>
           <div class="chart-wrapper">
             <canvas id="chartRuleReal"></canvas>
@@ -1010,7 +1119,7 @@
 
   <div class="modal-overlay" id="categoryModal">
     <div class="modal-card">
-      <h3 id="modalCategoryTitle">Selecciona la categoría</h3>
+      <h3 id="modalCategoryTitle">Selecciona el tipo de gasto</h3>
       <button class="modal-btn" onclick="confirmCategory('necesidades')">
         🔴 Necesidades y Prioridades (50%)
         <span>Comida básica, servicios, arriendo, transporte obligatorio.</span>
@@ -1019,7 +1128,7 @@
         🟣 Gustos o Deseos (25%)
         <span>Salidas, hobbies, compras personales, ocio.</span>
       </button>
-      <button class="add-btn" onclick="closeCategoryModal()" style="margin-top: 5px; background:#0f172a;">Cancelar</button>
+      <button class="add-btn" onclick="closeCategoryModal()" style="margin-top: 5px;">Cancelar</button>
     </div>
   </div>
 
@@ -1054,93 +1163,34 @@
       if (!audioCtx) return;
 
       const now = audioCtx.currentTime;
+      const osc = audioCtx.createOscillator();
+      const gain = audioCtx.createGain();
 
-      const osc1 = audioCtx.createOscillator();
-      const gain1 = audioCtx.createGain();
-      osc1.type = 'sine';
-      osc1.frequency.setValueAtTime(1400, now);
-      osc1.frequency.exponentialRampToValueAtTime(1800, now + 0.08);
-      gain1.gain.setValueAtTime(0.3, now);
-      gain1.gain.exponentialRampToValueAtTime(0.01, now + 0.35);
+      osc.type = 'sine';
+      osc.frequency.setValueAtTime(1200, now);
+      osc.frequency.exponentialRampToValueAtTime(1800, now + 0.1);
 
-      const osc2 = audioCtx.createOscillator();
-      const gain2 = audioCtx.createGain();
-      osc2.type = 'triangle';
-      osc2.frequency.setValueAtTime(2800, now + 0.05);
-      gain2.gain.setValueAtTime(0.2, now + 0.05);
-      gain2.gain.exponentialRampToValueAtTime(0.01, now + 0.3);
+      gain.gain.setValueAtTime(0.3, now);
+      gain.gain.exponentialRampToValueAtTime(0.01, now + 0.3);
 
-      osc1.connect(gain1);
-      gain1.connect(audioCtx.destination);
-      osc2.connect(gain2);
-      gain2.connect(audioCtx.destination);
+      osc.connect(gain);
+      gain.connect(audioCtx.destination);
 
-      osc1.start(now);
-      osc1.stop(now + 0.35);
-      osc2.start(now + 0.05);
-      osc2.stop(now + 0.35);
-    }
-
-    function playBreakSound() {
-      initAudio();
-      if (!audioCtx) return;
-
-      const now = audioCtx.currentTime;
-
-      const bufferSize = audioCtx.sampleRate * 0.4;
-      const buffer = audioCtx.createBuffer(1, bufferSize, audioCtx.sampleRate);
-      const data = buffer.getChannelData(0);
-      for (let i = 0; i < bufferSize; i++) {
-        data[i] = Math.random() * 2 - 1;
-      }
-
-      const noise = audioCtx.createBufferSource();
-      noise.buffer = buffer;
-
-      const filter = audioCtx.createBiquadFilter();
-      filter.type = 'highpass';
-      filter.frequency.value = 1000;
-
-      const noiseGain = audioCtx.createGain();
-      noiseGain.gain.setValueAtTime(0.5, now);
-      noiseGain.gain.exponentialRampToValueAtTime(0.01, now + 0.4);
-
-      noise.connect(filter);
-      filter.connect(noiseGain);
-      noiseGain.connect(audioCtx.destination);
-
-      noise.start(now);
-
-      for (let i = 0; i < 6; i++) {
-        const delay = i * 0.06;
-        const osc = audioCtx.createOscillator();
-        const gain = audioCtx.createGain();
-
-        osc.type = 'sine';
-        osc.frequency.setValueAtTime(1200 + Math.random() * 800, now + delay);
-
-        gain.gain.setValueAtTime(0.25, now + delay);
-        gain.gain.exponentialRampToValueAtTime(0.01, now + delay + 0.2);
-
-        osc.connect(gain);
-        gain.connect(audioCtx.destination);
-
-        osc.start(now + delay);
-        osc.stop(now + delay + 0.2);
-      }
+      osc.start(now);
+      osc.stop(now + 0.3);
     }
 
     function triggerCoinAnimation() {
-      const box = document.getElementById('visualBoxContainer');
-      if (!box) return;
+      const stage = document.getElementById('penguinStage');
+      if (!stage) return;
 
       playCoinSound();
 
       const coin = document.createElement('div');
-      coin.className = 'falling-coin';
+      coin.className = 'animating-coin';
       coin.innerText = '🪙';
 
-      box.appendChild(coin);
+      stage.appendChild(coin);
 
       setTimeout(() => {
         coin.remove();
@@ -1160,7 +1210,6 @@
     const currentMonthStr = todayStr.slice(0, 7);
 
     document.getElementById('todayLabel').innerText = `Hoy: ${today.toLocaleDateString('es-ES', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}`;
-    
     document.getElementById('monthPicker').value = currentMonthStr;
     document.getElementById('ruleMonthPicker').value = currentMonthStr;
 
@@ -1172,9 +1221,9 @@
     let allRecords = {};
     let allPendings = {};
     let savingsConfigs = {
-      joint: { goal: 300000, style: 'penguin' },
-      jesus: { goal: 50000, style: 'penguin' },
-      ali: { goal: 50000, style: 'penguin' }
+      joint: { goal: 300000 },
+      jesus: { goal: 50000 },
+      ali: { goal: 50000 }
     };
     
     let currentSavingsMode = 'joint';
@@ -1197,7 +1246,6 @@
       currentSavingsMode = mode;
       document.querySelectorAll('.savings-subtab-btn').forEach(btn => btn.classList.remove('active'));
       document.getElementById(`subtab-${mode}`).classList.add('active');
-      updateVisualSelectorUI();
       renderSavings();
     }
 
@@ -1215,12 +1263,11 @@
       const val = snapshot.val();
       if (val) {
         savingsConfigs = {
-          joint: val.joint || { goal: 300000, style: 'penguin' },
-          jesus: val.jesus || { goal: 50000, style: 'penguin' },
-          ali: val.ali || { goal: 50000, style: 'penguin' }
+          joint: val.joint || { goal: 300000 },
+          jesus: val.jesus || { goal: 50000 },
+          ali: val.ali || { goal: 50000 }
         };
       }
-      updateVisualSelectorUI();
       renderSavings();
     });
 
@@ -1257,8 +1304,6 @@
       }
 
       pendingGastoContext = { owner, desc, amount, pendingKey };
-      
-      document.getElementById('modalCategoryTitle').innerText = 'Selecciona el tipo de gasto';
       document.getElementById('categoryModal').style.display = 'flex';
     }
 
@@ -1313,7 +1358,7 @@
         if (!ownerInput) return;
         ownerInput = ownerInput.trim().toLowerCase();
         if (ownerInput !== 'jesus' && ownerInput !== 'ali') {
-          alert("Debes escribir exactamente 'Jesus' o 'Ali'.");
+          alert("Por favor escribe exactamente 'Jesus' o 'Ali'.");
           return;
         }
         owner = ownerInput === 'jesus' ? 'Jesus' : 'Ali';
@@ -1326,7 +1371,7 @@
         scope = 'ali';
       }
 
-      const desc = prompt(`Motivo o descripción del ahorro:`, scope === 'joint' ? "Ahorro conjunto" : `Ahorro ${owner}`);
+      const desc = prompt(`Motivo del ahorro:`, scope === 'joint' ? "Ahorro conjunto" : `Ahorro ${owner}`);
       if (desc === null) return;
 
       const amount = parseFloat(prompt(`Monto a aportar ($):`));
@@ -1350,31 +1395,13 @@
 
     function setSavingsGoal() {
       const currentConfig = savingsConfigs[currentSavingsMode] || { goal: 300000 };
-      const newGoal = parseFloat(prompt("Establece la meta monetaria ($):", currentConfig.goal || 300000));
+      const newGoal = parseFloat(prompt("Nueva meta ($):", currentConfig.goal || 300000));
       if (!isNaN(newGoal) && newGoal > 0) {
         db.ref(`alcanciaConfigs/${currentSavingsMode}`).update({ goal: newGoal });
       }
     }
 
-    function changeVisual(style) {
-      db.ref(`alcanciaConfigs/${currentSavingsMode}`).update({ style: style });
-    }
-
-    function updateVisualSelectorUI() {
-      const config = savingsConfigs[currentSavingsMode] || { style: 'penguin' };
-      const btnCyl = document.getElementById('btnCylinder');
-      const btnPen = document.getElementById('btnPenguin');
-      if (config.style === 'penguin') {
-        btnPen.classList.add('active');
-        btnCyl.classList.remove('active');
-      } else {
-        btnCyl.classList.add('active');
-        btnPen.classList.remove('active');
-      }
-    }
-
     function breakPiggyBank() {
-      let currentTotal = 0;
       let recordKeys = [];
 
       Object.keys(allRecords).forEach(key => {
@@ -1382,22 +1409,17 @@
         if (item.type === 'ahorro') {
           const scope = item.scope || 'joint';
           if (scope === currentSavingsMode) {
-            currentTotal += item.amount;
             recordKeys.push(key);
           }
         }
       });
 
       const modeNames = { joint: 'Conjunto', jesus: 'Jesús', ali: 'Ali' };
-      const modeName = modeNames[currentSavingsMode];
 
-      playBreakSound();
-
-      if (confirm(`🎉 ¡Felicidades! Has completado la meta de la Alcancía ${modeName}.\n\n¿Deseas romper la alcancía y reiniciar la meta?`)) {
+      if (confirm(`🎉 ¡Felicidades! Se cumplió la meta del Fondo ${modeNames[currentSavingsMode]}.\n\n¿Deseas reiniciar el contador?`)) {
         recordKeys.forEach(key => {
           db.ref('registros/' + key).remove();
         });
-        alert(`✨ ¡Alcancía ${modeName} reiniciada! ¡A por la siguiente meta!`);
       }
     }
 
@@ -1441,7 +1463,7 @@
     }
 
     function deletePending(key) {
-      if (confirm("¿Eliminar este registro permanentemente?")) {
+      if (confirm("¿Eliminar de las deudas?")) {
         const p = allPendings[key];
         if (p && p.paid && p.expenseId) {
           db.ref('registros/' + p.expenseId).remove();
@@ -1451,7 +1473,7 @@
     }
 
     function deleteRecord(id) {
-      if (confirm("¿Estás seguro de borrar este registro?")) {
+      if (confirm("¿Borrar este registro?")) {
         db.ref('registros/' + id).remove();
       }
     }
@@ -1476,8 +1498,8 @@
           li.innerHTML = `
             <span>${p.description} (<b>$${p.amount.toLocaleString()}</b>)</span>
             <div class="actions">
-              <span class="check-btn" title="Marcar como Pagado" onclick="markAsPaid('${key}')">✓</span>
-              <span class="delete-btn" title="Eliminar" onclick="deletePending('${key}')">🗑️</span>
+              <span class="check-btn" onclick="markAsPaid('${key}')">✓</span>
+              <span class="delete-btn" onclick="deletePending('${key}')">🗑️</span>
             </div>
           `;
           if (p.owner === 'Jesus') { listJesus.appendChild(li); totalJesus += p.amount; }
@@ -1487,8 +1509,8 @@
           li.innerHTML = `
             <span>${p.description} (<b>$${p.amount.toLocaleString()}</b>)</span>
             <div class="actions">
-              <span class="undo-btn" title="Deshacer" onclick="undoPayment('${key}')">✕</span>
-              <span class="delete-btn" title="Eliminar" onclick="deletePending('${key}')">🗑️</span>
+              <span class="undo-btn" onclick="undoPayment('${key}')">✕</span>
+              <span class="delete-btn" onclick="deletePending('${key}')">🗑️</span>
             </div>
           `;
           if (p.owner === 'Jesus') { listPaidJesus.appendChild(li); }
@@ -1506,9 +1528,9 @@
 
       let totalSavings = 0;
 
-      const headings = { joint: "Fondo de Ahorro Conjunto", jesus: "Alcancía Indiv. Jesús 💙", ali: "Alcancía Indiv. Ali 🩷" };
+      const headings = { joint: "Fondo de Ahorro Conjunto 🐧", jesus: "Alcancía de Jesús 💙", ali: "Alcancía de Ali 🩷" };
       const btnTexts = { joint: "+ Ingresar Ahorro Conjunto", jesus: "+ Ingresar Ahorro Jesús", ali: "+ Ingresar Ahorro Ali" };
-      const histTitles = { joint: "HISTORIAL APORTES CONJUNTOS", jesus: "HISTORIAL AHORROS JESÚS", ali: "HISTORIAL AHORROS ALI" };
+      const histTitles = { joint: "HISTORIAL DE APORTES CONJUNTOS", jesus: "HISTORIAL AHORROS JESÚS", ali: "HISTORIAL AHORROS ALI" };
 
       document.getElementById('savingsTitleHeading').innerText = headings[currentSavingsMode];
       document.getElementById('addSavingsBtn').innerText = btnTexts[currentSavingsMode];
@@ -1530,55 +1552,34 @@
         }
       });
 
-      const config = savingsConfigs[currentSavingsMode] || { goal: 300000, style: 'penguin' };
+      const config = savingsConfigs[currentSavingsMode] || { goal: 300000 };
       const goal = config.goal || 300000;
       let percentage = Math.round((totalSavings / goal) * 100);
-      let displayPercentage = percentage;
-      if (percentage > 100) percentage = 100;
 
       document.getElementById('savingsTotalAmount').innerText = `$${totalSavings.toLocaleString()}`;
       document.getElementById('savingsGoalAmount').innerText = `$${goal.toLocaleString()}`;
-      document.getElementById('savingsPercentage').innerText = `${displayPercentage}% alcanzado`;
+      document.getElementById('savingsPercentageBadge').innerText = `${percentage}%`;
 
       const breakBtn = document.getElementById('breakPiggyBtn');
-      breakBtn.style.display = displayPercentage >= 100 ? 'block' : 'none';
+      breakBtn.style.display = percentage >= 100 ? 'block' : 'none';
 
-      const container = document.getElementById('visualBoxContainer');
-      container.innerHTML = '';
+      const fillContainer = document.getElementById('coinsFillContainer');
+      fillContainer.innerHTML = '';
 
-      // Mínimo de altura para asegurar que las monedas quepan visibles si hay ahorros registrados
-      const fillHeight = totalSavings > 0 ? Math.max(18, percentage) : 0;
-      
-      // Cantidad de monedas a dibujar
-      const coinCount = totalSavings > 0 ? Math.max(2, Math.min(28, Math.ceil((percentage / 100) * 24))) : 0;
+      // Garantizar que la altura de relleno sea visible cuando hay dinero
+      let visualFillHeight = 0;
+      if (totalSavings > 0) {
+        visualFillHeight = Math.max(22, Math.min(100, percentage));
+      }
+      fillContainer.style.height = `${visualFillHeight}%`;
+
+      // Número de monedas acumuladas visibles
+      const numCoins = totalSavings > 0 ? Math.max(3, Math.min(24, Math.ceil((percentage / 100) * 18))) : 0;
       let coinsHTML = '';
-      for (let i = 0; i < coinCount; i++) {
-        coinsHTML += `<span class="coin-icon">🪙</span>`;
+      for (let i = 0; i < numCoins; i++) {
+        coinsHTML += `<span class="coin-symbol">🪙</span>`;
       }
-
-      if (config.style === 'penguin') {
-        container.innerHTML = `
-          <div class="penguin-body">
-            <div class="penguin-face">
-              <div class="eyes"><div class="eye"></div><div class="eye"></div></div>
-              <div class="beak"></div>
-            </div>
-            <div class="penguin-text">${displayPercentage}%</div>
-            <div class="coins-fill-container" style="height: ${fillHeight}%;">
-              ${coinsHTML}
-            </div>
-          </div>
-        `;
-      } else {
-        container.innerHTML = `
-          <div class="cylinder-body">
-            <div class="cylinder-text">${displayPercentage}%</div>
-            <div class="coins-fill-container" style="height: ${fillHeight}%;">
-              ${coinsHTML}
-            </div>
-          </div>
-        `;
-      }
+      fillContainer.innerHTML = coinsHTML;
     }
 
     function getCatBadgeHTML(cat) {
@@ -1736,7 +1737,7 @@
           datasets: [{
             data: [ingJesus, gasJesus],
             backgroundColor: ['#22c55e', '#ef4444'],
-            borderColor: '#1e293b',
+            borderColor: '#151c2c',
             borderWidth: 2
           }]
         },
@@ -1750,7 +1751,7 @@
           datasets: [{
             data: [ingAli, gasAli],
             backgroundColor: ['#22c55e', '#ef4444'],
-            borderColor: '#1e293b',
+            borderColor: '#151c2c',
             borderWidth: 2
           }]
         },
@@ -1803,7 +1804,7 @@
           datasets: [{
             data: [50, 25, 25],
             backgroundColor: ['#ef4444', '#a855f7', '#f59e0b'],
-            borderColor: '#1e293b',
+            borderColor: '#151c2c',
             borderWidth: 2
           }]
         },
@@ -1836,12 +1837,12 @@
             `Necesidades (${needsPct}%)`, 
             `Gustos (${wantsPct}%)`, 
             `Ahorros (${savingsPct}%)`, 
-            `Dinero Sin Usar (${unusedPct}%)`
+            `Disponible (${unusedPct}%)`
           ],
           datasets: [{
             data: (netIncome === 0) ? [1, 1, 1, 1] : [needs, wants, savings, unused],
             backgroundColor: ['#ef4444', '#a855f7', '#f59e0b', '#64748b'],
-            borderColor: '#1e293b',
+            borderColor: '#151c2c',
             borderWidth: 2
           }]
         },
