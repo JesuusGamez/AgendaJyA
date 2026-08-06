@@ -40,7 +40,6 @@
       overflow-x: hidden;
     }
 
-    /* Canvas para la lluvia de monedas */
     #coinCanvas {
       position: fixed;
       top: 0;
@@ -383,7 +382,7 @@
       margin-top: 2px;
     }
 
-    /* ESTILOS Y ANIMACIÓN DE LA ALCANCÍA */
+    /* ESTILOS Y TEXTURAS DE ALCANCÍA DE MONEDAS */
     .savings-container {
       background: #0f172a;
       border: 1px solid var(--border);
@@ -508,9 +507,9 @@
       box-shadow: 0 0 15px rgba(245, 158, 11, 0.2);
     }
 
-    /* RELLENO ESTILO MONEDITAS APILADAS */
-    .cylinder-fill, .penguin-fill {
-      width: 100%;
+    /* MAPEO DE TODAS LAS POSIBLES CLASES DE RELLENO A MONEDAS */
+    .cylinder-fill-level, .penguin-fill-level, .cylinder-fill, .penguin-fill {
+      width: 100% !important;
       transition: height 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
       position: absolute;
       bottom: 0;
@@ -523,13 +522,12 @@
           #fef08a 10px,
           #b45309 14px,
           #78350f 18px
-        );
-      background-size: 20px 20px, 100% 18px;
-      border-top: 3px solid #fef08a;
-      box-shadow: 0 -4px 10px rgba(245, 158, 11, 0.5), inset 0 2px 6px rgba(255, 255, 255, 0.6);
+        ) !important;
+      background-size: 20px 20px, 100% 18px !important;
+      border-top: 3px solid #fef08a !important;
+      box-shadow: 0 -4px 10px rgba(245, 158, 11, 0.6), inset 0 2px 6px rgba(255, 255, 255, 0.7) !important;
     }
 
-    /* MONEDA ANIMADA QUE CAE */
     .coin-drop {
       position: absolute;
       top: -30px;
@@ -745,7 +743,6 @@
 </head>
 <body>
 
-  <!-- Canvas para la lluvia explosiva de monedas -->
   <canvas id="coinCanvas"></canvas>
 
   <div class="app-container">
@@ -930,7 +927,6 @@
         </div>
       </div>
 
-      <!-- TARJETAS DE MÉTRICAS DE LA REGLA -->
       <div class="rule-cards-container">
         <div class="rule-card-item needs-card">
           <div class="rule-card-info">
@@ -1055,7 +1051,6 @@
     firebase.initializeApp(firebaseConfig);
     const db = firebase.database();
 
-    /* SINTETIZADOR DE SONIDO DE MONEDA CON WEB AUDIO API */
     function playCoinSound() {
       try {
         const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
@@ -1063,8 +1058,8 @@
         const gain = audioCtx.createGain();
 
         osc.type = 'sine';
-        osc.frequency.setValueAtTime(987.77, audioCtx.currentTime); // Tono B5
-        osc.frequency.exponentialRampToValueAtTime(1318.51, audioCtx.currentTime + 0.08); // Salto a E6 (Efecto metálico "Ding!")
+        osc.frequency.setValueAtTime(987.77, audioCtx.currentTime);
+        osc.frequency.exponentialRampToValueAtTime(1318.51, audioCtx.currentTime + 0.08);
 
         gain.gain.setValueAtTime(0.3, audioCtx.currentTime);
         gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.35);
@@ -1075,11 +1070,10 @@
         osc.start();
         osc.stop(audioCtx.currentTime + 0.35);
       } catch (e) {
-        console.log("Audio no habilitado", e);
+        console.log("Audio desactivado", e);
       }
     }
 
-    /* EFECTO DE LLUVIA EXPLOSIVA DE MONEDAS (CANVAS) */
     function triggerCoinShower() {
       const canvas = document.getElementById('coinCanvas');
       const ctx = canvas.getContext('2d');
@@ -1121,7 +1115,6 @@
           ctx.translate(c.x, c.y);
           ctx.scale(1, Math.abs(c.scaleY));
 
-          // Moneda Dorada
           ctx.beginPath();
           ctx.arc(0, 0, c.size, 0, Math.PI * 2);
           ctx.fillStyle = '#f59e0b';
@@ -1130,7 +1123,6 @@
           ctx.strokeStyle = '#fef08a';
           ctx.stroke();
 
-          // Detalle interno
           ctx.beginPath();
           ctx.arc(0, 0, c.size * 0.6, 0, Math.PI * 2);
           ctx.strokeStyle = '#b45309';
@@ -1147,7 +1139,6 @@
         }
       }
 
-      // Reproducir serie de sonidos de monedas
       for (let i = 0; i < 5; i++) {
         setTimeout(playCoinSound, i * 120);
       }
@@ -1342,7 +1333,7 @@
         return;
       }
 
-      playCoinSound(); // Reproducir efecto de sonido de moneda
+      playCoinSound();
 
       db.ref('registros').push({
         type: 'ahorro',
@@ -1399,7 +1390,7 @@
       const modeName = modeNames[currentSavingsMode];
 
       if (confirm(`🎉 ¡Felicidades! Has completado la meta de la Alcancía ${modeName}.\n\n¿Deseas romper la alcancía y reiniciar la meta?`)) {
-        triggerCoinShower(); // Lluvia explosiva de monedas
+        triggerCoinShower();
         
         setTimeout(() => {
           recordKeys.forEach(key => {
@@ -1555,7 +1546,6 @@
       const container = document.getElementById('visualBoxContainer');
       container.innerHTML = '';
 
-      // Moneda animada que cae
       const coin = document.createElement('div');
       coin.className = 'coin-drop';
       coin.innerText = '$';
@@ -1570,7 +1560,7 @@
             <div class="beak"></div>
           </div>
           <div class="penguin-text">${displayPercentage}%</div>
-          <div class="penguin-fill" style="height: ${percentage}%;"></div>
+          <div class="penguin-fill-level" style="height: ${percentage}%;"></div>
         `;
         container.appendChild(penguin);
       } else {
@@ -1578,7 +1568,7 @@
         cylinder.className = 'cylinder-body';
         cylinder.innerHTML = `
           <div class="cylinder-text">${displayPercentage}%</div>
-          <div class="cylinder-fill" style="height: ${percentage}%;"></div>
+          <div class="cylinder-fill-level" style="height: ${percentage}%;"></div>
         `;
         container.appendChild(cylinder);
       }
