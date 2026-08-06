@@ -16,7 +16,6 @@
       --border: #334155;
       --jesus-color: #3b82f6;
       --ali-color: #ec4899;
-      --savings-color: #06b6d4;
       --gold: #f59e0b;
       --purple: #a855f7;
       --unused-color: #64748b;
@@ -161,7 +160,7 @@
 
     .title-jesus { color: var(--jesus-color); }
     .title-ali { color: var(--ali-color); }
-    .title-savings { color: var(--savings-color); }
+    .title-savings { color: var(--gold); }
 
     .columns-grid {
       display: grid;
@@ -224,7 +223,7 @@
 
     .cat-necesidades { background: rgba(239, 68, 68, 0.2); color: #fca5a5; border: 1px solid rgba(239, 68, 68, 0.4); }
     .cat-gustos { background: rgba(168, 85, 247, 0.2); color: #e9d5ff; border: 1px solid rgba(168, 85, 247, 0.4); }
-    .cat-ahorros { background: rgba(6, 182, 212, 0.2); color: #a5f3fc; border: 1px solid rgba(6, 182, 212, 0.4); }
+    .cat-ahorros { background: rgba(245, 158, 11, 0.2); color: #fde68a; border: 1px solid rgba(245, 158, 11, 0.4); }
 
     .pending-item {
       border-left: 3px solid var(--red) !important;
@@ -370,6 +369,7 @@
       margin-top: 2px;
     }
 
+    /* ESTILOS ALCANCÍA */
     .savings-container {
       background: #0f172a;
       border: 1px solid var(--border);
@@ -407,7 +407,7 @@
     .savings-subtab-btn.active {
       background: #0f172a;
       color: var(--text);
-      border: 1px solid var(--border);
+      border: 1px solid var(--gold);
     }
 
     .savings-header {
@@ -419,7 +419,7 @@
 
     .savings-header h3 {
       font-size: 0.95rem;
-      color: var(--savings-color);
+      color: var(--gold);
     }
 
     .meta-control {
@@ -458,38 +458,41 @@
     }
 
     .visual-box {
-      width: 130px;
+      width: 140px;
       height: 180px;
       position: relative;
       display: flex;
       justify-content: center;
       align-items: center;
+      overflow: visible;
     }
 
     .cylinder-body {
-      width: 90px;
+      width: 100px;
       height: 100%;
-      background: #1e293b;
-      border: 2px solid var(--border);
-      border-radius: 12px;
+      background: #1a2332;
+      border: 2px solid var(--gold);
+      border-radius: 16px;
       position: relative;
       overflow: hidden;
       display: flex;
       flex-direction: column;
       justify-content: flex-end;
+      box-shadow: inset 0 0 10px rgba(0,0,0,0.8);
     }
 
     .penguin-body {
-      width: 100px;
+      width: 110px;
       height: 170px;
-      background: #1e293b;
-      border: 2px solid var(--border);
-      border-radius: 50px 50px 30px 30px;
+      background: #1a2332;
+      border: 2px solid var(--gold);
+      border-radius: 55px 55px 35px 35px;
       position: relative;
       overflow: hidden;
       display: flex;
       flex-direction: column;
       justify-content: flex-end;
+      box-shadow: inset 0 0 12px rgba(0,0,0,0.8);
     }
 
     .coins-fill-container {
@@ -500,24 +503,24 @@
       flex-wrap: wrap-reverse;
       justify-content: center;
       align-content: flex-end;
-      gap: 2px;
+      gap: 3px;
       padding: 6px 4px;
-      background: transparent;
-      border-top: 1px dashed rgba(245, 158, 11, 0.4);
+      background: rgba(245, 158, 11, 0.18);
+      border-top: 2px solid var(--gold);
       transition: height 0.5s ease-in-out;
       overflow: hidden;
     }
 
     .coin-icon {
-      font-size: 16px;
+      font-size: 18px;
       line-height: 1;
       user-select: none;
-      filter: drop-shadow(0 1px 2px rgba(0,0,0,0.6));
+      filter: drop-shadow(0 2px 3px rgba(0,0,0,0.8));
       animation: coinStack 0.3s ease-out;
     }
 
     @keyframes coinStack {
-      0% { transform: scale(1.5); }
+      0% { transform: scale(1.4); }
       100% { transform: scale(1); }
     }
 
@@ -528,35 +531,35 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      font-weight: bold;
-      font-size: 0.85rem;
-      z-index: 5;
-      text-shadow: 0 1px 4px rgba(0,0,0,0.9);
+      font-weight: 800;
+      font-size: 1rem;
+      z-index: 10;
+      text-shadow: 0 2px 6px rgba(0,0,0,0.9), 0 0 4px rgba(0,0,0,0.9);
       color: #ffffff;
       pointer-events: none;
     }
 
     .penguin-face {
       position: absolute;
-      top: 12px;
+      top: 14px;
       width: 100%;
       display: flex;
       flex-direction: column;
       align-items: center;
-      z-index: 6;
+      z-index: 11;
       pointer-events: none;
     }
 
-    .eyes { display: flex; gap: 20px; }
-    .eye { width: 8px; height: 8px; background: #f8fafc; border-radius: 50%; }
-    .beak { width: 12px; height: 8px; background: #f59e0b; border-radius: 2px; margin-top: 4px; }
+    .eyes { display: flex; gap: 22px; }
+    .eye { width: 8px; height: 8px; background: #f8fafc; border-radius: 50%; box-shadow: 0 0 2px #000; }
+    .beak { width: 14px; height: 9px; background: #f59e0b; border-radius: 3px; margin-top: 3px; }
 
-    /* ANIMACIÓN DE MONEDA CAYENDO */
+    /* ANIMACIÓN MONEDA CAIDA */
     @keyframes dropCoinAnim {
       0% {
-        top: -20px;
+        top: -40px;
         opacity: 0;
-        transform: translateX(-50%) scale(0.6) rotate(0deg);
+        transform: translateX(-50%) scale(0.5) rotate(0deg);
       }
       20% {
         opacity: 1;
@@ -567,17 +570,18 @@
       100% {
         top: 130px;
         opacity: 0;
-        transform: translateX(-50%) scale(1) rotate(360deg);
+        transform: translateX(-50%) scale(1.1) rotate(360deg);
       }
     }
 
     .falling-coin {
       position: absolute;
-      font-size: 26px;
-      z-index: 50;
+      font-size: 32px;
+      z-index: 99;
       left: 50%;
       pointer-events: none;
       animation: dropCoinAnim 0.75s cubic-bezier(0.55, 0.085, 0.68, 0.53) forwards;
+      filter: drop-shadow(0 4px 8px rgba(0,0,0,0.8));
     }
 
     .savings-stats {
@@ -697,7 +701,7 @@
 
     .rule-card-item.needs-card { border-left: 4px solid var(--red); }
     .rule-card-item.wants-card { border-left: 4px solid var(--purple); }
-    .rule-card-item.savings-card { border-left: 4px solid var(--savings-color); }
+    .rule-card-item.savings-card { border-left: 4px solid var(--gold); }
     .rule-card-item.unused-card { border-left: 4px solid var(--unused-color); }
 
     .rule-card-info {
@@ -859,8 +863,8 @@
         </div>
 
         <div class="visual-selector">
-          <button class="select-style-btn active" id="btnCylinder" onclick="changeVisual('cylinder')">Cilindro</button>
-          <button class="select-style-btn" id="btnPenguin" onclick="changeVisual('penguin')">Pingüino 🐧</button>
+          <button class="select-style-btn" id="btnCylinder" onclick="changeVisual('cylinder')">Cilindro</button>
+          <button class="select-style-btn active" id="btnPenguin" onclick="changeVisual('penguin')">Pingüino 🐧</button>
         </div>
 
         <div class="visual-box" id="visualBoxContainer"></div>
@@ -875,7 +879,7 @@
         </button>
       </div>
 
-      <div class="section-divider title-savings" id="savingsHistoryTitle">Historial de Aportes al Fondo</div>
+      <div class="section-divider title-savings" id="savingsHistoryTitle">HISTORIAL APORTES CONJUNTOS</div>
       <div class="col" style="width: 100%;">
         <ul class="items-list ahorros" id="savingsList"></ul>
         <button class="add-btn" id="addSavingsBtn" onclick="addSavingsRecord()">+ Ingresar Ahorro</button>
@@ -929,7 +933,7 @@
 
         <div class="rule-card-item savings-card">
           <div class="rule-card-info">
-            <span class="rule-card-title" style="color:#22d3ee;">🔵 Ahorros Alcancía (Mín 25%)</span>
+            <span class="rule-card-title" style="color:#f59e0b;">🟡 Ahorros Alcancía (Mín 25%)</span>
             <span class="rule-card-ideal">Meta Ideal (25%): <span id="idealSavings">$0</span></span>
           </div>
           <span class="rule-card-val" id="valSavings">$0</span>
@@ -1127,8 +1131,8 @@
     }
 
     function triggerCoinAnimation() {
-      const visualContainer = document.querySelector('.cylinder-body, .penguin-body');
-      if (!visualContainer) return;
+      const box = document.getElementById('visualBoxContainer');
+      if (!box) return;
 
       playCoinSound();
 
@@ -1136,7 +1140,7 @@
       coin.className = 'falling-coin';
       coin.innerText = '🪙';
 
-      visualContainer.appendChild(coin);
+      box.appendChild(coin);
 
       setTimeout(() => {
         coin.remove();
@@ -1168,9 +1172,9 @@
     let allRecords = {};
     let allPendings = {};
     let savingsConfigs = {
-      joint: { goal: 100000, style: 'cylinder' },
-      jesus: { goal: 50000, style: 'cylinder' },
-      ali: { goal: 50000, style: 'cylinder' }
+      joint: { goal: 300000, style: 'penguin' },
+      jesus: { goal: 50000, style: 'penguin' },
+      ali: { goal: 50000, style: 'penguin' }
     };
     
     let currentSavingsMode = 'joint';
@@ -1211,9 +1215,9 @@
       const val = snapshot.val();
       if (val) {
         savingsConfigs = {
-          joint: val.joint || { goal: 100000, style: 'cylinder' },
-          jesus: val.jesus || { goal: 50000, style: 'cylinder' },
-          ali: val.ali || { goal: 50000, style: 'cylinder' }
+          joint: val.joint || { goal: 300000, style: 'penguin' },
+          jesus: val.jesus || { goal: 50000, style: 'penguin' },
+          ali: val.ali || { goal: 50000, style: 'penguin' }
         };
       }
       updateVisualSelectorUI();
@@ -1345,8 +1349,8 @@
     }
 
     function setSavingsGoal() {
-      const currentConfig = savingsConfigs[currentSavingsMode] || { goal: 100000 };
-      const newGoal = parseFloat(prompt("Establece la meta monetaria ($):", currentConfig.goal || 100000));
+      const currentConfig = savingsConfigs[currentSavingsMode] || { goal: 300000 };
+      const newGoal = parseFloat(prompt("Establece la meta monetaria ($):", currentConfig.goal || 300000));
       if (!isNaN(newGoal) && newGoal > 0) {
         db.ref(`alcanciaConfigs/${currentSavingsMode}`).update({ goal: newGoal });
       }
@@ -1357,7 +1361,7 @@
     }
 
     function updateVisualSelectorUI() {
-      const config = savingsConfigs[currentSavingsMode] || { style: 'cylinder' };
+      const config = savingsConfigs[currentSavingsMode] || { style: 'penguin' };
       const btnCyl = document.getElementById('btnCylinder');
       const btnPen = document.getElementById('btnPenguin');
       if (config.style === 'penguin') {
@@ -1504,7 +1508,7 @@
 
       const headings = { joint: "Fondo de Ahorro Conjunto", jesus: "Alcancía Indiv. Jesús 💙", ali: "Alcancía Indiv. Ali 🩷" };
       const btnTexts = { joint: "+ Ingresar Ahorro Conjunto", jesus: "+ Ingresar Ahorro Jesús", ali: "+ Ingresar Ahorro Ali" };
-      const histTitles = { joint: "Historial Aportes Conjuntos", jesus: "Historial Ahorros Jesús", ali: "Historial Ahorros Ali" };
+      const histTitles = { joint: "HISTORIAL APORTES CONJUNTOS", jesus: "HISTORIAL AHORROS JESÚS", ali: "HISTORIAL AHORROS ALI" };
 
       document.getElementById('savingsTitleHeading').innerText = headings[currentSavingsMode];
       document.getElementById('addSavingsBtn').innerText = btnTexts[currentSavingsMode];
@@ -1526,8 +1530,8 @@
         }
       });
 
-      const config = savingsConfigs[currentSavingsMode] || { goal: 100000, style: 'cylinder' };
-      const goal = config.goal || 100000;
+      const config = savingsConfigs[currentSavingsMode] || { goal: 300000, style: 'penguin' };
+      const goal = config.goal || 300000;
       let percentage = Math.round((totalSavings / goal) * 100);
       let displayPercentage = percentage;
       if (percentage > 100) percentage = 100;
@@ -1542,8 +1546,11 @@
       const container = document.getElementById('visualBoxContainer');
       container.innerHTML = '';
 
-      // Generación de monedas doradas visibles según el porcentaje acumulado
-      const coinCount = totalSavings > 0 ? Math.max(1, Math.min(36, Math.ceil((percentage / 100) * 30))) : 0;
+      // Mínimo de altura para asegurar que las monedas quepan visibles si hay ahorros registrados
+      const fillHeight = totalSavings > 0 ? Math.max(18, percentage) : 0;
+      
+      // Cantidad de monedas a dibujar
+      const coinCount = totalSavings > 0 ? Math.max(2, Math.min(28, Math.ceil((percentage / 100) * 24))) : 0;
       let coinsHTML = '';
       for (let i = 0; i < coinCount; i++) {
         coinsHTML += `<span class="coin-icon">🪙</span>`;
@@ -1557,7 +1564,7 @@
               <div class="beak"></div>
             </div>
             <div class="penguin-text">${displayPercentage}%</div>
-            <div class="coins-fill-container" style="height: ${percentage}%;">
+            <div class="coins-fill-container" style="height: ${fillHeight}%;">
               ${coinsHTML}
             </div>
           </div>
@@ -1566,7 +1573,7 @@
         container.innerHTML = `
           <div class="cylinder-body">
             <div class="cylinder-text">${displayPercentage}%</div>
-            <div class="coins-fill-container" style="height: ${percentage}%;">
+            <div class="coins-fill-container" style="height: ${fillHeight}%;">
               ${coinsHTML}
             </div>
           </div>
@@ -1577,7 +1584,7 @@
     function getCatBadgeHTML(cat) {
       if (cat === 'necesidades') return `<span class="category-badge cat-necesidades">🔴 Necesidad</span>`;
       if (cat === 'gustos') return `<span class="category-badge cat-gustos">🟣 Gusto</span>`;
-      if (cat === 'ahorros') return `<span class="category-badge cat-ahorros">🔵 Ahorro Alcancía</span>`;
+      if (cat === 'ahorros') return `<span class="category-badge cat-ahorros">🟡 Ahorro Alcancía</span>`;
       return '';
     }
 
@@ -1643,7 +1650,7 @@
           }
 
           const liHist = document.createElement('li');
-          let typeIcon = item.type === 'ingreso' ? '🟢' : (item.type === 'ahorro' ? '🔵' : '🔴');
+          let typeIcon = item.type === 'ingreso' ? '🟢' : (item.type === 'ahorro' ? '🟡' : '🔴');
           let badgeHist = (item.type === 'gasto' || item.type === 'ahorro') ? getCatBadgeHTML(item.category) : '';
           
           liHist.innerHTML = `
@@ -1795,7 +1802,7 @@
           labels: ['Necesidades (50%)', 'Gustos/Deseos (25%)', 'Ahorros (25%)'],
           datasets: [{
             data: [50, 25, 25],
-            backgroundColor: ['#ef4444', '#a855f7', '#06b6d4'],
+            backgroundColor: ['#ef4444', '#a855f7', '#f59e0b'],
             borderColor: '#1e293b',
             borderWidth: 2
           }]
@@ -1833,7 +1840,7 @@
           ],
           datasets: [{
             data: (netIncome === 0) ? [1, 1, 1, 1] : [needs, wants, savings, unused],
-            backgroundColor: ['#ef4444', '#a855f7', '#06b6d4', '#64748b'],
+            backgroundColor: ['#ef4444', '#a855f7', '#f59e0b', '#64748b'],
             borderColor: '#1e293b',
             borderWidth: 2
           }]
