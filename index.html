@@ -5,6 +5,9 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>J&A - Finanzas y Academia</title>
   
+  <!-- Manifest PWA -->
+  <link rel="manifest" href="./manifest.json">
+
   <!-- Tipografía Moderna -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -1157,15 +1160,48 @@
     let audioCtx = null;
     let triggeredReminders = {};
 
+    // Desbloqueo global de audio en el primer clic/tap
+    function unlockAudio() {
+      if (!audioCtx) {
+        audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+      }
+      if (audioCtx.state === 'suspended') {
+        audioCtx.resume();
+      }
+      document.removeEventListener('click', unlockAudio);
+      document.removeEventListener('touchstart', unlockAudio);
+    }
+
+    document.addEventListener('click', unlockAudio);
+    document.addEventListener('touchstart', unlockAudio);
+
     function toggleTheme() {
       const html = document.documentElement;
       const currentTheme = html.getAttribute('data-theme');
       const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
       
       html.setAttribute('data-theme', newTheme);
-      document.getElementById('themeIcon').textContent = newTheme === 'dark' ? '☀️' : '🌙';
+      const themeIcon = document.getElementById('themeIcon');
+      if (themeIcon) themeIcon.textContent = newTheme === 'dark' ? '☀️' : '🌙';
       renderData();
     }
+
+    function checkAutoDarkMode() {
+      const now = new Date();
+      const hours = now.getHours();
+      const html = document.documentElement;
+      const currentTheme = html.getAttribute('data-theme');
+      // A las 6 PM (18:00) o más tarde, activar modo oscuro automáticamente si está en light
+      if (hours >= 18 && currentTheme === 'light') {
+        html.setAttribute('data-theme', 'dark');
+        const themeIcon = document.getElementById('themeIcon');
+        if (themeIcon) themeIcon.textContent = '☀️';
+        renderData();
+      }
+    }
+
+    // Comprobar al iniciar
+    checkAutoDarkMode();
 
     function openMode(mode) {
       document.getElementById('homeScreen').classList.add('hidden');
@@ -1208,7 +1244,7 @@
     function updateNotifBanner() {
       const banner = document.getElementById('notifBanner');
       if (!("Notification" in window)) {
-        banner.innerHTML = "<span>⚠️ Navegador sin notificaciones</span>";
+        banner.style.display = 'none';
         return;
       }
       if (Notification.permission === "granted") {
@@ -1235,13 +1271,42 @@
 
     function triggerNativeNotification(title, message) {
       playSoundNotification();
+
       if ("Notification" in window && Notification.permission === "granted") {
         try {
-          new Notification(title, { body: message, icon: "https://cdn-icons-png.flaticon.com/512/3135/3135715.png" });
-        } catch(e) {
-          console.log("Error desplegando notificación:", e);
+          if (navigator.serviceWorker && navigator.serviceWorker.controller) {
+            navigator.serviceWorker.ready.then(registration => {
+              registration.showNotification(title, { body: message, icon: "https://cdn-icons-png.flaticon.com/512/3135/3135715.png" });
+            });
+          } else {
+            new Notification(title, { body: message, icon: "https://cdn-icons-png.flaticon.com/512/3135/3135715.png" });
+          }
+          return;
+        } catch (e) {
+          console.log("Notificación nativa falló, usando fallback visual", e);
         }
       }
+
+      showInAppToast(`${title}: ${message}`);
+    }
+
+    function showInAppToast(text) {
+      let toast = document.getElementById('inAppToast');
+      if (!toast) {
+        toast = document.createElement('div');
+        toast.id = 'inAppToast';
+        toast.style.cssText = `
+          position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%);
+          background: var(--card-bg-solid); color: var(--text); border: 2px solid var(--accent);
+          padding: 12px 20px; border-radius: 14px; box-shadow: 0 10px 25px rgba(0,0,0,0.3);
+          z-index: 9999; font-size: 0.82rem; font-weight: 700; text-align: center; width: 90%; max-width: 400px;
+          animation: fadeIn 0.3s ease;
+        `;
+        document.body.appendChild(toast);
+      }
+      toast.innerText = text;
+      toast.style.display = 'block';
+      setTimeout(() => { toast.style.display = 'none'; }, 5000);
     }
 
     updateNotifBanner();
@@ -1253,14 +1318,13 @@
       return `${year}-${month}-${day}`;
     }
 
-    // Método robusto para formatear fechas preveniento fallos de ejecución
     function formatDateSafe(rawDate) {
       if (!rawDate) return "";
       if (typeof rawDate === 'string') {
         if (rawDate.length >= 10 && rawDate.includes('-')) {
           return rawDate.slice(0, 10);
         }
-        const parsed = new Date(rawDate);
+        const parsed = new Date(rawDate.replace(/-/g, '\/'));
         if (!isNaN(parsed.getTime())) return getLocalDateStr(parsed);
       }
       if (typeof rawDate === 'number') {
@@ -1407,6 +1471,7 @@
     const daysMap = { 0: 'Domingo', 1: 'Lunes', 2: 'Martes', 3: 'Miércoles', 4: 'Jueves', 5: 'Viernes', 6: 'Sábado' };
 
     function checkClassReminders() {
+      checkAutoDarkMode(); // Ejecutar verificación de modo oscuro automático
       const now = new Date();
       const currentDayName = daysMap[now.getDay()];
       const nowMinutes = now.getHours() * 60 + now.getMinutes();
@@ -1937,9 +2002,15 @@
             <option value="Sábado">Sábado</option>
           </select>
         </div>
-        <div class="form-group">
-          <label>Hora Inicio</label>
-          <input type="time" id="modalClassStartTime" required />
+        <div class="columns-grid" style="gap:8px;">
+          <div class="form-group">
+            <label>Hora Inicio</label>
+            <input type="time" id="modalClassStartTime" required />
+          </div>
+          <div class="form-group">
+            <label>Hora Fin</label>
+            <input type="time" id="modalClassEndTime" required />
+          </div>
         </div>
         <div class="form-group">
           <label>Aula / Detalles</label>
@@ -1952,10 +2023,11 @@
         const materia = document.getElementById('modalClassMateria').value.trim();
         const day = document.getElementById('modalClassDay').value;
         const startTime = document.getElementById('modalClassStartTime').value;
+        const endTime = document.getElementById('modalClassEndTime').value;
         const info = document.getElementById('modalClassInfo').value.trim();
 
-        if (materia && startTime) {
-          db.ref('academico/horarios').push({ owner, materia, day, startTime, info });
+        if (materia && startTime && endTime) {
+          db.ref('academico/horarios').push({ owner, materia, day, startTime, endTime, info });
         }
       });
     }
@@ -1995,7 +2067,7 @@
               item.innerHTML = `
                 <div>
                   <strong style="font-size:0.78rem;">${c.materia || 'Clase'}</strong>
-                  <div style="font-size:0.7rem; color:var(--gold); font-weight:700;">⏰ ${c.startTime || 'S/H'}</div>
+                  <div style="font-size:0.7rem; color:var(--gold); font-weight:700;">⏰ ${c.startTime || 'S/H'} - ${c.endTime || 'S/H'}</div>
                   <div style="font-size:0.65rem; color:var(--text-muted);">${c.info || ''}</div>
                 </div>
                 <span class="delete-btn" onclick="deleteScheduleItem('${c.id}')">🗑️</span>
