@@ -110,7 +110,6 @@
       position: relative;
     }
 
-    /* BARRA SUPERIOR DE NAVEGACIÓN Y CONTROLES */
     .top-bar {
       display: flex;
       justify-content: space-between;
@@ -161,7 +160,6 @@
       transform: rotate(15deg);
     }
 
-    /* PANTALLA DE INICIO RENOVADA */
     .home-screen {
       display: flex;
       flex-direction: column;
@@ -173,9 +171,7 @@
       animation: fadeIn 0.3s ease-out;
     }
 
-    .home-screen.hidden {
-      display: none;
-    }
+    .home-screen.hidden { display: none; }
 
     .hero-brand {
       text-align: center;
@@ -296,7 +292,6 @@
       font-weight: 800;
     }
 
-    /* HEADER COMPACTO PARA MÓDULOS (Optimización de espacio) */
     header {
       text-align: center;
       display: flex;
@@ -304,7 +299,6 @@
       gap: 6px;
     }
 
-    /* Sub-navegación (Pestañas por dropdown) */
     .tab-dropdown-container {
       display: flex;
       flex-direction: column;
@@ -364,7 +358,6 @@
       to { opacity: 1; transform: translateY(0); }
     }
 
-    /* Componentes Genéricos */
     .date-indicator {
       text-align: center;
       font-size: 0.78rem;
@@ -412,7 +405,6 @@
       box-shadow: 0 0 0 3px var(--accent-glow);
     }
 
-    /* SISTEMA DE GRILLAS SIMÉTRICAS Y ADAPTABLES */
     .columns-grid {
       display: grid;
       grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -421,9 +413,7 @@
     }
 
     @media (max-width: 520px) {
-      .columns-grid {
-        grid-template-columns: 1fr;
-      }
+      .columns-grid { grid-template-columns: 1fr; }
     }
 
     .col {
@@ -479,7 +469,6 @@
     .items-list.gastos li { border-left-color: var(--red); }
     .items-list.ahorros li { border-left-color: var(--gold); }
 
-    /* ESTILOS ESPECÍFICOS DE SECCIÓN DE DEUDAS SEPARADAS */
     .debt-subblock {
       display: flex;
       flex-direction: column;
@@ -535,11 +524,7 @@
       box-shadow: var(--shadow);
     }
 
-    .add-btn:hover {
-      border-color: var(--accent);
-      color: var(--accent);
-    }
-
+    .add-btn:hover { border-color: var(--accent); color: var(--accent); }
     .add-btn:active { transform: scale(0.98); background: var(--btn-hover); }
 
     .user-summary-card {
@@ -563,10 +548,7 @@
     .summary-item .value { font-size: 0.9rem; font-weight: 800; margin-top: 2px; }
 
     .charts-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; width: 100%; }
-    
-    @media (max-width: 480px) {
-      .charts-grid { grid-template-columns: 1fr; }
-    }
+    @media (max-width: 480px) { .charts-grid { grid-template-columns: 1fr; } }
 
     .chart-box {
       background: var(--card-bg-solid);
@@ -594,7 +576,6 @@
       border: 1px solid var(--card-border);
     }
 
-    /* ESTILOS ALCANCÍA */
     .savings-container {
       background: var(--card-bg-solid);
       border: 1px solid var(--card-border);
@@ -647,7 +628,6 @@
       width: 100%; padding: 11px; background: linear-gradient(135deg, #f59e0b, #e11d48); border: none; border-radius: 12px; color: #fff; font-weight: 800; cursor: pointer; box-shadow: 0 6px 16px rgba(225, 29, 72, 0.35); font-size: 0.85rem;
     }
 
-    /* ESTILOS MÓDULO ACADÉMICO */
     .academic-card {
       background: var(--card-bg-solid);
       border: 1px solid var(--card-border);
@@ -670,11 +650,7 @@
       gap: 6px;
     }
 
-    .schedule-grid {
-      display: flex;
-      flex-direction: column;
-      gap: 8px;
-    }
+    .schedule-grid { display: flex; flex-direction: column; gap: 8px; }
 
     .schedule-item {
       background: var(--bg);
@@ -712,7 +688,6 @@
       border-radius: 6px;
     }
 
-    /* Barra de Progreso Notas Jesús */
     .progress-bar-container {
       width: 100%;
       height: 9px;
@@ -740,7 +715,6 @@
     .grade-pass { background: var(--green-glow); color: var(--green); border: 1px solid rgba(16, 185, 129, 0.3); }
     .grade-pending { background: var(--gold-glow); color: var(--gold); border: 1px solid rgba(245, 158, 11, 0.3); }
 
-    /* MODALES */
     .modal-overlay {
       position: fixed; top: 0; left: 0; width: 100%; height: 100%;
       background: rgba(15, 23, 42, 0.6); backdrop-filter: blur(8px);
@@ -803,7 +777,6 @@
 
   <div class="app-container">
     
-    <!-- BARRA SUPERIOR DE NAVEGACIÓN Y TEMA -->
     <div class="top-bar">
       <button id="backBtn" class="back-btn" onclick="goHome()">
         &#8592; Menú Principal
@@ -813,7 +786,6 @@
       </button>
     </div>
 
-    <!-- PANTALLA DE INICIO RENOVADA (HERO CARDS Y MARCA) -->
     <div id="homeScreen" class="home-screen">
       <div class="hero-brand">
         <h1 class="logo-home">J&A</h1>
@@ -846,7 +818,6 @@
       </div>
     </div>
 
-    <!-- NOTIFICACIONES COMPACTAS (SIN TÍTULO REPETIDO EN SECCIONES) -->
     <header id="mainHeader" style="display:none;">
       <div id="notifBanner" class="notif-permission-banner" onclick="requestNotificationPermission()">
         <span>🔔 Recordatorio de clases (1h antes)</span>
@@ -854,7 +825,7 @@
       </div>
     </header>
 
-    <!-- ==================== SECCIÓN 1: FINANZAS ==================== -->
+    <!-- SECCIÓN 1: FINANZAS -->
     <div id="sec-finanzas" class="mode-section">
       <div class="tab-dropdown-container">
         <label>Módulo Finanzas</label>
@@ -867,11 +838,9 @@
         </select>
       </div>
 
-      <!-- Pestaña Diario -->
       <div id="tab-diario" class="tab-content active">
         <div class="date-indicator" id="todayLabel">Hoy</div>
         <div class="columns-grid">
-          <!-- Jesús -->
           <div class="col">
             <h2 class="title-jesus">Jesús 💙</h2>
             <div style="display:flex; flex-direction:column; gap:6px;">
@@ -885,7 +854,6 @@
               <button class="add-btn" onclick="promptAddGasto('Jesus')">+ Gasto</button>
             </div>
           </div>
-          <!-- Ali -->
           <div class="col">
             <h2 class="title-ali">Ali 🩷</h2>
             <div style="display:flex; flex-direction:column; gap:6px;">
@@ -921,7 +889,6 @@
         </div>
       </div>
 
-      <!-- Pestaña Mensual -->
       <div id="tab-mensual" class="tab-content">
         <div class="filter-box">
           <label>Mes Seleccionado</label>
@@ -945,7 +912,6 @@
         </div>
       </div>
 
-      <!-- Pestaña Regla 50/25/25 -->
       <div id="tab-regla" class="tab-content">
         <div class="filter-box">
           <label>Mes Evaluado</label>
@@ -994,40 +960,31 @@
         </div>
       </div>
 
-      <!-- Pestaña Deudores (CON SEPARACIÓN CLARA ENTRE PENDIENTES Y PAGADAS) -->
       <div id="tab-pendientes" class="tab-content">
         <div class="columns-grid">
-          <!-- Column Jesús -->
           <div class="col">
             <h2 class="title-jesus">Jesús</h2>
-            
             <div class="debt-subblock">
               <span class="debt-subtitle pending-header">📌 Deudas Pendientes</span>
               <ul class="items-list" id="pendingJesusList"></ul>
             </div>
-
             <div class="debt-subblock" style="margin-top: 6px;">
               <span class="debt-subtitle paid-header">✅ Deudas Pagadas</span>
               <ul class="items-list" id="paidJesusList"></ul>
             </div>
-
             <button class="add-btn" onclick="addPending('Jesus')">+ Nueva Deuda</button>
           </div>
 
-          <!-- Column Ali -->
           <div class="col">
             <h2 class="title-ali">Ali</h2>
-
             <div class="debt-subblock">
               <span class="debt-subtitle pending-header">📌 Deudas Pendientes</span>
               <ul class="items-list" id="pendingAliList"></ul>
             </div>
-
             <div class="debt-subblock" style="margin-top: 6px;">
               <span class="debt-subtitle paid-header">✅ Deudas Pagadas</span>
               <ul class="items-list" id="paidAliList"></ul>
             </div>
-
             <button class="add-btn" onclick="addPending('Ali')">+ Nueva Deuda</button>
           </div>
         </div>
@@ -1044,7 +1001,6 @@
         </div>
       </div>
 
-      <!-- Pestaña Alcancía -->
       <div id="tab-alcancia" class="tab-content">
         <div class="savings-container">
           <div class="savings-subtabs">
@@ -1076,7 +1032,7 @@
       </div>
     </div>
 
-    <!-- ==================== SECCIÓN 2: ACADÉMICA ==================== -->
+    <!-- SECCIÓN 2: ACADÉMICA -->
     <div id="sec-academica" class="mode-section">
       <div class="tab-dropdown-container">
         <label>Módulo Académico</label>
@@ -1087,7 +1043,6 @@
         </select>
       </div>
 
-      <!-- Horarios Separados -->
       <div id="acad-horarios" class="tab-content active">
         <div style="display:flex; justify-content:space-between; align-items:center;">
           <h3 style="font-size:0.88rem; color:var(--academic-color); font-weight:800;">Horario de Clases</h3>
@@ -1095,7 +1050,6 @@
         </div>
 
         <div class="columns-grid">
-          <!-- Horario Jesús -->
           <div class="user-summary-card jesus-card">
             <h3 class="title-jesus" style="font-size:0.85rem; border-bottom:1px solid var(--card-border); padding-bottom:6px;">
               Horario Jesús 💙
@@ -1103,7 +1057,6 @@
             <div class="schedule-grid" id="scheduleJesusContainer"></div>
           </div>
 
-          <!-- Horario Ali -->
           <div class="user-summary-card ali-card">
             <h3 class="title-ali" style="font-size:0.85rem; border-bottom:1px solid var(--card-border); padding-bottom:6px;">
               Horario Ali 🩷
@@ -1113,7 +1066,6 @@
         </div>
       </div>
 
-      <!-- Registro de Materias y Archivos -->
       <div id="acad-materias" class="tab-content">
         <div style="display:flex; justify-content:space-between; align-items:center;">
           <h3 style="font-size:0.88rem; color:var(--academic-color); font-weight:800;">Materias</h3>
@@ -1123,13 +1075,11 @@
         <div id="materiasListContainer" style="display:flex; flex-direction:column; gap:12px;"></div>
       </div>
 
-      <!-- Notas y Calificaciones -->
       <div id="acad-notas" class="tab-content">
         <div style="display:flex; justify-content:space-between; align-items:center;">
           <h3 style="font-size:0.88rem; color:var(--academic-color); font-weight:800;">Control de Calificaciones</h3>
         </div>
 
-        <!-- Jesús (Suma >= 300) -->
         <div class="academic-card" style="border-top: 3px solid var(--jesus-color);">
           <h3 class="title-jesus">
             <span>Jesús 💙</span> 
@@ -1138,7 +1088,6 @@
           <div id="jesusGradesContainer"></div>
         </div>
 
-        <!-- Ali (Promedio) -->
         <div class="academic-card" style="border-top: 3px solid var(--ali-color);">
           <h3 class="title-ali">
             <span>Ali 🩷</span>
@@ -1150,7 +1099,7 @@
     </div>
   </div>
 
-  <!-- MODAL GENERAL INPUT -->
+  <!-- MODALES -->
   <div id="inputModal" class="modal-overlay">
     <div class="modal-card">
       <div class="modal-header">
@@ -1164,7 +1113,6 @@
     </div>
   </div>
 
-  <!-- MODAL CONFIRMACIÓN -->
   <div id="confirmModal" class="modal-overlay">
     <div class="modal-card" style="text-align:center;">
       <h3 id="confirmModalTitle" style="font-size:0.92rem; font-weight:800;">¿Confirmar Acción?</h3>
@@ -1176,7 +1124,6 @@
     </div>
   </div>
 
-  <!-- MODAL CATEGORÍA GASTO -->
   <div id="categoryModal" class="modal-overlay">
     <div class="modal-card">
       <div class="modal-header">
@@ -1192,7 +1139,6 @@
   </div>
 
   <script>
-    // Configuración Firebase
     const firebaseConfig = {
       apiKey: "AIzaSyCbsHxOR1w4gDjQCAV0cdej3CEp83-WQs0",
       authDomain: "agendajya-94e6c.firebaseapp.com",
@@ -1206,13 +1152,11 @@
 
     firebase.initializeApp(firebaseConfig);
     const db = firebase.database();
-    const messaging = firebase.messaging();
 
     const appStartTime = Date.now();
     let audioCtx = null;
     let triggeredReminders = {};
 
-    // GESTIÓN DE TEMA Y NAVEGACIÓN PRINCIPAL
     function toggleTheme() {
       const html = document.documentElement;
       const currentTheme = html.getAttribute('data-theme');
@@ -1220,7 +1164,6 @@
       
       html.setAttribute('data-theme', newTheme);
       document.getElementById('themeIcon').textContent = newTheme === 'dark' ? '☀️' : '🌙';
-      
       renderData();
     }
 
@@ -1280,37 +1223,15 @@
         alert("Tu navegador no soporta notificaciones del sistema.");
         return;
       }
-
       Notification.requestPermission().then(permission => {
         if (permission === "granted") {
           updateNotifBanner();
-          
-          // Obtener Token de Notificación usando la clave VAPID
-          messaging.getToken({ vapidKey: 'BIvoCVtDMq3h2xwyxWSMOtgLjZ5-7EnEtmxM9RUGP7MDHftDsQjGN6cxY14NhRvpCvH8siAXyLR7Qa6EOdd3cvE' })
-            .then((currentToken) => {
-              if (currentToken) {
-                console.log("Token FCM del dispositivo:", currentToken);
-                // Guarda el token en Firebase Realtime Database
-                db.ref('tokensNotificaciones').push(currentToken);
-                alert("¡Notificaciones push activadas exitosamente!");
-              } else {
-                console.warn("No se pudo obtener el token de registro.");
-              }
-            })
-            .catch((err) => {
-              console.error("Error al obtener token FCM:", err);
-            });
-
+          new Notification("Jesús & Ali", { body: "¡Notificaciones activadas! 🔔" });
         } else {
           alert("Permiso de notificaciones denegado.");
         }
       });
     }
-
-    // Escuchar notificaciones en primer plano
-    messaging.onMessage((payload) => {
-      triggerNativeNotification(payload.notification.title, payload.notification.body);
-    });
 
     function triggerNativeNotification(title, message) {
       playSoundNotification();
@@ -1330,6 +1251,23 @@
       const month = String(dateObj.getMonth() + 1).padStart(2, '0');
       const day = String(dateObj.getDate()).padStart(2, '0');
       return `${year}-${month}-${day}`;
+    }
+
+    // Método robusto para formatear fechas preveniento fallos de ejecución
+    function formatDateSafe(rawDate) {
+      if (!rawDate) return "";
+      if (typeof rawDate === 'string') {
+        if (rawDate.length >= 10 && rawDate.includes('-')) {
+          return rawDate.slice(0, 10);
+        }
+        const parsed = new Date(rawDate);
+        if (!isNaN(parsed.getTime())) return getLocalDateStr(parsed);
+      }
+      if (typeof rawDate === 'number') {
+        const parsed = new Date(rawDate);
+        if (!isNaN(parsed.getTime())) return getLocalDateStr(parsed);
+      }
+      return "";
     }
 
     const today = new Date();
@@ -1412,7 +1350,7 @@
     db.ref('registros').on('child_added', (snapshot) => {
       const val = snapshot.val();
       if (val && val.timestamp && val.timestamp > appStartTime) {
-        triggerNativeNotification("💰 Nuevo Registro", `${val.owner} agregó un ${val.type}: ${val.description} ($${val.amount.toLocaleString()})`);
+        triggerNativeNotification("💰 Nuevo Registro", `${val.owner} agregó un ${val.type}: ${val.description} ($${parseFloat(val.amount || 0).toLocaleString()})`);
       }
     });
 
@@ -1475,7 +1413,7 @@
 
       Object.keys(allSchedules).forEach(key => {
         const item = allSchedules[key];
-        if (item.day === currentDayName && item.startTime) {
+        if (item && item.day === currentDayName && item.startTime) {
           const [h, m] = item.startTime.split(':').map(Number);
           const classMinutes = h * 60 + m;
           const diffMinutes = classMinutes - nowMinutes;
@@ -1565,12 +1503,12 @@
       if (pendingKey) {
         const newExpenseRef = db.ref('registros').push();
         newExpenseRef.set({
-          type: 'gasto', owner: owner, category: category, description: `[Deuda ${owner}] ${desc}`, amount: amount, date: getLocalDateStr(), timestamp: Date.now()
+          type: 'gasto', owner: owner, category: category, description: `[Deuda ${owner}] ${desc}`, amount: parseFloat(amount), date: getLocalDateStr(), timestamp: Date.now()
         });
         db.ref('pendientes/' + pendingKey).update({ paid: true, expenseId: newExpenseRef.key });
       } else {
         db.ref('registros').push({
-          type: 'gasto', owner: owner, category: category, description: desc, amount: amount, date: getLocalDateStr(), timestamp: Date.now()
+          type: 'gasto', owner: owner, category: category, description: desc, amount: parseFloat(amount), date: getLocalDateStr(), timestamp: Date.now()
         });
       }
       pendingGastoContext = null;
@@ -1640,7 +1578,7 @@
       let recordKeys = [];
       Object.keys(allRecords).forEach(key => {
         const item = allRecords[key];
-        if (item.type === 'ahorro' && (item.scope || 'joint') === currentSavingsMode) recordKeys.push(key);
+        if (item && item.type === 'ahorro' && (item.scope || 'joint') === currentSavingsMode) recordKeys.push(key);
       });
 
       customConfirm('🎉 ¡Meta Alcanzada!', '¿Deseas romper la alcancía y reiniciar?', () => {
@@ -1696,7 +1634,6 @@
       });
     }
 
-    /* RENDER DEUDAS: PENDIENTES Y PAGADAS SEPARADAS EN CONTENEDORES INDEPENDIENTES */
     function renderPendings() {
       const pendingJesus = document.getElementById('pendingJesusList');
       const paidJesus = document.getElementById('paidJesusList');
@@ -1712,36 +1649,40 @@
 
       Object.keys(allPendings).forEach(key => {
         const p = allPendings[key];
+        if (!p) return;
+
+        const amount = parseFloat(p.amount || 0);
+        const owner = (p.owner || '').toLowerCase() === 'ali' ? 'Ali' : 'Jesus';
         const li = document.createElement('li');
 
         if (!p.paid) {
           li.className = 'pending-item';
           li.innerHTML = `
-            <span>${p.description} (<b>$${p.amount.toLocaleString()}</b>)</span>
+            <span>${p.description || 'Deuda'} (<b>$${amount.toLocaleString()}</b>)</span>
             <div class="actions">
               <span class="check-btn" onclick="markAsPaid('${key}')">✓</span>
               <span class="delete-btn" onclick="deletePending('${key}')">🗑️</span>
             </div>
           `;
-          if (p.owner === 'Jesus') {
+          if (owner === 'Jesus') {
             pendingJesus.appendChild(li);
-            totalJesus += p.amount;
+            totalJesus += amount;
             countPendingJesus++;
           } else {
             pendingAli.appendChild(li);
-            totalAli += p.amount;
+            totalAli += amount;
             countPendingAli++;
           }
         } else {
           li.className = 'paid-item';
           li.innerHTML = `
-            <span>${p.description} (<b>$${p.amount.toLocaleString()}</b>)</span>
+            <span>${p.description || 'Deuda'} (<b>$${amount.toLocaleString()}</b>)</span>
             <div class="actions">
               <span class="undo-btn" onclick="undoPayment('${key}')">✕</span>
               <span class="delete-btn" onclick="deletePending('${key}')">🗑️</span>
             </div>
           `;
-          if (p.owner === 'Jesus') {
+          if (owner === 'Jesus') {
             paidJesus.appendChild(li);
             countPaidJesus++;
           } else {
@@ -1767,11 +1708,14 @@
 
       Object.keys(allRecords).forEach(key => {
         const item = allRecords[key];
+        if (!item) return;
+
         if (item.type === 'ahorro' && (item.scope || 'joint') === currentSavingsMode) {
-          totalSavings += item.amount;
+          const amount = parseFloat(item.amount || 0);
+          totalSavings += amount;
           const li = document.createElement('li');
           li.innerHTML = `
-            <span><b>[${item.owner}]</b> ${item.description} (<b>$${item.amount.toLocaleString()}</b>)</span>
+            <span><b>[${item.owner || 'Usuario'}]</b> ${item.description || 'Ahorro'} (<b>$${amount.toLocaleString()}</b>)</span>
             <span class="delete-btn" onclick="deleteRecord('${key}')">✕</span>
           `;
           savingsList.appendChild(li);
@@ -1779,7 +1723,7 @@
       });
 
       const config = savingsConfigs[currentSavingsMode] || { goal: 300000 };
-      const goal = config.goal || 300000;
+      const goal = parseFloat(config.goal || 300000);
       let percentage = Math.round((totalSavings / goal) * 100);
       let displayPercentage = percentage;
       if (percentage > 100) percentage = 100;
@@ -1831,47 +1775,52 @@
 
       Object.keys(allRecords).forEach(key => {
         const item = allRecords[key];
-        const itemDateStr = item.date ? item.date.slice(0, 10) : "";
-        const itemMonthStr = item.date ? item.date.slice(0, 7) : "";
-        const owner = item.owner || 'Jesus'; 
+        if (!item) return;
+
+        const rawDate = item.date || item.timestamp;
+        const itemDateStr = formatDateSafe(rawDate);
+        const itemMonthStr = itemDateStr ? itemDateStr.slice(0, 7) : "";
+        
+        const owner = (item.owner || '').toLowerCase() === 'ali' ? 'Ali' : 'Jesus';
+        const amount = parseFloat(item.amount || 0);
 
         if (itemDateStr === todayStr) {
           const badge = getCatBadgeHTML(item.category);
           const li = document.createElement('li');
-          li.innerHTML = `<span>${item.description} ${badge} (<b>$${item.amount.toLocaleString()}</b>)</span><span class="delete-btn" onclick="deleteRecord('${key}')">✕</span>`;
+          li.innerHTML = `<span>${item.description || ''} ${badge} (<b>$${amount.toLocaleString()}</b>)</span><span class="delete-btn" onclick="deleteRecord('${key}')">✕</span>`;
 
           if (item.type === 'ingreso') {
-            if (owner === 'Jesus') { ingJesus.appendChild(li); dIngJesus += item.amount; }
-            else { ingAli.appendChild(li); dIngAli += item.amount; }
+            if (owner === 'Jesus') { ingJesus.appendChild(li); dIngJesus += amount; }
+            else { ingAli.appendChild(li); dIngAli += amount; }
           } else {
-            if (owner === 'Jesus') { gasJesus.appendChild(li); dGasJesus += item.amount; }
-            else { gasAli.appendChild(li); dGasAli += item.amount; }
+            if (owner === 'Jesus') { gasJesus.appendChild(li); dGasJesus += amount; }
+            else { gasAli.appendChild(li); dGasAli += amount; }
           }
         }
 
         if (itemMonthStr === selectedMonth) {
           if (item.type === 'ingreso') {
-            if (owner === 'Jesus') mIngJesus += item.amount; else mIngAli += item.amount;
+            if (owner === 'Jesus') mIngJesus += amount; else mIngAli += amount;
           } else {
-            if (owner === 'Jesus') mGasJesus += item.amount; else mGasAli += item.amount;
+            if (owner === 'Jesus') mGasJesus += amount; else mGasAli += amount;
           }
 
           const liHist = document.createElement('li');
           let typeIcon = item.type === 'ingreso' ? '🟢' : '🔴';
           liHist.innerHTML = `
-            <div><b>${typeIcon} [${owner}]</b> ${item.description}</div>
-            <div><b>$${item.amount.toLocaleString()}</b> <span class="delete-btn" onclick="deleteRecord('${key}')">✕</span></div>
+            <div><b>${typeIcon} [${owner}]</b> ${item.description || ''}</div>
+            <div><b>$${amount.toLocaleString()}</b> <span class="delete-btn" onclick="deleteRecord('${key}')">✕</span></div>
           `;
           monthlyDetailList.appendChild(liHist);
         }
 
         if (itemMonthStr === ruleMonth) {
-          if (item.type === 'ingreso') totalNetIncomeRule += item.amount;
-          else if (item.type === 'ahorro') totalSavingsRule += item.amount;
+          if (item.type === 'ingreso') totalNetIncomeRule += amount;
+          else if (item.type === 'ahorro') totalSavingsRule += amount;
           else if (item.type === 'gasto') {
-            if (item.category === 'necesidades') totalNeedsRule += item.amount;
-            else if (item.category === 'gustos') totalWantsRule += item.amount;
-            else totalSavingsRule += item.amount;
+            if (item.category === 'necesidades') totalNeedsRule += amount;
+            else if (item.category === 'gustos') totalWantsRule += amount;
+            else totalSavingsRule += amount;
           }
         }
       });
@@ -2032,7 +1981,7 @@
         days.forEach(d => {
           const dayClasses = Object.keys(allSchedules)
             .map(k => ({ id: k, ...allSchedules[k] }))
-            .filter(c => c.owner === owner && c.day === d);
+            .filter(c => c && (c.owner || '').toLowerCase() === owner.toLowerCase() && c.day === d);
 
           if (dayClasses.length > 0) {
             hasClasses = true;
@@ -2042,10 +1991,10 @@
 
             dayClasses.forEach(c => {
               const item = document.createElement('div');
-              item.className = `schedule-item ${c.owner === 'Jesus' ? 'jesus' : 'ali'}`;
+              item.className = `schedule-item ${owner.toLowerCase() === 'jesus' ? 'jesus' : 'ali'}`;
               item.innerHTML = `
                 <div>
-                  <strong style="font-size:0.78rem;">${c.materia}</strong>
+                  <strong style="font-size:0.78rem;">${c.materia || 'Clase'}</strong>
                   <div style="font-size:0.7rem; color:var(--gold); font-weight:700;">⏰ ${c.startTime || 'S/H'}</div>
                   <div style="font-size:0.65rem; color:var(--text-muted);">${c.info || ''}</div>
                 </div>
@@ -2102,10 +2051,10 @@
         db.ref('academico/materias/' + materiaId).remove();
 
         Object.keys(allMaterials).forEach(k => {
-          if (allMaterials[k].materiaId === materiaId) db.ref('academico/materiales/' + k).remove();
+          if (allMaterials[k] && allMaterials[k].materiaId === materiaId) db.ref('academico/materiales/' + k).remove();
         });
         Object.keys(allGrades).forEach(k => {
-          if (allGrades[k].materiaId === materiaId) db.ref('academico/notas/' + k).remove();
+          if (allGrades[k] && allGrades[k].materiaId === materiaId) db.ref('academico/notas/' + k).remove();
         });
       });
     }
@@ -2171,17 +2120,19 @@
 
       matKeys.forEach(mKey => {
         const mat = allMaterias[mKey];
+        if (!mat) return;
+
         const card = document.createElement('div');
         card.className = 'academic-card';
-        card.style.borderTop = `3px solid ${mat.owner === 'Jesus' ? 'var(--jesus-color)' : 'var(--ali-color)'}`;
+        card.style.borderTop = `3px solid ${(mat.owner || '').toLowerCase() === 'jesus' ? 'var(--jesus-color)' : 'var(--ali-color)'}`;
 
         const filesListHTML = Object.keys(allMaterials)
           .map(k => ({ id: k, ...allMaterials[k] }))
-          .filter(f => f.materiaId === mKey)
+          .filter(f => f && f.materiaId === mKey)
           .map(f => `
             <div style="display:flex; justify-content:space-between; align-items:center; background:var(--bg); padding:6px 9px; border-radius:8px; font-size:0.72rem; gap:6px;">
               <div style="overflow:hidden;">
-                <div style="font-weight:700; text-overflow:ellipsis; overflow:hidden; white-space:nowrap;">📄 ${f.title}</div>
+                <div style="font-weight:700; text-overflow:ellipsis; overflow:hidden; white-space:nowrap;">📄 ${f.title || 'Archivo'}</div>
                 <div style="font-size:0.62rem; color:var(--text-muted);">${f.fileName || 'Documento PDF'}</div>
               </div>
               <div style="display:flex; gap:4px; align-items:center; flex-shrink:0;">
@@ -2193,7 +2144,7 @@
 
         card.innerHTML = `
           <h3>
-            <span>${mat.name} <span class="materia-badge">${mat.owner}</span></span>
+            <span>${mat.name || 'Materia'} <span class="materia-badge">${mat.owner || 'Usuario'}</span></span>
             <span class="delete-btn" onclick="deleteMateria('${mKey}')">🗑️</span>
           </h3>
           <div style="font-size:0.72rem; color:var(--text-muted);">${mat.desc || 'Sin descripción'}</div>
@@ -2203,7 +2154,7 @@
             ${filesListHTML || '<div style="font-size:0.68rem; color:var(--text-muted); font-style:italic;">Sin PDFs subidos.</div>'}
           </div>
 
-          <button class="add-btn" style="background:var(--card-bg-solid); border-color:var(--academic-color); color:var(--academic-color);" onclick="openUploadFileModal('${mKey}', '${mat.name}', '${mat.owner}')">
+          <button class="add-btn" style="background:var(--card-bg-solid); border-color:var(--academic-color); color:var(--academic-color);" onclick="openUploadFileModal('${mKey}', '${mat.name || 'Materia'}', '${mat.owner || 'Usuario'}')">
             📁 Subir PDF
           </button>
         `;
@@ -2213,7 +2164,7 @@
     }
 
     function openAddGradeForMateriaModal(materiaId, materiaName, owner) {
-      const isJesus = owner === 'Jesus';
+      const isJesus = (owner || '').toLowerCase() === 'jesus';
       const html = `
         <div class="form-group">
           <label>Materia</label>
@@ -2259,10 +2210,9 @@
 
       containerJesus.innerHTML = ''; containerAli.innerHTML = '';
 
-      const jesusMaterias = Object.keys(allMaterias).filter(k => allMaterias[k].owner === 'Jesus');
-      const aliMaterias = Object.keys(allMaterias).filter(k => allMaterias[k].owner === 'Ali');
+      const jesusMaterias = Object.keys(allMaterias).filter(k => allMaterias[k] && (allMaterias[k].owner || '').toLowerCase() === 'jesus');
+      const aliMaterias = Object.keys(allMaterias).filter(k => allMaterias[k] && (allMaterias[k].owner || '').toLowerCase() === 'ali');
 
-      // Render Jesús
       if (jesusMaterias.length === 0) {
         containerJesus.innerHTML = `<div style="font-size:0.74rem; color:var(--text-muted);">No hay materias registradas para Jesús.</div>`;
       } else {
@@ -2270,9 +2220,9 @@
           const mat = allMaterias[mKey];
           const grades = Object.keys(allGrades)
             .map(k => ({ id: k, ...allGrades[k] }))
-            .filter(g => g.materiaId === mKey);
+            .filter(g => g && g.materiaId === mKey);
 
-          const sum = grades.reduce((acc, curr) => acc + curr.valor, 0);
+          const sum = grades.reduce((acc, curr) => acc + parseFloat(curr.valor || 0), 0);
           const percent = Math.min(100, Math.round((sum / 300) * 100));
           const isPassed = sum >= 300;
 
@@ -2281,14 +2231,14 @@
 
           let listHTML = grades.map(i => `
             <div style="display:flex; justify-content:space-between; font-size:0.72rem; margin-top:4px; background:var(--card-bg-solid); padding:4px 8px; border-radius:6px; border:1px solid var(--card-border);">
-              <span>${i.titulo}: <b>${i.valor} pts</b></span>
+              <span>${i.titulo}: <b>${parseFloat(i.valor || 0)} pts</b></span>
               <span class="delete-btn" onclick="deleteGradeItem('${i.id}')">✕</span>
             </div>
           `).join('');
 
           box.innerHTML = `
             <div style="display:flex; justify-content:space-between; align-items:center;">
-              <strong style="font-size:0.8rem;">${mat.name}</strong>
+              <strong style="font-size:0.8rem;">${mat.name || 'Materia'}</strong>
               <span class="grade-badge ${isPassed ? 'grade-pass' : 'grade-pending'}">
                 ${isPassed ? '🎉 GANADA' : `Suma: ${sum}/300 pts`}
               </span>
@@ -2297,13 +2247,12 @@
               <div class="progress-bar-fill" style="width: ${percent}%;"></div>
             </div>
             <div style="margin-top:4px;">${listHTML}</div>
-            <button class="add-btn" style="padding:5px; font-size:0.72rem; margin-top:6px;" onclick="openAddGradeForMateriaModal('${mKey}', '${mat.name}', 'Jesus')">+ Añadir Nota</button>
+            <button class="add-btn" style="padding:5px; font-size:0.72rem; margin-top:6px;" onclick="openAddGradeForMateriaModal('${mKey}', '${mat.name || 'Materia'}', 'Jesus')">+ Añadir Nota</button>
           `;
           containerJesus.appendChild(box);
         });
       }
 
-      // Render Ali
       if (aliMaterias.length === 0) {
         containerAli.innerHTML = `<div style="font-size:0.74rem; color:var(--text-muted);">No hay materias registradas para Ali.</div>`;
       } else {
@@ -2311,30 +2260,30 @@
           const mat = allMaterias[mKey];
           const grades = Object.keys(allGrades)
             .map(k => ({ id: k, ...allGrades[k] }))
-            .filter(g => g.materiaId === mKey);
+            .filter(g => g && g.materiaId === mKey);
 
-          const avg = grades.length > 0 ? (grades.reduce((acc, curr) => acc + curr.valor, 0) / grades.length).toFixed(2) : 0;
-          const isPassed = avg >= 3.0;
+          const avg = grades.length > 0 ? (grades.reduce((acc, curr) => acc + parseFloat(curr.valor || 0), 0) / grades.length).toFixed(2) : 0;
+          const isPassed = parseFloat(avg) >= 3.0;
 
           const box = document.createElement('div');
           box.style.cssText = "background:var(--bg); padding:10px; border-radius:12px; margin-bottom:8px; border:1px solid var(--card-border);";
 
           let listHTML = grades.map(i => `
             <div style="display:flex; justify-content:space-between; font-size:0.72rem; margin-top:4px; background:var(--card-bg-solid); padding:4px 8px; border-radius:6px; border:1px solid var(--card-border);">
-              <span>${i.titulo}: <b>${i.valor}</b></span>
+              <span>${i.titulo}: <b>${parseFloat(i.valor || 0)}</b></span>
               <span class="delete-btn" onclick="deleteGradeItem('${i.id}')">✕</span>
             </div>
           `).join('');
 
           box.innerHTML = `
             <div style="display:flex; justify-content:space-between; align-items:center;">
-              <strong style="font-size:0.8rem;">${mat.name}</strong>
+              <strong style="font-size:0.8rem;">${mat.name || 'Materia'}</strong>
               <span class="grade-badge ${isPassed ? 'grade-pass' : 'grade-pending'}">
                 ${grades.length > 0 ? `Promedio: ${avg}` : 'Sin notas'}
               </span>
             </div>
             <div style="margin-top:4px;">${listHTML}</div>
-            <button class="add-btn" style="padding:5px; font-size:0.72rem; margin-top:6px;" onclick="openAddGradeForMateriaModal('${mKey}', '${mat.name}', 'Ali')">+ Añadir Nota</button>
+            <button class="add-btn" style="padding:5px; font-size:0.72rem; margin-top:6px;" onclick="openAddGradeForMateriaModal('${mKey}', '${mat.name || 'Materia'}', 'Ali')">+ Añadir Nota</button>
           `;
           containerAli.appendChild(box);
         });
