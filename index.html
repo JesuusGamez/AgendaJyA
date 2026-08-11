@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="es" data-theme="light">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Jesús & Ali - Finanzas y Academia</title>
+  <title>J&A - Finanzas y Academia</title>
   
   <!-- Tipografía Moderna -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -16,24 +16,62 @@
   <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
 
   <style>
+    /* VARIABLES DE COLOR (Tema Claro: Azul Cielo Ejecutivo) */
     :root {
-      --bg: #0b0f19;
-      --card-bg: rgba(23, 32, 51, 0.75);
-      --card-border: rgba(255, 255, 255, 0.08);
-      --accent: #e11d48;
+      --bg: #f0f7ff;
+      --bg-gradient: linear-gradient(135deg, #e0f2fe 0%, #f0f7ff 50%, #eef2ff 100%);
+      --card-bg: rgba(255, 255, 255, 0.92);
+      --card-bg-solid: #ffffff;
+      --card-border: rgba(186, 230, 253, 0.8);
+      --card-shadow: 0 8px 24px -6px rgba(14, 165, 233, 0.12);
+      --accent: #0284c7;
+      --accent-glow: rgba(2, 132, 199, 0.2);
+      --text: #0f172a;
+      --text-muted: #64748b;
+      --green: #10b981;
+      --green-glow: rgba(16, 185, 129, 0.15);
+      --red: #ef4444;
+      --red-glow: rgba(239, 68, 68, 0.15);
+      --jesus-color: #2563eb;
+      --jesus-glow: rgba(37, 99, 235, 0.15);
+      --ali-color: #ec4899;
+      --ali-glow: rgba(236, 72, 153, 0.15);
+      --gold: #d97706;
+      --gold-glow: rgba(217, 119, 6, 0.15);
+      --academic-color: #8b5cf6;
+      --academic-glow: rgba(139, 92, 246, 0.15);
+      --unused-color: #94a3b8;
+      --btn-hover: #e0f2fe;
+      --shadow: 0 6px 18px -4px rgba(2, 132, 199, 0.08);
+    }
+
+    /* MODO OSCURO */
+    [data-theme="dark"] {
+      --bg: #0b1329;
+      --bg-gradient: linear-gradient(135deg, #0b1329 0%, #0f172a 60%, #111827 100%);
+      --card-bg: rgba(30, 41, 59, 0.9);
+      --card-bg-solid: #1e293b;
+      --card-border: rgba(255, 255, 255, 0.1);
+      --card-shadow: 0 12px 30px -10px rgba(0, 0, 0, 0.6);
+      --accent: #38bdf8;
+      --accent-glow: rgba(56, 189, 248, 0.2);
       --text: #f8fafc;
       --text-muted: #94a3b8;
-      --green: #22c55e;
+      --green: #10b981;
+      --green-glow: rgba(16, 185, 129, 0.2);
       --red: #ef4444;
+      --red-glow: rgba(239, 68, 68, 0.2);
       --jesus-color: #3b82f6;
-      --jesus-glow: rgba(59, 130, 246, 0.25);
-      --ali-color: #ec4899;
-      --ali-glow: rgba(236, 72, 153, 0.25);
+      --jesus-glow: rgba(59, 130, 246, 0.2);
+      --ali-color: #f472b6;
+      --ali-glow: rgba(244, 114, 182, 0.2);
       --gold: #f59e0b;
-      --gold-glow: rgba(245, 158, 11, 0.25);
-      --academic-color: #8b5cf6;
-      --academic-glow: rgba(139, 92, 246, 0.25);
+      --gold-glow: rgba(245, 158, 11, 0.2);
+      --academic-color: #a855f7;
+      --academic-glow: rgba(168, 85, 247, 0.2);
       --unused-color: #64748b;
+      --btn-hover: #334155;
+      --shadow: 0 12px 30px -10px rgba(0, 0, 0, 0.6);
     }
 
     * {
@@ -42,135 +80,268 @@
       padding: 0;
       font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
       -webkit-tap-highlight-color: transparent;
+      transition: background 0.2s ease, color 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
     }
 
     body {
-      background-color: var(--bg);
+      background: var(--bg-gradient);
       color: var(--text);
       display: flex;
       justify-content: center;
-      padding: 15px;
+      padding: 12px;
       min-height: 100vh;
       overflow-x: hidden;
     }
 
     .app-container {
       width: 100%;
-      max-width: 560px;
+      max-width: 650px;
       background: var(--card-bg);
-      backdrop-filter: blur(20px);
-      -webkit-backdrop-filter: blur(20px);
+      backdrop-filter: blur(24px);
+      -webkit-backdrop-filter: blur(24px);
       border: 1px solid var(--card-border);
-      border-radius: 28px;
-      padding: 20px;
-      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.7);
+      border-radius: 24px;
+      padding: 16px;
+      box-shadow: var(--card-shadow);
       display: flex;
       flex-direction: column;
-      gap: 16px;
+      gap: 14px;
       position: relative;
     }
 
-    header {
-      text-align: center;
-      border-bottom: 1px solid var(--card-border);
-      padding-bottom: 12px;
+    /* BARRA SUPERIOR DE NAVEGACIÓN Y CONTROLES */
+    .top-bar {
       display: flex;
-      flex-direction: column;
-      gap: 8px;
+      justify-content: space-between;
+      align-items: center;
+      width: 100%;
+      min-height: 40px;
     }
 
-    header h1 {
-      font-size: 1.6rem;
-      color: var(--text);
-      font-weight: 800;
-      letter-spacing: -0.5px;
-    }
-
-    header h1 span {
-      background: linear-gradient(135deg, var(--jesus-color), var(--ali-color));
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-    }
-
-    /* Selector de Modo Principal (Finanzas vs Académica) */
-    .main-mode-selector {
-      display: flex;
-      background: rgba(15, 23, 42, 0.9);
-      border-radius: 16px;
-      padding: 5px;
+    .back-btn {
+      background: var(--card-bg-solid);
       border: 1px solid var(--card-border);
+      color: var(--text);
+      font-size: 0.82rem;
+      font-weight: 700;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
       gap: 6px;
+      padding: 8px 14px;
+      border-radius: 12px;
+      box-shadow: var(--shadow);
+      visibility: hidden;
     }
 
-    .mode-btn {
-      flex: 1;
-      padding: 12px 10px;
-      background: transparent;
-      border: none;
-      color: var(--text-muted);
-      font-weight: 800;
-      font-size: 0.85rem;
-      border-radius: 12px;
+    .back-btn:hover {
+      background-color: var(--btn-hover);
+      transform: translateX(-2px);
+    }
+
+    .theme-toggle {
+      background: var(--card-bg-solid);
+      border: 1px solid var(--card-border);
+      color: var(--text);
+      padding: 6px;
+      border-radius: 50%;
       cursor: pointer;
-      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
       display: flex;
       align-items: center;
       justify-content: center;
-      gap: 8px;
+      box-shadow: var(--shadow);
+      width: 38px;
+      height: 38px;
+      font-size: 1.1rem;
     }
 
-    .mode-btn.active[data-mode="finanzas"] {
-      background: linear-gradient(135deg, rgba(245, 158, 11, 0.2), rgba(30, 41, 59, 0.9));
-      color: var(--gold);
-      border: 1px solid var(--gold);
-      box-shadow: 0 4px 15px var(--gold-glow);
+    .theme-toggle:hover {
+      border-color: var(--accent);
+      transform: rotate(15deg);
     }
 
-    .mode-btn.active[data-mode="academica"] {
-      background: linear-gradient(135deg, rgba(139, 92, 246, 0.2), rgba(30, 41, 59, 0.9));
-      color: var(--academic-color);
-      border: 1px solid var(--academic-color);
-      box-shadow: 0 4px 15px var(--academic-glow);
-    }
-
-    /* Navegación Sub-Pestañas */
-    .tabs-nav {
+    /* PANTALLA DE INICIO RENOVADA */
+    .home-screen {
       display: flex;
-      background: rgba(15, 23, 42, 0.7);
-      border-radius: 12px;
-      padding: 4px;
-      border: 1px solid var(--card-border);
-      gap: 4px;
-      overflow-x: auto;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 1rem 0.5rem 1.5rem 0.5rem;
+      gap: 1.5rem;
+      width: 100%;
+      animation: fadeIn 0.3s ease-out;
     }
 
-    .tab-btn {
-      flex: 1;
-      padding: 9px 6px;
-      background: transparent;
-      border: none;
+    .home-screen.hidden {
+      display: none;
+    }
+
+    .hero-brand {
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .logo-home {
+      font-size: 4rem;
+      font-weight: 800;
+      line-height: 1;
+      letter-spacing: -2px;
+      background: linear-gradient(135deg, #0284c7 0%, #2563eb 50%, #ec4899 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      text-shadow: 0 10px 30px rgba(2, 132, 199, 0.2);
+    }
+
+    .brand-tagline {
+      font-size: 0.85rem;
       color: var(--text-muted);
-      font-weight: 700;
-      font-size: 0.75rem;
-      border-radius: 8px;
-      cursor: pointer;
-      transition: all 0.2s ease;
-      white-space: nowrap;
+      font-weight: 600;
+      letter-spacing: 0.2px;
     }
 
-    .tab-btn:hover { color: var(--text); }
-
-    .tab-btn.active {
-      background: rgba(30, 41, 59, 0.9);
-      color: var(--text);
+    .profiles-badge {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      background: var(--card-bg-solid);
       border: 1px solid var(--card-border);
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+      padding: 6px 14px;
+      border-radius: 20px;
+      font-size: 0.78rem;
+      font-weight: 700;
+      box-shadow: var(--shadow);
+    }
+
+    .badge-j { color: var(--jesus-color); }
+    .badge-a { color: var(--ali-color); }
+
+    .home-nav-grid {
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+
+    .hero-card {
+      width: 100%;
+      padding: 1.25rem;
+      background: var(--card-bg-solid);
+      border: 1.5px solid var(--card-border);
+      border-radius: 18px;
+      cursor: pointer;
+      box-shadow: var(--shadow);
+      display: flex;
+      align-items: center;
+      gap: 1.1rem;
+      text-align: left;
+      position: relative;
+      overflow: hidden;
+      transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .hero-card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0;
+      width: 6px; height: 100%;
+      background: var(--accent);
+      border-radius: 4px 0 0 4px;
+    }
+
+    .hero-card[data-target="finanzas"]::before { background: linear-gradient(180deg, var(--gold), var(--green)); }
+    .hero-card[data-target="academica"]::before { background: linear-gradient(180deg, var(--academic-color), var(--jesus-color)); }
+
+    .hero-card:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 12px 28px -6px rgba(2, 132, 199, 0.18);
+      border-color: var(--accent);
+    }
+
+    .hero-icon {
+      width: 50px;
+      height: 50px;
+      border-radius: 14px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.6rem;
+      flex-shrink: 0;
+    }
+
+    .icon-finanzas { background: var(--gold-glow); color: var(--gold); }
+    .icon-academica { background: var(--academic-glow); color: var(--academic-color); }
+
+    .hero-content h2 {
+      font-size: 1.15rem;
+      font-weight: 800;
+      color: var(--text);
+      margin-bottom: 2px;
+    }
+
+    .hero-content p {
+      font-size: 0.76rem;
+      color: var(--text-muted);
+      font-weight: 500;
+      line-height: 1.35;
+    }
+
+    .hero-arrow {
+      margin-left: auto;
+      font-size: 1.2rem;
+      color: var(--text-muted);
+      font-weight: 800;
+    }
+
+    /* HEADER COMPACTO PARA MÓDULOS (Optimización de espacio) */
+    header {
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    /* Sub-navegación (Pestañas por dropdown) */
+    .tab-dropdown-container {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      background: var(--card-bg-solid);
+      border-radius: 14px;
+      padding: 8px 12px;
+      border: 1px solid var(--card-border);
+      box-shadow: var(--shadow);
+      width: 100%;
+    }
+
+    .tab-dropdown-container label {
+      font-size: 0.65rem;
+      font-weight: 800;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .tab-select {
+      background: var(--bg);
+      color: var(--text);
+      font-weight: 700;
+      font-size: 0.85rem;
+      padding: 8px 10px;
+      border-radius: 10px;
+      border: 1px solid var(--card-border);
+      cursor: pointer;
+      width: 100%;
+      outline: none;
     }
 
     .mode-section {
       display: none;
       flex-direction: column;
-      gap: 16px;
+      gap: 14px;
+      width: 100%;
     }
 
     .mode-section.active { display: flex; }
@@ -178,174 +349,226 @@
     .tab-content {
       display: none;
       flex-direction: column;
-      gap: 16px;
+      gap: 12px;
+      width: 100%;
     }
 
     .tab-content.active {
       display: flex;
-      animation: fadeIn 0.25s ease-out forwards;
+      animation: fadeIn 0.22s ease-out forwards;
     }
 
     @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(6px); }
+      from { opacity: 0; transform: translateY(4px); }
       to { opacity: 1; transform: translateY(0); }
     }
 
     /* Componentes Genéricos */
     .date-indicator {
       text-align: center;
-      font-size: 0.82rem;
-      font-weight: 600;
-      color: var(--text-muted);
-      background: rgba(15, 23, 42, 0.6);
-      padding: 8px 12px;
+      font-size: 0.78rem;
+      font-weight: 700;
+      color: var(--accent);
+      background: var(--card-bg-solid);
+      padding: 7px 12px;
       border-radius: 10px;
       border: 1px solid var(--card-border);
+      box-shadow: var(--shadow);
     }
 
     .filter-box {
-      background: rgba(15, 23, 42, 0.6);
+      background: var(--card-bg-solid);
       border: 1px solid var(--card-border);
       border-radius: 14px;
-      padding: 12px;
+      padding: 8px 12px;
       display: flex;
       flex-direction: column;
       align-items: center;
-      gap: 6px;
+      gap: 4px;
     }
 
     .filter-box label {
-      font-size: 0.75rem;
-      font-weight: 700;
+      font-size: 0.68rem;
+      font-weight: 800;
       color: var(--text-muted);
       text-transform: uppercase;
-      letter-spacing: 0.5px;
     }
 
-    input[type="month"], input[type="number"], input[type="text"], input[type="url"], input[type="time"], select {
-      background: #1e293b;
+    input[type="month"], input[type="number"], input[type="text"], input[type="url"], input[type="time"], input[type="file"], select {
+      background: var(--card-bg-solid);
       border: 1px solid var(--card-border);
       color: var(--text);
-      padding: 10px 14px;
+      padding: 9px 11px;
       border-radius: 10px;
-      font-size: 0.88rem;
+      font-size: 0.82rem;
       outline: none;
       width: 100%;
-      text-align: center;
-      transition: border-color 0.2s;
+      max-width: 100%;
     }
 
     input:focus, select:focus {
-      border-color: var(--jesus-color);
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px var(--accent-glow);
     }
 
+    /* SISTEMA DE GRILLAS SIMÉTRICAS Y ADAPTABLES */
     .columns-grid {
       display: grid;
-      grid-template-columns: 1fr 1fr;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
       gap: 12px;
+      width: 100%;
+    }
+
+    @media (max-width: 520px) {
+      .columns-grid {
+        grid-template-columns: 1fr;
+      }
     }
 
     .col {
-      background: rgba(15, 23, 42, 0.6);
+      background: var(--card-bg-solid);
       border: 1px solid var(--card-border);
       border-radius: 16px;
       padding: 12px;
       display: flex;
       flex-direction: column;
       justify-content: space-between;
+      gap: 10px;
+      box-shadow: var(--shadow);
+      width: 100%;
+      min-width: 0;
+      word-break: break-word;
     }
 
     .col h2 {
       font-size: 0.85rem;
-      font-weight: 700;
+      font-weight: 800;
       text-align: center;
-      margin-bottom: 8px;
       padding-bottom: 6px;
       border-bottom: 1px solid var(--card-border);
     }
+
+    .title-jesus { color: var(--jesus-color); }
+    .title-ali { color: var(--ali-color); }
 
     .items-list {
       list-style: none;
       display: flex;
       flex-direction: column;
       gap: 6px;
-      max-height: 220px;
+      max-height: 200px;
       overflow-y: auto;
+      width: 100%;
     }
 
     .items-list li {
-      background: rgba(30, 41, 59, 0.8);
+      background: var(--bg);
       padding: 8px 10px;
-      border-radius: 8px;
-      font-size: 0.78rem;
+      border-radius: 10px;
+      font-size: 0.75rem;
       display: flex;
       justify-content: space-between;
       align-items: center;
-      border-left: 3px solid var(--card-border);
+      border-left: 3.5px solid var(--card-border);
+      gap: 6px;
+      word-break: break-word;
     }
 
     .items-list.ingresos li { border-left-color: var(--green); }
     .items-list.gastos li { border-left-color: var(--red); }
     .items-list.ahorros li { border-left-color: var(--gold); }
 
-    .category-badge {
-      font-size: 0.65rem;
-      padding: 2px 6px;
-      border-radius: 4px;
-      margin-top: 3px;
-      display: inline-block;
-      font-weight: 700;
-    }
-
-    .cat-necesidades { background: rgba(239, 68, 68, 0.2); color: #fca5a5; border: 1px solid rgba(239, 68, 68, 0.4); }
-    .cat-gustos { background: rgba(168, 85, 247, 0.2); color: #e9d5ff; border: 1px solid rgba(168, 85, 247, 0.4); }
-    .cat-ahorros { background: rgba(245, 158, 11, 0.2); color: #fde68a; border: 1px solid rgba(245, 158, 11, 0.4); }
-
-    .pending-item { border-left: 3px solid var(--red) !important; background: rgba(239, 68, 68, 0.08) !important; }
-    .paid-item { border-left: 3px solid var(--green) !important; background: rgba(34, 197, 94, 0.08) !important; }
-
-    .actions { display: flex; align-items: center; gap: 6px; }
-    .check-btn { color: var(--green); cursor: pointer; font-weight: bold; padding: 2px 6px; background: rgba(34, 197, 94, 0.15); border-radius: 4px; }
-    .undo-btn { color: var(--red); cursor: pointer; font-weight: bold; padding: 2px 6px; background: rgba(239, 68, 68, 0.15); border-radius: 4px; }
-    .delete-btn { color: var(--text-muted); cursor: pointer; font-weight: bold; padding: 2px 6px; border-radius: 4px; }
-    .delete-btn:hover { color: var(--red); background: rgba(239, 68, 68, 0.15); }
-
-    .add-btn {
-      width: 100%;
-      padding: 9px;
-      margin-top: 10px;
-      border: 1px solid var(--card-border);
-      border-radius: 10px;
-      background: #1e293b;
-      color: var(--text);
-      font-weight: 700;
-      font-size: 0.8rem;
-      cursor: pointer;
-      transition: all 0.2s ease;
-    }
-
-    .add-btn:active { transform: scale(0.97); background: rgba(255, 255, 255, 0.1); }
-
-    .user-summary-card {
-      background: rgba(15, 23, 42, 0.6);
-      border: 1px solid var(--card-border);
-      border-radius: 16px;
-      padding: 12px;
+    /* ESTILOS ESPECÍFICOS DE SECCIÓN DE DEUDAS SEPARADAS */
+    .debt-subblock {
       display: flex;
       flex-direction: column;
       gap: 6px;
     }
 
-    .user-summary-card.jesus-card { border-top: 3px solid var(--jesus-color); box-shadow: 0 4px 20px var(--jesus-glow); }
-    .user-summary-card.ali-card { border-top: 3px solid var(--ali-color); box-shadow: 0 4px 20px var(--ali-glow); }
+    .debt-subtitle {
+      font-size: 0.7rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      margin-top: 4px;
+    }
+
+    .debt-subtitle.pending-header { color: var(--red); }
+    .debt-subtitle.paid-header { color: var(--green); }
+
+    .category-badge {
+      font-size: 0.62rem;
+      padding: 2px 6px;
+      border-radius: 6px;
+      margin-top: 2px;
+      display: inline-block;
+      font-weight: 800;
+    }
+
+    .cat-necesidades { background: rgba(239, 68, 68, 0.12); color: #ef4444; border: 1px solid rgba(239, 68, 68, 0.25); }
+    .cat-gustos { background: rgba(139, 92, 246, 0.12); color: var(--academic-color); border: 1px solid rgba(139, 92, 246, 0.25); }
+    .cat-ahorros { background: rgba(217, 119, 6, 0.12); color: var(--gold); border: 1px solid rgba(217, 119, 6, 0.25); }
+
+    .pending-item { border-left: 3.5px solid var(--red) !important; background: rgba(239, 68, 68, 0.05) !important; }
+    .paid-item { border-left: 3.5px solid var(--green) !important; background: rgba(16, 185, 129, 0.05) !important; opacity: 0.85; }
+
+    .actions { display: flex; align-items: center; gap: 5px; flex-shrink: 0; }
+    .check-btn { color: var(--green); cursor: pointer; font-weight: bold; padding: 3px 6px; background: var(--green-glow); border-radius: 6px; font-size: 0.75rem; }
+    .undo-btn { color: var(--red); cursor: pointer; font-weight: bold; padding: 3px 6px; background: var(--red-glow); border-radius: 6px; font-size: 0.75rem; }
+    .delete-btn { color: var(--text-muted); cursor: pointer; font-weight: bold; padding: 3px 6px; border-radius: 6px; font-size: 0.75rem; }
+    .delete-btn:hover { color: var(--red); background: var(--red-glow); }
+
+    .add-btn {
+      width: 100%;
+      padding: 9px;
+      border: 1px solid var(--card-border);
+      border-radius: 10px;
+      background: var(--card-bg-solid);
+      color: var(--text);
+      font-weight: 700;
+      font-size: 0.78rem;
+      cursor: pointer;
+      box-shadow: var(--shadow);
+    }
+
+    .add-btn:hover {
+      border-color: var(--accent);
+      color: var(--accent);
+    }
+
+    .add-btn:active { transform: scale(0.98); background: var(--btn-hover); }
+
+    .user-summary-card {
+      background: var(--card-bg-solid);
+      border: 1px solid var(--card-border);
+      border-radius: 16px;
+      padding: 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      box-shadow: var(--shadow);
+      width: 100%;
+      min-width: 0;
+    }
+
+    .user-summary-card.jesus-card { border-top: 3px solid var(--jesus-color); box-shadow: 0 4px 16px var(--jesus-glow); }
+    .user-summary-card.ali-card { border-top: 3px solid var(--ali-color); box-shadow: 0 4px 16px var(--ali-glow); }
 
     .summary-metrics { display: flex; justify-content: space-around; text-align: center; }
-    .summary-item .label { font-size: 0.7rem; color: var(--text-muted); font-weight: 600; }
-    .summary-item .value { font-size: 0.95rem; font-weight: 800; }
+    .summary-item .label { font-size: 0.65rem; color: var(--text-muted); font-weight: 700; text-transform: uppercase; }
+    .summary-item .value { font-size: 0.9rem; font-weight: 800; margin-top: 2px; }
 
-    .charts-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+    .charts-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; width: 100%; }
+    
+    @media (max-width: 480px) {
+      .charts-grid { grid-template-columns: 1fr; }
+    }
+
     .chart-box {
-      background: rgba(15, 23, 42, 0.6);
+      background: var(--card-bg-solid);
       border: 1px solid var(--card-border);
       border-radius: 16px;
       padding: 12px;
@@ -353,22 +576,26 @@
       flex-direction: column;
       align-items: center;
       gap: 8px;
+      box-shadow: var(--shadow);
+      width: 100%;
+      min-width: 0;
     }
 
-    .chart-wrapper { position: relative; width: 100%; height: 140px; }
+    .chart-wrapper { position: relative; width: 100%; height: 130px; }
 
     .balance-badge {
-      font-size: 0.85rem;
+      font-size: 0.8rem;
       font-weight: 800;
       padding: 4px 10px;
       border-radius: 8px;
-      background: #1e293b;
+      background: var(--bg);
       display: inline-block;
+      border: 1px solid var(--card-border);
     }
 
     /* ESTILOS ALCANCÍA */
     .savings-container {
-      background: rgba(15, 23, 42, 0.6);
+      background: var(--card-bg-solid);
       border: 1px solid var(--card-border);
       border-radius: 20px;
       padding: 16px;
@@ -376,65 +603,69 @@
       flex-direction: column;
       align-items: center;
       gap: 12px;
-      box-shadow: 0 8px 24px var(--gold-glow);
+      box-shadow: 0 6px 20px var(--gold-glow);
+      width: 100%;
     }
 
     .savings-subtabs {
-      display: flex; width: 100%; background: #1e293b; border-radius: 10px; padding: 3px; border: 1px solid var(--card-border); gap: 3px;
+      display: flex; width: 100%; background: var(--bg); border-radius: 10px; padding: 3px; border: 1px solid var(--card-border); gap: 3px;
     }
 
     .savings-subtab-btn {
-      flex: 1; padding: 6px 2px; background: transparent; border: none; color: var(--text-muted); font-weight: 700; font-size: 0.75rem; border-radius: 7px; cursor: pointer;
+      flex: 1; padding: 7px 4px; background: transparent; border: none; color: var(--text-muted); font-weight: 700; font-size: 0.74rem; border-radius: 8px; cursor: pointer;
     }
 
-    .savings-subtab-btn.active { background: #0f172a; color: var(--text); border: 1px solid var(--gold); }
+    .savings-subtab-btn.active { background: var(--card-bg-solid); color: var(--text); border: 1px solid var(--gold); box-shadow: var(--shadow); }
 
-    .visual-box { width: 140px; height: 170px; position: relative; display: flex; justify-content: center; align-items: center; }
+    .meta-control {
+      background: transparent; border: 1px solid var(--card-border); color: var(--text-muted); font-size: 0.7rem; font-weight: 700; padding: 4px 10px; border-radius: 8px; cursor: pointer;
+    }
+
+    .visual-box { width: 130px; height: 150px; position: relative; display: flex; justify-content: center; align-items: center; }
     
     .penguin-body {
-      width: 110px; height: 160px; background: #1a2332; border: 2px solid var(--gold); border-radius: 55px 55px 35px 35px; position: relative; overflow: hidden; display: flex; flex-direction: column; justify-content: flex-end;
-    }
-
-    .cylinder-body {
-      width: 100px; height: 100%; background: #1a2332; border: 2px solid var(--gold); border-radius: 16px; position: relative; overflow: hidden; display: flex; flex-direction: column; justify-content: flex-end;
+      width: 100px; height: 140px; background: #0f172a; border: 2.5px solid var(--gold); border-radius: 50px 50px 30px 30px; position: relative; overflow: hidden; display: flex; flex-direction: column; justify-content: flex-end; box-shadow: 0 8px 18px rgba(0,0,0,0.2);
     }
 
     .coins-fill-container {
-      width: 100%; position: absolute; bottom: 0; display: flex; flex-wrap: wrap-reverse; justify-content: center; align-content: flex-end; gap: 3px; padding: 6px 4px; background: rgba(245, 158, 11, 0.2); border-top: 2px solid var(--gold); transition: height 0.5s ease-in-out;
+      width: 100%; position: absolute; bottom: 0; display: flex; flex-wrap: wrap-reverse; justify-content: center; align-content: flex-end; gap: 2px; padding: 4px 2px; background: rgba(245, 158, 11, 0.25); border-top: 2px solid var(--gold); transition: height 0.4s ease-in-out;
     }
 
-    .coin-icon { font-size: 16px; }
+    .coin-icon { font-size: 13px; }
 
-    .penguin-text, .cylinder-text {
-      position: absolute; width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 1rem; z-index: 10; text-shadow: 0 2px 4px #000; color: #fff;
+    .penguin-text {
+      position: absolute; width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 0.95rem; z-index: 10; text-shadow: 0 2px 5px #000; color: #fff;
     }
 
-    .penguin-face { position: absolute; top: 12px; width: 100%; display: flex; flex-direction: column; align-items: center; z-index: 11; }
-    .eyes { display: flex; gap: 20px; }
-    .eye { width: 7px; height: 7px; background: #fff; border-radius: 50%; }
-    .beak { width: 12px; height: 8px; background: #f59e0b; border-radius: 3px; margin-top: 2px; }
+    .penguin-face { position: absolute; top: 10px; width: 100%; display: flex; flex-direction: column; align-items: center; z-index: 11; }
+    .eyes { display: flex; gap: 18px; }
+    .eye { width: 6px; height: 6px; background: #fff; border-radius: 50%; }
+    .beak { width: 12px; height: 6px; background: #f59e0b; border-radius: 4px; margin-top: 2px; }
 
     .break-piggy-btn {
-      width: 100%; padding: 12px; background: linear-gradient(135deg, #f59e0b, #e11d48); border: none; border-radius: 12px; color: #fff; font-weight: 800; cursor: pointer; box-shadow: 0 4px 15px rgba(225, 29, 72, 0.4);
+      width: 100%; padding: 11px; background: linear-gradient(135deg, #f59e0b, #e11d48); border: none; border-radius: 12px; color: #fff; font-weight: 800; cursor: pointer; box-shadow: 0 6px 16px rgba(225, 29, 72, 0.35); font-size: 0.85rem;
     }
 
     /* ESTILOS MÓDULO ACADÉMICO */
     .academic-card {
-      background: rgba(15, 23, 42, 0.6);
+      background: var(--card-bg-solid);
       border: 1px solid var(--card-border);
       border-radius: 16px;
-      padding: 14px;
+      padding: 12px;
       display: flex;
       flex-direction: column;
       gap: 10px;
+      box-shadow: var(--shadow);
+      width: 100%;
+      word-break: break-word;
     }
 
     .academic-card h3 {
-      font-size: 0.9rem;
+      font-size: 0.85rem;
       font-weight: 800;
-      color: var(--academic-color);
       display: flex;
       align-items: center;
+      justify-content: space-between;
       gap: 6px;
     }
 
@@ -445,48 +676,47 @@
     }
 
     .schedule-item {
-      background: rgba(30, 41, 59, 0.7);
+      background: var(--bg);
       border-radius: 10px;
-      padding: 10px 12px;
+      padding: 8px 10px;
       display: flex;
       justify-content: space-between;
       align-items: center;
-      border-left: 4px solid var(--academic-color);
+      border-left: 3.5px solid var(--academic-color);
+      gap: 6px;
     }
 
     .schedule-item.jesus { border-left-color: var(--jesus-color); }
     .schedule-item.ali { border-left-color: var(--ali-color); }
 
     .materia-badge {
-      font-size: 0.72rem;
-      font-weight: 700;
-      padding: 3px 8px;
+      font-size: 0.65rem;
+      font-weight: 800;
+      padding: 2px 6px;
       border-radius: 6px;
-      background: rgba(139, 92, 246, 0.2);
-      color: #c4b5fd;
+      background: var(--academic-glow);
+      color: var(--academic-color);
     }
 
     .resource-link {
       display: inline-flex;
       align-items: center;
       gap: 4px;
-      font-size: 0.75rem;
-      color: #38bdf8;
+      font-size: 0.72rem;
+      color: var(--accent);
       text-decoration: none;
-      font-weight: 600;
-      background: rgba(56, 189, 248, 0.1);
+      font-weight: 700;
+      background: var(--btn-hover);
       padding: 4px 8px;
       border-radius: 6px;
     }
 
-    .resource-link:hover { text-decoration: underline; }
-
-    /* Barra de Progreso Notas Jesús (Suma 300) */
+    /* Barra de Progreso Notas Jesús */
     .progress-bar-container {
       width: 100%;
-      height: 12px;
-      background: #1e293b;
-      border-radius: 10px;
+      height: 9px;
+      background: var(--bg);
+      border-radius: 8px;
       overflow: hidden;
       margin-top: 4px;
       border: 1px solid var(--card-border);
@@ -494,34 +724,37 @@
 
     .progress-bar-fill {
       height: 100%;
-      background: linear-gradient(90deg, #3b82f6, #22c55e);
+      background: linear-gradient(90deg, var(--jesus-color), var(--green));
       width: 0%;
       transition: width 0.4s ease;
     }
 
     .grade-badge {
-      font-size: 0.75rem;
+      font-size: 0.7rem;
       font-weight: 800;
-      padding: 3px 8px;
+      padding: 3px 7px;
       border-radius: 6px;
     }
 
-    .grade-pass { background: rgba(34, 197, 94, 0.2); color: #4ade80; }
-    .grade-pending { background: rgba(245, 158, 11, 0.2); color: #fde68a; }
+    .grade-pass { background: var(--green-glow); color: var(--green); border: 1px solid rgba(16, 185, 129, 0.3); }
+    .grade-pending { background: var(--gold-glow); color: var(--gold); border: 1px solid rgba(245, 158, 11, 0.3); }
 
     /* MODALES */
     .modal-overlay {
       position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-      background: rgba(0, 0, 0, 0.8); backdrop-filter: blur(8px);
+      background: rgba(15, 23, 42, 0.6); backdrop-filter: blur(8px);
       display: none; justify-content: center; align-items: flex-end; z-index: 1000;
     }
 
     .modal-overlay.active { display: flex; }
 
     .modal-card {
-      background: #1e293b; border-top: 1px solid var(--card-border); border-radius: 28px 28px 0 0;
-      width: 100%; max-width: 560px; padding: 24px; display: flex; flex-direction: column; gap: 14px;
-      animation: slideUp 0.3s ease-out forwards;
+      background: var(--card-bg-solid); border-top: 1px solid var(--card-border); border-radius: 24px 24px 0 0;
+      width: 100%; max-width: 600px; padding: 20px; display: flex; flex-direction: column; gap: 12px;
+      animation: slideUp 0.22s ease-out forwards;
+      max-height: 85vh;
+      overflow-y: auto;
+      box-shadow: 0 -10px 40px rgba(0,0,0,0.25);
     }
 
     @keyframes slideUp {
@@ -530,63 +763,108 @@
     }
 
     .modal-header { display: flex; justify-content: space-between; align-items: center; }
-    .close-btn { background: rgba(255, 255, 255, 0.1); border: none; color: white; width: 32px; height: 32px; border-radius: 50%; cursor: pointer; font-weight: bold; }
-    .form-group { display: flex; flex-direction: column; gap: 6px; }
-    .form-group label { font-size: 0.78rem; color: var(--text-muted); font-weight: 700; }
+    .close-btn { background: var(--bg); border: none; color: var(--text); width: 28px; height: 28px; border-radius: 50%; cursor: pointer; font-weight: bold; }
+    .form-group { display: flex; flex-direction: column; gap: 4px; }
+    .form-group label { font-size: 0.7rem; color: var(--text-muted); font-weight: 800; text-transform: uppercase; }
 
-    .rule-result-box { text-align: center; padding: 12px; border-radius: 12px; font-weight: 800; font-size: 0.85rem; border: 1px solid var(--card-border); }
-    .rule-pass { background: rgba(34, 197, 94, 0.15); color: #4ade80; border-color: rgba(34, 197, 94, 0.4); }
-    .rule-fail { background: rgba(239, 68, 68, 0.15); color: #f87171; border-color: rgba(239, 68, 68, 0.4); }
+    .rule-result-box { text-align: center; padding: 10px; border-radius: 12px; font-weight: 800; font-size: 0.82rem; border: 1px solid var(--card-border); }
+    .rule-pass { background: rgba(16, 185, 129, 0.12); color: var(--green); border-color: rgba(16, 185, 129, 0.3); }
+    .rule-fail { background: rgba(239, 68, 68, 0.12); color: var(--red); border-color: rgba(239, 68, 68, 0.3); }
 
-    .rule-card-item { background: rgba(15, 23, 42, 0.6); border: 1px solid var(--card-border); border-radius: 12px; padding: 10px 14px; display: flex; justify-content: space-between; align-items: center; }
+    .rule-cards-container { display: flex; flex-direction: column; gap: 8px; width: 100%; }
+    .rule-card-item { background: var(--card-bg-solid); border: 1px solid var(--card-border); border-radius: 12px; padding: 10px 12px; display: flex; justify-content: space-between; align-items: center; box-shadow: var(--shadow); }
     .rule-card-item.needs-card { border-left: 4px solid var(--red); }
     .rule-card-item.wants-card { border-left: 4px solid var(--academic-color); }
     .rule-card-item.savings-card { border-left: 4px solid var(--gold); }
     .rule-card-item.unused-card { border-left: 4px solid var(--unused-color); }
+    .rule-card-info { display: flex; flex-direction: column; }
+    .rule-card-title { font-size: 0.76rem; font-weight: 800; }
+    .rule-card-ideal { font-size: 0.65rem; color: var(--text-muted); margin-top: 1px; }
+    .rule-card-val { font-size: 0.88rem; font-weight: 800; }
 
     .notif-permission-banner {
-      background: rgba(59, 130, 246, 0.15);
-      border: 1px solid rgba(59, 130, 246, 0.4);
-      padding: 8px 12px;
-      border-radius: 10px;
-      font-size: 0.75rem;
+      background: var(--card-bg-solid);
+      border: 1px solid var(--card-border);
+      padding: 6px 12px;
+      border-radius: 12px;
+      font-size: 0.72rem;
+      font-weight: 700;
       display: flex;
       justify-content: space-between;
       align-items: center;
       cursor: pointer;
+      box-shadow: var(--shadow);
+      width: 100%;
     }
   </style>
 </head>
 <body>
 
   <div class="app-container">
-    <header>
-      <h1><span>Jesús & Ali</span></h1>
-      <div id="notifBanner" class="notif-permission-banner" onclick="requestNotificationPermission()">
-        <span>🔔 Activar Notificaciones del sistema</span>
-        <strong style="color: var(--jesus-color);">Activar</strong>
+    
+    <!-- BARRA SUPERIOR DE NAVEGACIÓN Y TEMA -->
+    <div class="top-bar">
+      <button id="backBtn" class="back-btn" onclick="goHome()">
+        &#8592; Menú Principal
+      </button>
+      <button id="themeBtn" class="theme-toggle" onclick="toggleTheme()" aria-label="Cambiar modo oscuro">
+        <span id="themeIcon">🌙</span>
+      </button>
+    </div>
+
+    <!-- PANTALLA DE INICIO RENOVADA (HERO CARDS Y MARCA) -->
+    <div id="homeScreen" class="home-screen">
+      <div class="hero-brand">
+        <h1 class="logo-home">J&A</h1>
+        <p class="brand-tagline">Finanzas Ejecutivas & Control Académico</p>
+        <div class="profiles-badge">
+          <span class="badge-j">Jesús 💙</span>
+          <span>•</span>
+          <span class="badge-a">Ali 🩷</span>
+        </div>
       </div>
 
-      <!-- Selector de Modo Principal -->
-      <div class="main-mode-selector">
-        <button class="mode-btn active" data-mode="finanzas" onclick="switchMainMode('finanzas')">
-          💰 Finanzas & Alcancía
-        </button>
-        <button class="mode-btn" data-mode="academica" onclick="switchMainMode('academica')">
-          🎓 Módulo Académico
-        </button>
+      <div class="home-nav-grid">
+        <div class="hero-card" data-target="finanzas" onclick="openMode('finanzas')">
+          <div class="hero-icon icon-finanzas">📊</div>
+          <div class="hero-content">
+            <h2>Gestión Financiera</h2>
+            <p>Monitoreo diario, regla 50/25/25, alcancía compartida y deudas</p>
+          </div>
+          <span class="hero-arrow">→</span>
+        </div>
+
+        <div class="hero-card" data-target="academica" onclick="openMode('academica')">
+          <div class="hero-icon icon-academica">🎓</div>
+          <div class="hero-content">
+            <h2>Portal Académico</h2>
+            <p>Horarios semanales, biblioteca de PDFs y control de calificaciones</p>
+          </div>
+          <span class="hero-arrow">→</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- NOTIFICACIONES COMPACTAS (SIN TÍTULO REPETIDO EN SECCIONES) -->
+    <header id="mainHeader" style="display:none;">
+      <div id="notifBanner" class="notif-permission-banner" onclick="requestNotificationPermission()">
+        <span>🔔 Recordatorio de clases (1h antes)</span>
+        <strong style="color: var(--accent);">Activar</strong>
       </div>
     </header>
 
     <!-- ==================== SECCIÓN 1: FINANZAS ==================== -->
-    <div id="sec-finanzas" class="mode-section active">
-      <nav class="tabs-nav">
-        <button class="tab-btn active" onclick="switchTab('diario', event)">Diario</button>
-        <button class="tab-btn" onclick="switchTab('mensual', event)">Mensual</button>
-        <button class="tab-btn" onclick="switchTab('regla', event)">Regla 50/25/25</button>
-        <button class="tab-btn" onclick="switchTab('pendientes', event)">Deudores</button>
-        <button class="tab-btn" onclick="switchTab('alcancia', event)">Alcancía</button>
-      </nav>
+    <div id="sec-finanzas" class="mode-section">
+      <div class="tab-dropdown-container">
+        <label>Módulo Finanzas</label>
+        <select class="tab-select" id="finanzasDropdown" onchange="switchTabFromDropdown(this, 'sec-finanzas')">
+          <option value="diario">☀️ Balance Diario</option>
+          <option value="mensual">📅 Resumen Mensual</option>
+          <option value="regla">📊 Regla 50/25/25</option>
+          <option value="pendientes">🤝 Cuentas / Deudas</option>
+          <option value="alcancia">🐷 Alcancía</option>
+        </select>
+      </div>
 
       <!-- Pestaña Diario -->
       <div id="tab-diario" class="tab-content active">
@@ -595,13 +873,13 @@
           <!-- Jesús -->
           <div class="col">
             <h2 class="title-jesus">Jesús 💙</h2>
-            <div style="display:flex; flex-direction:column; gap:8px;">
-              <strong style="font-size:0.75rem; color:var(--green);">Ingresos</strong>
+            <div style="display:flex; flex-direction:column; gap:6px;">
+              <strong style="font-size:0.7rem; color:var(--green); text-transform:uppercase;">Ingresos</strong>
               <ul class="items-list ingresos" id="dailyIngresosJesus"></ul>
-              <strong style="font-size:0.75rem; color:var(--red);">Gastos / Ahorros</strong>
+              <strong style="font-size:0.7rem; color:var(--red); text-transform:uppercase;">Gastos</strong>
               <ul class="items-list gastos" id="dailyGastosJesus"></ul>
             </div>
-            <div>
+            <div style="display:flex; gap:6px;">
               <button class="add-btn" onclick="addRecord('ingreso', 'Jesus')">+ Ingreso</button>
               <button class="add-btn" onclick="promptAddGasto('Jesus')">+ Gasto</button>
             </div>
@@ -609,13 +887,13 @@
           <!-- Ali -->
           <div class="col">
             <h2 class="title-ali">Ali 🩷</h2>
-            <div style="display:flex; flex-direction:column; gap:8px;">
-              <strong style="font-size:0.75rem; color:var(--green);">Ingresos</strong>
+            <div style="display:flex; flex-direction:column; gap:6px;">
+              <strong style="font-size:0.7rem; color:var(--green); text-transform:uppercase;">Ingresos</strong>
               <ul class="items-list ingresos" id="dailyIngresosAli"></ul>
-              <strong style="font-size:0.75rem; color:var(--red);">Gastos / Ahorros</strong>
+              <strong style="font-size:0.7rem; color:var(--red); text-transform:uppercase;">Gastos</strong>
               <ul class="items-list gastos" id="dailyGastosAli"></ul>
             </div>
-            <div>
+            <div style="display:flex; gap:6px;">
               <button class="add-btn" onclick="addRecord('ingreso', 'Ali')">+ Ingreso</button>
               <button class="add-btn" onclick="promptAddGasto('Ali')">+ Gasto</button>
             </div>
@@ -624,7 +902,7 @@
 
         <div class="columns-grid">
           <div class="user-summary-card jesus-card">
-            <h3>Resumen Diario Jesús</h3>
+            <h3 style="font-size:0.8rem; font-weight:800;" class="title-jesus">Jesús (Hoy)</h3>
             <div class="summary-metrics">
               <div class="summary-item"><span class="label">Ingresos</span><span class="value" style="color:var(--green)" id="dailyIngJesus">$0</span></div>
               <div class="summary-item"><span class="label">Gastos</span><span class="value" style="color:var(--red)" id="dailyGasJesus">$0</span></div>
@@ -632,7 +910,7 @@
             <div style="text-align:center;"><span class="balance-badge" id="dailyBalJesus">+$0</span></div>
           </div>
           <div class="user-summary-card ali-card">
-            <h3>Resumen Diario Ali</h3>
+            <h3 style="font-size:0.8rem; font-weight:800;" class="title-ali">Ali (Hoy)</h3>
             <div class="summary-metrics">
               <div class="summary-item"><span class="label">Ingresos</span><span class="value" style="color:var(--green)" id="dailyIngAli">$0</span></div>
               <div class="summary-item"><span class="label">Gastos</span><span class="value" style="color:var(--red)" id="dailyGasAli">$0</span></div>
@@ -645,31 +923,31 @@
       <!-- Pestaña Mensual -->
       <div id="tab-mensual" class="tab-content">
         <div class="filter-box">
-          <label>Seleccionar Mes</label>
+          <label>Mes Seleccionado</label>
           <input type="month" id="monthPicker" onchange="syncMonthPickers(this.value); renderData();" />
         </div>
         <div class="charts-grid">
           <div class="chart-box">
-            <h3 class="title-jesus">Jesús</h3>
+            <h3 class="title-jesus" style="font-size:0.82rem;">Jesús</h3>
             <div class="chart-wrapper"><canvas id="chartJesus"></canvas></div>
             <span class="balance-badge" id="monthlyBalJesus">$0</span>
           </div>
           <div class="chart-box">
-            <h3 class="title-ali">Ali</h3>
+            <h3 class="title-ali" style="font-size:0.82rem;">Ali</h3>
             <div class="chart-wrapper"><canvas id="chartAli"></canvas></div>
             <span class="balance-badge" id="monthlyBalAli">$0</span>
           </div>
         </div>
         <div class="user-summary-card">
-          <h3 style="margin-bottom:8px;">Detalle de Movimientos del Mes</h3>
-          <ul class="items-list" id="monthlyDetailList" style="max-height: 280px;"></ul>
+          <h3 style="font-size:0.85rem; font-weight:800;">Movimientos del Mes</h3>
+          <ul class="items-list" id="monthlyDetailList" style="max-height: 220px;"></ul>
         </div>
       </div>
 
       <!-- Pestaña Regla 50/25/25 -->
       <div id="tab-regla" class="tab-content">
         <div class="filter-box">
-          <label>Mes de Evaluación</label>
+          <label>Mes Evaluado</label>
           <input type="month" id="ruleMonthPicker" onchange="syncMonthPickers(this.value); renderData();" />
         </div>
         <div id="ruleStatusBanner" class="rule-result-box rule-pass">Calculando...</div>
@@ -683,21 +961,21 @@
           </div>
           <div class="rule-card-item wants-card">
             <div class="rule-card-info">
-              <span class="rule-card-title">🟣 Gustos / Deseos (Máx 25%)</span>
+              <span class="rule-card-title">🟣 Gustos (Máx 25%)</span>
               <span class="rule-card-ideal">Ideal: <b id="idealWants">$0</b></span>
             </div>
             <span class="rule-card-val" id="valWants">$0</span>
           </div>
           <div class="rule-card-item savings-card">
             <div class="rule-card-info">
-              <span class="rule-card-title">🟡 Ahorro Alcancía (Mín 25%)</span>
+              <span class="rule-card-title">🟡 Ahorro (Mín 25%)</span>
               <span class="rule-card-ideal">Ideal: <b id="idealSavings">$0</b></span>
             </div>
             <span class="rule-card-val" id="valSavings">$0</span>
           </div>
           <div class="rule-card-item unused-card">
             <div class="rule-card-info">
-              <span class="rule-card-title">⚪ Dinero Sin Usar</span>
+              <span class="rule-card-title">⚪ Dinero libre</span>
               <span class="rule-card-ideal">Suma al ahorro acumulado</span>
             </div>
             <span class="rule-card-val" id="valUnused">$0</span>
@@ -705,37 +983,61 @@
         </div>
         <div class="charts-grid">
           <div class="chart-box">
-            <h3>Ideal (50/25/25)</h3>
+            <h3 style="font-size:0.75rem;">Distribución Ideal</h3>
             <div class="chart-wrapper"><canvas id="chartRuleIdeal"></canvas></div>
           </div>
           <div class="chart-box">
-            <h3>Distribución Real</h3>
+            <h3 style="font-size:0.75rem;">Distribución Real</h3>
             <div class="chart-wrapper"><canvas id="chartRuleReal"></canvas></div>
           </div>
         </div>
       </div>
 
-      <!-- Pestaña Deudores -->
+      <!-- Pestaña Deudores (CON SEPARACIÓN CLARA ENTRE PENDIENTES Y PAGADAS) -->
       <div id="tab-pendientes" class="tab-content">
         <div class="columns-grid">
+          <!-- Column Jesús -->
           <div class="col">
-            <h2 class="title-jesus">Deudas Jesús</h2>
-            <ul class="items-list" id="pendingJesusList"></ul>
-            <button class="add-btn" onclick="addPending('Jesus')">+ Deuda Jesús</button>
+            <h2 class="title-jesus">Jesús</h2>
+            
+            <div class="debt-subblock">
+              <span class="debt-subtitle pending-header">📌 Deudas Pendientes</span>
+              <ul class="items-list" id="pendingJesusList"></ul>
+            </div>
+
+            <div class="debt-subblock" style="margin-top: 6px;">
+              <span class="debt-subtitle paid-header">✅ Deudas Pagadas</span>
+              <ul class="items-list" id="paidJesusList"></ul>
+            </div>
+
+            <button class="add-btn" onclick="addPending('Jesus')">+ Nueva Deuda</button>
           </div>
+
+          <!-- Column Ali -->
           <div class="col">
-            <h2 class="title-ali">Deudas Ali</h2>
-            <ul class="items-list" id="pendingAliList"></ul>
-            <button class="add-btn" onclick="addPending('Ali')">+ Deuda Ali</button>
+            <h2 class="title-ali">Ali</h2>
+
+            <div class="debt-subblock">
+              <span class="debt-subtitle pending-header">📌 Deudas Pendientes</span>
+              <ul class="items-list" id="pendingAliList"></ul>
+            </div>
+
+            <div class="debt-subblock" style="margin-top: 6px;">
+              <span class="debt-subtitle paid-header">✅ Deudas Pagadas</span>
+              <ul class="items-list" id="paidAliList"></ul>
+            </div>
+
+            <button class="add-btn" onclick="addPending('Ali')">+ Nueva Deuda</button>
           </div>
         </div>
+
         <div class="columns-grid">
           <div class="user-summary-card">
-            <h3 class="title-jesus">Total Deudas Jesús</h3>
+            <h3 class="title-jesus" style="font-size:0.75rem; text-align:center;">Total Pendiente Jesús</h3>
             <div style="text-align:center;"><span class="balance-badge" style="color:var(--red);" id="totalPendingJesus">$0</span></div>
           </div>
           <div class="user-summary-card">
-            <h3 class="title-ali">Total Deudas Ali</h3>
+            <h3 class="title-ali" style="font-size:0.75rem; text-align:center;">Total Pendiente Ali</h3>
             <div style="text-align:center;"><span class="balance-badge" style="color:var(--red);" id="totalPendingAli">$0</span></div>
           </div>
         </div>
@@ -750,28 +1052,24 @@
             <button class="savings-subtab-btn" id="subtab-ali" onclick="switchSavingsMode('ali')">Ali</button>
           </div>
           <div style="display:flex; justify-content:space-between; width:100%; align-items:center;">
-            <h3 id="savingsTitleHeading" style="color:var(--gold); font-size:0.95rem;">Fondo Conjunto</h3>
-            <button class="meta-control" onclick="setSavingsGoal()">⚙️ Meta</button>
-          </div>
-          <div class="visual-selector">
-            <button class="select-style-btn" id="btnCylinder" onclick="changeVisual('cylinder')">📦 Cilindro</button>
-            <button class="select-style-btn active" id="btnPenguin" onclick="changeVisual('penguin')">🐧 Pingüino</button>
+            <h3 id="savingsTitleHeading" style="color:var(--gold); font-size:0.88rem; font-weight:800;">Fondo Conjunto</h3>
+            <button class="meta-control" onclick="setSavingsGoal()">⚙️ Ajustar Meta</button>
           </div>
 
           <div class="visual-box" id="visualBoxContainer"></div>
 
           <div style="text-align:center;">
-            <div style="font-size:1.1rem; font-weight:800; color:var(--gold);" id="savingsTotalAmount">$0</div>
-            <div style="font-size:0.75rem; color:var(--text-muted);">Meta: <span id="savingsGoalAmount">$0</span></div>
-            <div style="font-size:0.8rem; font-weight:700; margin-top:2px;" id="savingsPercentage">0% alcanzado</div>
+            <div style="font-size:1.15rem; font-weight:800; color:var(--gold);" id="savingsTotalAmount">$0</div>
+            <div style="font-size:0.72rem; color:var(--text-muted);">Meta: <span id="savingsGoalAmount">$0</span></div>
+            <div style="font-size:0.78rem; font-weight:700; margin-top:2px;" id="savingsPercentage">0% alcanzado</div>
           </div>
 
-          <button class="add-btn" style="border-color:var(--gold); color:var(--gold);" id="addSavingsBtn" onclick="addSavingsRecord()">+ Ingresar Ahorro</button>
+          <button class="add-btn" style="border-color:var(--gold); color:var(--gold);" id="addSavingsBtn" onclick="addSavingsRecord()">+ Aportar Ahorro</button>
           <button class="break-piggy-btn" id="breakPiggyBtn" style="display:none;" onclick="breakPiggyBank()">🎉 ¡Romper Alcancía!</button>
         </div>
 
         <div class="user-summary-card">
-          <h3 id="savingsHistoryTitle" style="color:var(--gold);">Historial de Aportes</h3>
+          <h3 id="savingsHistoryTitle" style="color:var(--gold); font-size:0.82rem; font-weight:800;">Historial de Aportes</h3>
           <ul class="items-list ahorros" id="savingsList"></ul>
         </div>
       </div>
@@ -779,56 +1077,62 @@
 
     <!-- ==================== SECCIÓN 2: ACADÉMICA ==================== -->
     <div id="sec-academica" class="mode-section">
-      <nav class="tabs-nav">
-        <button class="tab-btn active" onclick="switchAcademicTab('horarios', event)">📅 Horario</button>
-        <button class="tab-btn" onclick="switchAcademicTab('materiales', event)">📚 Materias & Material</button>
-        <button class="tab-btn" onclick="switchAcademicTab('notas', event)">📝 Notas & Calificaciones</button>
-      </nav>
+      <div class="tab-dropdown-container">
+        <label>Módulo Académico</label>
+        <select class="tab-select" id="academicaDropdown" onchange="switchTabFromDropdown(this, 'sec-academica')">
+          <option value="horarios">📅 Horario Semanal</option>
+          <option value="materias">📚 Materias y PDFs</option>
+          <option value="notas">📝 Notas y Calificaciones</option>
+        </select>
+      </div>
 
-      <!-- Horarios -->
+      <!-- Horarios Separados -->
       <div id="acad-horarios" class="tab-content active">
         <div style="display:flex; justify-content:space-between; align-items:center;">
-          <h3 style="font-size:0.9rem; color:var(--academic-color);">Horario Semanal de Clases</h3>
+          <h3 style="font-size:0.88rem; color:var(--academic-color); font-weight:800;">Horario de Clases</h3>
           <button class="add-btn" style="width:auto; padding:6px 12px; margin:0;" onclick="openAddClassModal()">+ Agregar Clase</button>
         </div>
 
-        <div class="schedule-grid" id="scheduleContainer">
-          <!-- Carga dinámica -->
+        <div class="columns-grid">
+          <!-- Horario Jesús -->
+          <div class="user-summary-card jesus-card">
+            <h3 class="title-jesus" style="font-size:0.85rem; border-bottom:1px solid var(--card-border); padding-bottom:6px;">
+              Horario Jesús 💙
+            </h3>
+            <div class="schedule-grid" id="scheduleJesusContainer"></div>
+          </div>
+
+          <!-- Horario Ali -->
+          <div class="user-summary-card ali-card">
+            <h3 class="title-ali" style="font-size:0.85rem; border-bottom:1px solid var(--card-border); padding-bottom:6px;">
+              Horario Ali 🩷
+            </h3>
+            <div class="schedule-grid" id="scheduleAliContainer"></div>
+          </div>
         </div>
       </div>
 
-      <!-- Materias y Materiales -->
-      <div id="acad-materiales" class="tab-content">
+      <!-- Registro de Materias y Archivos -->
+      <div id="acad-materias" class="tab-content">
         <div style="display:flex; justify-content:space-between; align-items:center;">
-          <h3 style="font-size:0.9rem; color:var(--academic-color);">Materiales de Estudio</h3>
-          <button class="add-btn" style="width:auto; padding:6px 12px; margin:0;" onclick="openAddMaterialModal()">+ Cargar Material</button>
+          <h3 style="font-size:0.88rem; color:var(--academic-color); font-weight:800;">Materias</h3>
+          <button class="add-btn" style="width:auto; padding:6px 12px; margin:0;" onclick="openAddMateriaModal()">+ Materia</button>
         </div>
 
-        <div style="display:flex; gap:8px;">
-          <select id="filterMaterialUser" onchange="renderMaterials()" style="font-size:0.8rem;">
-            <option value="TODOS">Ver Todos los Estudiantes</option>
-            <option value="Jesus">Materias de Jesús</option>
-            <option value="Ali">Materias de Ali</option>
-          </select>
-        </div>
-
-        <div class="schedule-grid" id="materialsContainer">
-          <!-- Carga dinámica -->
-        </div>
+        <div id="materiasListContainer" style="display:flex; flex-direction:column; gap:12px;"></div>
       </div>
 
       <!-- Notas y Calificaciones -->
       <div id="acad-notas" class="tab-content">
         <div style="display:flex; justify-content:space-between; align-items:center;">
-          <h3 style="font-size:0.9rem; color:var(--academic-color);">Control de Calificaciones</h3>
-          <button class="add-btn" style="width:auto; padding:6px 12px; margin:0;" onclick="openAddGradeModal()">+ Nueva Nota</button>
+          <h3 style="font-size:0.88rem; color:var(--academic-color); font-weight:800;">Control de Calificaciones</h3>
         </div>
 
         <!-- Jesús (Suma >= 300) -->
         <div class="academic-card" style="border-top: 3px solid var(--jesus-color);">
           <h3 class="title-jesus">
             <span>Jesús 💙</span> 
-            <span style="font-size:0.72rem; color:var(--text-muted); font-weight:normal;">(Suma acumulativa - Meta: 300 pts)</span>
+            <span style="font-size:0.68rem; color:var(--text-muted); font-weight:normal;">(Meta: 300 pts)</span>
           </h3>
           <div id="jesusGradesContainer"></div>
         </div>
@@ -837,7 +1141,7 @@
         <div class="academic-card" style="border-top: 3px solid var(--ali-color);">
           <h3 class="title-ali">
             <span>Ali 🩷</span>
-            <span style="font-size:0.72rem; color:var(--text-muted); font-weight:normal;">(Promedio ponderado de notas)</span>
+            <span style="font-size:0.68rem; color:var(--text-muted); font-weight:normal;">(Promedio General)</span>
           </h3>
           <div id="aliGradesContainer"></div>
         </div>
@@ -849,12 +1153,12 @@
   <div id="inputModal" class="modal-overlay">
     <div class="modal-card">
       <div class="modal-header">
-        <h3 id="inputModalTitle">Formulario</h3>
+        <h3 id="inputModalTitle" style="font-size:0.92rem; font-weight:800;">Formulario</h3>
         <button class="close-btn" onclick="closeInputModal()">✕</button>
       </div>
       <form id="inputModalForm" onsubmit="handleInputModalSubmit(event)">
         <div id="inputModalFields" style="display:flex; flex-direction:column; gap:10px;"></div>
-        <button type="submit" class="add-btn" style="margin-top:14px; background:var(--jesus-color); font-size:0.9rem;">Guardar</button>
+        <button type="submit" class="add-btn" style="margin-top:10px; background:var(--accent); color:#fff; font-size:0.85rem; border:none;">Guardar</button>
       </form>
     </div>
   </div>
@@ -862,11 +1166,11 @@
   <!-- MODAL CONFIRMACIÓN -->
   <div id="confirmModal" class="modal-overlay">
     <div class="modal-card" style="text-align:center;">
-      <h3 id="confirmModalTitle">¿Confirmar Acción?</h3>
-      <p id="confirmModalText" style="font-size:0.82rem; color:var(--text-muted); margin:8px 0;"></p>
-      <div style="display:flex; gap:10px; margin-top:10px;">
-        <button class="add-btn" style="background:#334155;" onclick="closeConfirmModal(false)">Cancelar</button>
-        <button class="add-btn" style="background:var(--red);" onclick="closeConfirmModal(true)">Aceptar</button>
+      <h3 id="confirmModalTitle" style="font-size:0.92rem; font-weight:800;">¿Confirmar Acción?</h3>
+      <p id="confirmModalText" style="font-size:0.78rem; color:var(--text-muted); margin:6px 0;"></p>
+      <div style="display:flex; gap:10px; margin-top:8px;">
+        <button class="add-btn" style="background:var(--btn-hover);" onclick="closeConfirmModal(false)">Cancelar</button>
+        <button class="add-btn" style="background:var(--red); color:#fff; border:none;" onclick="closeConfirmModal(true)">Aceptar</button>
       </div>
     </div>
   </div>
@@ -875,13 +1179,13 @@
   <div id="categoryModal" class="modal-overlay">
     <div class="modal-card">
       <div class="modal-header">
-        <h3 id="modalCategoryTitle">Tipo de Gasto</h3>
+        <h3 id="modalCategoryTitle" style="font-size:0.92rem; font-weight:800;">Tipo de Gasto</h3>
         <button class="close-btn" onclick="closeCategoryModal()">✕</button>
       </div>
       <div style="display:flex; flex-direction:column; gap:8px;">
-        <button class="add-btn" style="border-left:4px solid var(--red);" onclick="confirmCategory('necesidades')">🔴 Necesidad Básica (Comida, Servicios, Salud)</button>
-        <button class="add-btn" style="border-left:4px solid var(--academic-color);" onclick="confirmCategory('gustos')">🟣 Gustos / Deseos (Salidas, Ocio, Cine)</button>
-        <button class="add-btn" style="border-left:4px solid var(--gold);" onclick="confirmCategory('ahorros')">🟡 Ahorro Directo</button>
+        <button class="add-btn" style="border-left:4px solid var(--red); text-align:left; padding:10px;" onclick="confirmCategory('necesidades')">🔴 Necesidad Básica (Comida, Servicios, Salud)</button>
+        <button class="add-btn" style="border-left:4px solid var(--academic-color); text-align:left; padding:10px;" onclick="confirmCategory('gustos')">🟣 Gustos (Salidas, Ocio, Cine)</button>
+        <button class="add-btn" style="border-left:4px solid var(--gold); text-align:left; padding:10px;" onclick="confirmCategory('ahorros')">🟡 Ahorro Directo</button>
       </div>
     </div>
   </div>
@@ -904,6 +1208,35 @@
 
     const appStartTime = Date.now();
     let audioCtx = null;
+    let triggeredReminders = {};
+
+    // GESTIÓN DE TEMA Y NAVEGACIÓN PRINCIPAL
+    function toggleTheme() {
+      const html = document.documentElement;
+      const currentTheme = html.getAttribute('data-theme');
+      const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+      
+      html.setAttribute('data-theme', newTheme);
+      document.getElementById('themeIcon').textContent = newTheme === 'dark' ? '☀️' : '🌙';
+      
+      renderData();
+    }
+
+    function openMode(mode) {
+      document.getElementById('homeScreen').classList.add('hidden');
+      document.getElementById('mainHeader').style.display = 'flex';
+      document.getElementById('backBtn').style.visibility = 'visible';
+      
+      document.querySelectorAll('.mode-section').forEach(s => s.classList.remove('active'));
+      document.getElementById(`sec-${mode}`).classList.add('active');
+    }
+
+    function goHome() {
+      document.querySelectorAll('.mode-section').forEach(s => s.classList.remove('active'));
+      document.getElementById('mainHeader').style.display = 'none';
+      document.getElementById('homeScreen').classList.remove('hidden');
+      document.getElementById('backBtn').style.visibility = 'hidden';
+    }
 
     function initAudio() {
       if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
@@ -927,30 +1260,47 @@
       osc.stop(now + 0.3);
     }
 
-    // Sistema de Notificaciones Nativa del Navegador
-    function requestNotificationPermission() {
-      if ("Notification" in window) {
-        Notification.requestPermission().then(permission => {
-          if (permission === "granted") {
-            document.getElementById('notifBanner').style.display = 'none';
-            new Notification("Jesús & Ali App", { body: "¡Notificaciones activadas con éxito! 🔔" });
-          }
-        });
+    function updateNotifBanner() {
+      const banner = document.getElementById('notifBanner');
+      if (!("Notification" in window)) {
+        banner.innerHTML = "<span>⚠️ Navegador sin notificaciones</span>";
+        return;
       }
+      if (Notification.permission === "granted") {
+        banner.style.display = 'none';
+      } else if (Notification.permission === "denied") {
+        banner.innerHTML = "<span>❌ Notificaciones bloqueadas</span>";
+      }
+    }
+
+    function requestNotificationPermission() {
+      if (!("Notification" in window)) {
+        alert("Tu navegador no soporta notificaciones del sistema.");
+        return;
+      }
+      Notification.requestPermission().then(permission => {
+        if (permission === "granted") {
+          updateNotifBanner();
+          new Notification("Jesús & Ali", { body: "¡Notificaciones activadas! 🔔" });
+        } else {
+          alert("Permiso de notificaciones denegado.");
+        }
+      });
     }
 
     function triggerNativeNotification(title, message) {
       playSoundNotification();
       if ("Notification" in window && Notification.permission === "granted") {
-        new Notification(title, { body: message, icon: "https://cdn-icons-png.flaticon.com/512/3135/3135715.png" });
+        try {
+          new Notification(title, { body: message, icon: "https://cdn-icons-png.flaticon.com/512/3135/3135715.png" });
+        } catch(e) {
+          console.log("Error desplegando notificación:", e);
+        }
       }
     }
 
-    if ("Notification" in window && Notification.permission === "granted") {
-      document.getElementById('notifBanner').style.display = 'none';
-    }
+    updateNotifBanner();
 
-    // Fechas
     function getLocalDateStr(dateObj = new Date()) {
       const year = dateObj.getFullYear();
       const month = String(dateObj.getMonth() + 1).padStart(2, '0');
@@ -971,10 +1321,10 @@
       document.getElementById('ruleMonthPicker').value = val;
     }
 
-    // Variables de Estado
     let allRecords = {};
     let allPendings = {};
     let allSchedules = {};
+    let allMaterias = {};
     let allMaterials = {};
     let allGrades = {};
     let savingsConfigs = {
@@ -993,31 +1343,15 @@
     let inputModalSubmitCallback = null;
     let confirmModalCallback = null;
 
-    // Control de Modos
-    function switchMainMode(mode) {
-      document.querySelectorAll('.mode-btn').forEach(b => b.classList.remove('active'));
-      document.querySelectorAll('.mode-section').forEach(s => s.classList.remove('active'));
-
-      document.querySelector(`.mode-btn[data-mode="${mode}"]`).classList.add('active');
-      document.getElementById(`sec-${mode}`).classList.add('active');
-    }
-
-    function switchTab(tab, e) {
-      const parent = e.target.closest('.mode-section');
-      parent.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+    function switchTabFromDropdown(selectElem, sectionId) {
+      const tabTarget = selectElem.value;
+      const parent = document.getElementById(sectionId);
+      
       parent.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
-
-      e.target.classList.add('active');
-      document.getElementById(`tab-${tab}`).classList.add('active');
-    }
-
-    function switchAcademicTab(tab, e) {
-      const parent = document.getElementById('sec-academica');
-      parent.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
-      parent.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
-
-      e.target.classList.add('active');
-      document.getElementById(`acad-${tab}`).classList.add('active');
+      
+      const targetContent = sectionId === 'sec-finanzas' ? `tab-${tabTarget}` : `acad-${tabTarget}`;
+      const elem = document.getElementById(targetContent);
+      if (elem) elem.classList.add('active');
     }
 
     function openInputModal(title, fieldsHTML, onSubmit) {
@@ -1051,7 +1385,6 @@
       confirmModalCallback = null;
     }
 
-    // Listeners Firebase con Notificaciones en Vivo
     db.ref('registros').on('child_added', (snapshot) => {
       const val = snapshot.val();
       if (val && val.timestamp && val.timestamp > appStartTime) {
@@ -1081,21 +1414,26 @@
       renderSavings();
     });
 
-    // Subscripciones Académicas
     db.ref('academico/horarios').on('value', (snapshot) => {
       allSchedules = snapshot.val() || {};
       renderSchedules();
     });
 
+    db.ref('academico/materias').on('value', (snapshot) => {
+      allMaterias = snapshot.val() || {};
+      renderMaterias();
+      renderGrades();
+    });
+
     db.ref('academico/materiales').on('value', (snapshot) => {
       allMaterials = snapshot.val() || {};
-      renderMaterials();
+      renderMaterias();
     });
 
     db.ref('academico/notas').on('child_added', (snapshot) => {
       const val = snapshot.val();
       if (val && val.timestamp && val.timestamp > appStartTime) {
-        triggerNativeNotification("🎓 Nueva Calificación", `${val.owner} sacó ${val.valor} en ${val.materia} (${val.titulo})`);
+        triggerNativeNotification("🎓 Nueva Calificación", `${val.owner} sacó ${val.valor} en ${val.materiaName} (${val.titulo})`);
       }
     });
 
@@ -1104,12 +1442,41 @@
       renderGrades();
     });
 
-    // LÓGICA DE FINANZAS
+    const daysMap = { 0: 'Domingo', 1: 'Lunes', 2: 'Martes', 3: 'Miércoles', 4: 'Jueves', 5: 'Viernes', 6: 'Sábado' };
+
+    function checkClassReminders() {
+      const now = new Date();
+      const currentDayName = daysMap[now.getDay()];
+      const nowMinutes = now.getHours() * 60 + now.getMinutes();
+
+      Object.keys(allSchedules).forEach(key => {
+        const item = allSchedules[key];
+        if (item.day === currentDayName && item.startTime) {
+          const [h, m] = item.startTime.split(':').map(Number);
+          const classMinutes = h * 60 + m;
+          const diffMinutes = classMinutes - nowMinutes;
+
+          if (diffMinutes >= 55 && diffMinutes <= 60) {
+            const reminderId = `${getLocalDateStr()}_${key}`;
+            if (!triggeredReminders[reminderId]) {
+              triggeredReminders[reminderId] = true;
+              triggerNativeNotification(
+                "⏰ Recordatorio de Clase (1 hora)",
+                `Clase de ${item.materia} (${item.owner}) a las ${item.startTime}`
+              );
+            }
+          }
+        }
+      });
+    }
+
+    setInterval(checkClassReminders, 30000);
+
     function addRecord(type, owner) {
       const html = `
         <div class="form-group">
-          <label>Descripción del ${type} (${owner})</label>
-          <input type="text" id="modalDesc" placeholder="Ej: Sueldo, Venta, Freelance" required autofocus />
+          <label>Descripción (${owner})</label>
+          <input type="text" id="modalDesc" placeholder="Ej: Sueldo, Venta" required autofocus />
         </div>
         <div class="form-group">
           <label>Monto ($)</label>
@@ -1132,15 +1499,15 @@
     function promptAddGasto(owner, preDesc = null, preAmount = null, pendingKey = null) {
       if (preDesc && preAmount) {
         pendingGastoContext = { owner, desc: preDesc, amount: preAmount, pendingKey };
-        document.getElementById('modalCategoryTitle').innerText = 'Selecciona el tipo de gasto';
+        document.getElementById('modalCategoryTitle').innerText = 'Selecciona categoría';
         document.getElementById('categoryModal').classList.add('active');
         return;
       }
 
       const html = `
         <div class="form-group">
-          <label>Descripción del gasto (${owner})</label>
-          <input type="text" id="modalGastoDesc" placeholder="Ej: Almuerzo, Uber, Cine" required autofocus />
+          <label>Descripción (${owner})</label>
+          <input type="text" id="modalGastoDesc" placeholder="Ej: Almuerzo, Cine" required autofocus />
         </div>
         <div class="form-group">
           <label>Monto ($)</label>
@@ -1154,7 +1521,7 @@
 
         if (desc && !isNaN(amount) && amount > 0) {
           pendingGastoContext = { owner, desc, amount, pendingKey };
-          document.getElementById('modalCategoryTitle').innerText = 'Selecciona el tipo de gasto';
+          document.getElementById('modalCategoryTitle').innerText = 'Selecciona categoría';
           document.getElementById('categoryModal').classList.add('active');
         }
       });
@@ -1190,18 +1557,18 @@
       const html = `
         ${isJoint ? `
         <div class="form-group">
-          <label>¿Quién aporta el ahorro?</label>
+          <label>Aportante</label>
           <select id="modalSavingsOwner">
             <option value="Jesus">Jesús</option>
             <option value="Ali">Ali</option>
           </select>
         </div>` : ''}
         <div class="form-group">
-          <label>Motivo o Descripción</label>
+          <label>Descripción</label>
           <input type="text" id="modalSavingsDesc" value="${isJoint ? 'Ahorro conjunto' : 'Ahorro ' + (currentSavingsMode === 'jesus' ? 'Jesús' : 'Ali')}" required />
         </div>
         <div class="form-group">
-          <label>Monto a aportar ($)</label>
+          <label>Monto ($)</label>
           <input type="number" id="modalSavingsAmount" placeholder="Ej: 30000" required autofocus />
         </div>
       `;
@@ -1225,12 +1592,12 @@
       const currentConfig = savingsConfigs[currentSavingsMode] || { goal: 300000 };
       const html = `
         <div class="form-group">
-          <label>Establecer Nueva Meta ($)</label>
+          <label>Nueva Meta ($)</label>
           <input type="number" id="modalGoalAmount" value="${currentConfig.goal || 300000}" required autofocus />
         </div>
       `;
 
-      openInputModal('Cambiar Meta de Alcancía', html, () => {
+      openInputModal('Meta Alcancía', html, () => {
         const newGoal = parseFloat(document.getElementById('modalGoalAmount').value);
         if (!isNaN(newGoal) && newGoal > 0) {
           db.ref(`alcanciaConfigs/${currentSavingsMode}`).update({ goal: newGoal });
@@ -1245,10 +1612,6 @@
       renderSavings();
     }
 
-    function changeVisual(style) {
-      db.ref(`alcanciaConfigs/${currentSavingsMode}`).update({ style: style });
-    }
-
     function breakPiggyBank() {
       let recordKeys = [];
       Object.keys(allRecords).forEach(key => {
@@ -1256,7 +1619,7 @@
         if (item.type === 'ahorro' && (item.scope || 'joint') === currentSavingsMode) recordKeys.push(key);
       });
 
-      customConfirm('🎉 ¡Meta Alcanzada!', '¿Deseas romper la alcancía y reiniciar el saldo?', () => {
+      customConfirm('🎉 ¡Meta Alcanzada!', '¿Deseas romper la alcancía y reiniciar?', () => {
         recordKeys.forEach(key => db.ref('registros/' + key).remove());
       });
     }
@@ -1264,7 +1627,7 @@
     function addPending(owner) {
       const html = `
         <div class="form-group">
-          <label>Descripción de la Deuda (${owner})</label>
+          <label>Deuda de ${owner}</label>
           <input type="text" id="modalPendingDesc" placeholder="Ej: Préstamo" required autofocus />
         </div>
         <div class="form-group">
@@ -1309,11 +1672,19 @@
       });
     }
 
+    /* RENDER DEUDAS: PENDIENTES Y PAGADAS SEPARADAS EN CONTENEDORES INDEPENDIENTES */
     function renderPendings() {
-      const listJesus = document.getElementById('pendingJesusList');
-      const listAli = document.getElementById('pendingAliList');
-      listJesus.innerHTML = ''; listAli.innerHTML = '';
+      const pendingJesus = document.getElementById('pendingJesusList');
+      const paidJesus = document.getElementById('paidJesusList');
+      const pendingAli = document.getElementById('pendingAliList');
+      const paidAli = document.getElementById('paidAliList');
+
+      pendingJesus.innerHTML = ''; paidJesus.innerHTML = '';
+      pendingAli.innerHTML = ''; paidAli.innerHTML = '';
+
       let totalJesus = 0, totalAli = 0;
+      let countPendingJesus = 0, countPaidJesus = 0;
+      let countPendingAli = 0, countPaidAli = 0;
 
       Object.keys(allPendings).forEach(key => {
         const p = allPendings[key];
@@ -1328,8 +1699,15 @@
               <span class="delete-btn" onclick="deletePending('${key}')">🗑️</span>
             </div>
           `;
-          if (p.owner === 'Jesus') { listJesus.appendChild(li); totalJesus += p.amount; }
-          else { listAli.appendChild(li); totalAli += p.amount; }
+          if (p.owner === 'Jesus') {
+            pendingJesus.appendChild(li);
+            totalJesus += p.amount;
+            countPendingJesus++;
+          } else {
+            pendingAli.appendChild(li);
+            totalAli += p.amount;
+            countPendingAli++;
+          }
         } else {
           li.className = 'paid-item';
           li.innerHTML = `
@@ -1339,10 +1717,20 @@
               <span class="delete-btn" onclick="deletePending('${key}')">🗑️</span>
             </div>
           `;
-          if (p.owner === 'Jesus') listJesus.appendChild(li);
-          else listAli.appendChild(li);
+          if (p.owner === 'Jesus') {
+            paidJesus.appendChild(li);
+            countPaidJesus++;
+          } else {
+            paidAli.appendChild(li);
+            countPaidAli++;
+          }
         }
       });
+
+      if (countPendingJesus === 0) pendingJesus.innerHTML = `<li style="border:none; font-style:italic; color:var(--text-muted);">Sin deudas pendientes</li>`;
+      if (countPaidJesus === 0) paidJesus.innerHTML = `<li style="border:none; font-style:italic; color:var(--text-muted);">Sin deudas pagadas</li>`;
+      if (countPendingAli === 0) pendingAli.innerHTML = `<li style="border:none; font-style:italic; color:var(--text-muted);">Sin deudas pendientes</li>`;
+      if (countPaidAli === 0) paidAli.innerHTML = `<li style="border:none; font-style:italic; color:var(--text-muted);">Sin deudas pagadas</li>`;
 
       document.getElementById('totalPendingJesus').innerText = `$${totalJesus.toLocaleString()}`;
       document.getElementById('totalPendingAli').innerText = `$${totalAli.toLocaleString()}`;
@@ -1366,7 +1754,7 @@
         }
       });
 
-      const config = savingsConfigs[currentSavingsMode] || { goal: 300000, style: 'penguin' };
+      const config = savingsConfigs[currentSavingsMode] || { goal: 300000 };
       const goal = config.goal || 300000;
       let percentage = Math.round((totalSavings / goal) * 100);
       let displayPercentage = percentage;
@@ -1383,22 +1771,13 @@
       let coinsHTML = '';
       for (let i = 0; i < coinCount; i++) coinsHTML += `<span class="coin-icon">🪙</span>`;
 
-      if (config.style === 'penguin') {
-        container.innerHTML = `
-          <div class="penguin-body">
-            <div class="penguin-face"><div class="eyes"><div class="eye"></div><div class="eye"></div></div><div class="beak"></div></div>
-            <div class="penguin-text">${displayPercentage}%</div>
-            <div class="coins-fill-container" style="height: ${fillHeight}%;">${coinsHTML}</div>
-          </div>
-        `;
-      } else {
-        container.innerHTML = `
-          <div class="cylinder-body">
-            <div class="cylinder-text">${displayPercentage}%</div>
-            <div class="coins-fill-container" style="height: ${fillHeight}%;">${coinsHTML}</div>
-          </div>
-        `;
-      }
+      container.innerHTML = `
+        <div class="penguin-body">
+          <div class="penguin-face"><div class="eyes"><div class="eye"></div><div class="eye"></div></div><div class="beak"></div></div>
+          <div class="penguin-text">${displayPercentage}%</div>
+          <div class="coins-fill-container" style="height: ${fillHeight}%;">${coinsHTML}</div>
+        </div>
+      `;
     }
 
     function getCatBadgeHTML(cat) {
@@ -1506,13 +1885,13 @@
 
       chartJesusInstance = new Chart(ctxJesus, {
         type: 'doughnut',
-        data: { labels: ['Ingresos', 'Gastos'], datasets: [{ data: [ingJesus, gasJesus], backgroundColor: ['#22c55e', '#ef4444'] }] },
+        data: { labels: ['Ingresos', 'Gastos'], datasets: [{ data: [ingJesus, gasJesus], backgroundColor: ['#10b981', '#ef4444'] }] },
         options: opts
       });
 
       chartAliInstance = new Chart(ctxAli, {
         type: 'doughnut',
-        data: { labels: ['Ingresos', 'Gastos'], datasets: [{ data: [ingAli, gasAli], backgroundColor: ['#22c55e', '#ef4444'] }] },
+        data: { labels: ['Ingresos', 'Gastos'], datasets: [{ data: [ingAli, gasAli], backgroundColor: ['#10b981', '#ef4444'] }] },
         options: opts
       });
     }
@@ -1540,7 +1919,7 @@
         banner.innerText = '🎉 ¡Meta 50/25/25 Cumplida!';
       } else {
         banner.className = 'rule-result-box rule-fail';
-        banner.innerText = '⚠️ Fuera de los límites 50/25/25';
+        banner.innerText = '⚠️ Fuera de límites 50/25/25';
       }
 
       const ctxIdeal = document.getElementById('chartRuleIdeal').getContext('2d');
@@ -1556,12 +1935,11 @@
 
       chartRuleRealInstance = new Chart(ctxReal, {
         type: 'doughnut',
-        data: { labels: ['Necesidades', 'Gustos', 'Ahorros', 'Sin Usar'], datasets: [{ data: [needs, wants, savings, unused], backgroundColor: ['#ef4444', '#8b5cf6', '#f59e0b', '#64748b'] }] },
+        data: { labels: ['Necesidades', 'Gustos', 'Ahorros', 'Libre'], datasets: [{ data: [needs, wants, savings, unused], backgroundColor: ['#ef4444', '#8b5cf6', '#f59e0b', '#64748b'] }] },
         options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } } }
       });
     }
 
-    // ==================== LÓGICA MÓDULO ACADÉMICO ====================
     function openAddClassModal() {
       const html = `
         <div class="form-group">
@@ -1573,10 +1951,10 @@
         </div>
         <div class="form-group">
           <label>Materia</label>
-          <input type="text" id="modalClassMateria" placeholder="Ej: Cálculo, Programación" required autofocus />
+          <input type="text" id="modalClassMateria" placeholder="Ej: Cálculo" required autofocus />
         </div>
         <div class="form-group">
-          <label>Día de la semana</label>
+          <label>Día</label>
           <select id="modalClassDay">
             <option value="Lunes">Lunes</option>
             <option value="Martes">Martes</option>
@@ -1587,70 +1965,85 @@
           </select>
         </div>
         <div class="form-group">
-          <label>Hora / Aula</label>
-          <input type="text" id="modalClassInfo" placeholder="Ej: 8:00 AM - 10:00 AM (Aula 201)" required />
+          <label>Hora Inicio</label>
+          <input type="time" id="modalClassStartTime" required />
+        </div>
+        <div class="form-group">
+          <label>Aula / Detalles</label>
+          <input type="text" id="modalClassInfo" placeholder="Ej: Aula 201" required />
         </div>
       `;
 
-      openInputModal('Agregar Clase al Horario', html, () => {
+      openInputModal('Agregar Clase', html, () => {
         const owner = document.getElementById('modalClassOwner').value;
         const materia = document.getElementById('modalClassMateria').value.trim();
         const day = document.getElementById('modalClassDay').value;
+        const startTime = document.getElementById('modalClassStartTime').value;
         const info = document.getElementById('modalClassInfo').value.trim();
 
-        if (materia && info) {
-          db.ref('academico/horarios').push({ owner, materia, day, info });
+        if (materia && startTime) {
+          db.ref('academico/horarios').push({ owner, materia, day, startTime, info });
         }
       });
     }
 
     function deleteScheduleItem(id) {
-      customConfirm('¿Eliminar clase?', 'Se borrará de la agenda.', () => {
+      customConfirm('¿Eliminar clase?', 'Se borrará del horario.', () => {
         db.ref('academico/horarios/' + id).remove();
       });
     }
 
     function renderSchedules() {
-      const container = document.getElementById('scheduleContainer');
-      container.innerHTML = '';
+      const containerJesus = document.getElementById('scheduleJesusContainer');
+      const containerAli = document.getElementById('scheduleAliContainer');
+      containerJesus.innerHTML = ''; containerAli.innerHTML = '';
 
       const days = ["Lunes", "Martes", "Miércoles", "Jueves", "Viernes", "Sábado"];
-      let hasData = false;
 
-      days.forEach(d => {
-        const dayClasses = Object.keys(allSchedules)
-          .map(k => ({ id: k, ...allSchedules[k] }))
-          .filter(c => c.day === d);
+      function buildStudentSchedule(owner) {
+        let hasClasses = false;
+        const wrapper = document.createElement('div');
+        wrapper.className = 'schedule-grid';
 
-        if (dayClasses.length > 0) {
-          hasData = true;
-          const dayBox = document.createElement('div');
-          dayBox.className = 'academic-card';
-          dayBox.innerHTML = `<h4 style="font-size:0.82rem; color:var(--text-muted); border-bottom:1px solid var(--card-border); padding-bottom:4px;">${d}</h4>`;
+        days.forEach(d => {
+          const dayClasses = Object.keys(allSchedules)
+            .map(k => ({ id: k, ...allSchedules[k] }))
+            .filter(c => c.owner === owner && c.day === d);
 
-          dayClasses.forEach(c => {
-            const item = document.createElement('div');
-            item.className = `schedule-item ${c.owner === 'Jesus' ? 'jesus' : 'ali'}`;
-            item.innerHTML = `
-              <div>
-                <strong style="font-size:0.82rem;">${c.materia}</strong>
-                <span class="materia-badge">${c.owner}</span>
-                <div style="font-size:0.72rem; color:var(--text-muted);">${c.info}</div>
-              </div>
-              <span class="delete-btn" onclick="deleteScheduleItem('${c.id}')">🗑️</span>
-            `;
-            dayBox.appendChild(item);
-          });
-          container.appendChild(dayBox);
+          if (dayClasses.length > 0) {
+            hasClasses = true;
+            const dayBox = document.createElement('div');
+            dayBox.className = 'academic-card';
+            dayBox.innerHTML = `<h4 style="font-size:0.75rem; color:var(--text-muted); border-bottom:1px solid var(--card-border); padding-bottom:2px;">${d}</h4>`;
+
+            dayClasses.forEach(c => {
+              const item = document.createElement('div');
+              item.className = `schedule-item ${c.owner === 'Jesus' ? 'jesus' : 'ali'}`;
+              item.innerHTML = `
+                <div>
+                  <strong style="font-size:0.78rem;">${c.materia}</strong>
+                  <div style="font-size:0.7rem; color:var(--gold); font-weight:700;">⏰ ${c.startTime || 'S/H'}</div>
+                  <div style="font-size:0.65rem; color:var(--text-muted);">${c.info || ''}</div>
+                </div>
+                <span class="delete-btn" onclick="deleteScheduleItem('${c.id}')">🗑️</span>
+              `;
+              dayBox.appendChild(item);
+            });
+            wrapper.appendChild(dayBox);
+          }
+        });
+
+        if (!hasClasses) {
+          wrapper.innerHTML = `<div style="text-align:center; font-size:0.74rem; color:var(--text-muted); padding:8px;">Sin clases registradas.</div>`;
         }
-      });
-
-      if (!hasData) {
-        container.innerHTML = `<div style="text-align:center; font-size:0.8rem; color:var(--text-muted); padding:20px;">No hay clases programadas.</div>`;
+        return wrapper;
       }
+
+      containerJesus.appendChild(buildStudentSchedule('Jesus'));
+      containerAli.appendChild(buildStudentSchedule('Ali'));
     }
 
-    function openAddMaterialModal() {
+    function openAddMateriaModal() {
       const html = `
         <div class="form-group">
           <label>Estudiante</label>
@@ -1661,119 +2054,177 @@
         </div>
         <div class="form-group">
           <label>Materia</label>
-          <input type="text" id="modalMatMateria" placeholder="Ej: Física, Estructura de Datos" required autofocus />
+          <input type="text" id="modalMatName" placeholder="Ej: Programación Java" required autofocus />
         </div>
         <div class="form-group">
-          <label>Título del Material</label>
-          <input type="text" id="modalMatTitle" placeholder="Ej: Guía de Ejercicios / Video Clase" required />
-        </div>
-        <div class="form-group">
-          <label>Tipo de Recurso</label>
-          <select id="modalMatType">
-            <option value="pdf">📄 Archivo PDF</option>
-            <option value="youtube">▶️ Video de YouTube</option>
-            <option value="link">🔗 Enlace Web</option>
-          </select>
-        </div>
-        <div class="form-group">
-          <label>URL del Enlace</label>
-          <input type="url" id="modalMatUrl" placeholder="https://..." required />
+          <label>Detalles / Profesor</label>
+          <input type="text" id="modalMatDesc" placeholder="Ej: Prof. Pérez" />
         </div>
       `;
 
-      openInputModal('Agregar Material de Estudio', html, () => {
+      openInputModal('Nueva Materia', html, () => {
         const owner = document.getElementById('modalMatOwner').value;
-        const materia = document.getElementById('modalMatMateria').value.trim();
-        const title = document.getElementById('modalMatTitle').value.trim();
-        const type = document.getElementById('modalMatType').value;
-        const url = document.getElementById('modalMatUrl').value.trim();
+        const name = document.getElementById('modalMatName').value.trim();
+        const desc = document.getElementById('modalMatDesc').value.trim();
 
-        if (materia && title && url) {
-          db.ref('academico/materiales').push({ owner, materia, title, type, url, timestamp: Date.now() });
+        if (name) {
+          db.ref('academico/materias').push({ owner, name, desc, timestamp: Date.now() });
         }
       });
     }
 
-    function deleteMaterialItem(id) {
-      customConfirm('¿Eliminar material?', 'Esta acción borra el recurso.', () => {
+    function deleteMateria(materiaId) {
+      customConfirm('¿Eliminar materia?', 'Se borrarán sus archivos y notas asociadas.', () => {
+        db.ref('academico/materias/' + materiaId).remove();
+
+        Object.keys(allMaterials).forEach(k => {
+          if (allMaterials[k].materiaId === materiaId) db.ref('academico/materiales/' + k).remove();
+        });
+        Object.keys(allGrades).forEach(k => {
+          if (allGrades[k].materiaId === materiaId) db.ref('academico/notas/' + k).remove();
+        });
+      });
+    }
+
+    function openUploadFileModal(materiaId, materiaName, owner) {
+      const html = `
+        <div class="form-group">
+          <label>Nombre del Archivo</label>
+          <input type="text" id="modalFileTitle" placeholder="Ej: Guía de Ejercicios" required autofocus />
+        </div>
+        <div class="form-group">
+          <label>Seleccionar PDF (Máx 2MB)</label>
+          <input type="file" id="modalFileInput" accept="application/pdf,.pdf" required />
+        </div>
+      `;
+
+      openInputModal(`PDF para: ${materiaName}`, html, () => {
+        const title = document.getElementById('modalFileTitle').value.trim();
+        const fileInput = document.getElementById('modalFileInput');
+
+        if (title && fileInput.files && fileInput.files[0]) {
+          const file = fileInput.files[0];
+          
+          if (file.size > 2200000) {
+            alert("El archivo es demasiado grande (máximo 2MB).");
+            return;
+          }
+
+          const reader = new FileReader();
+          reader.onload = function(e) {
+            const base64Data = e.target.result;
+            db.ref('academico/materiales').push({
+              materiaId,
+              materiaName,
+              owner,
+              title,
+              fileName: file.name,
+              fileData: base64Data,
+              timestamp: Date.now()
+            });
+          };
+          reader.readAsDataURL(file);
+        }
+      });
+    }
+
+    function deleteMaterial(id) {
+      customConfirm('¿Eliminar archivo?', 'Esta acción no se puede deshacer.', () => {
         db.ref('academico/materiales/' + id).remove();
       });
     }
 
-    function renderMaterials() {
-      const container = document.getElementById('materialsContainer');
+    function renderMaterias() {
+      const container = document.getElementById('materiasListContainer');
       container.innerHTML = '';
-      const filterUser = document.getElementById('filterMaterialUser').value;
 
-      const keys = Object.keys(allMaterials);
-      let count = 0;
+      const matKeys = Object.keys(allMaterias);
 
-      keys.forEach(k => {
-        const mat = allMaterials[k];
-        if (filterUser === 'TODOS' || mat.owner === filterUser) {
-          count++;
-          const card = document.createElement('div');
-          card.className = 'schedule-item';
-          card.style.borderLeftColor = mat.owner === 'Jesus' ? 'var(--jesus-color)' : 'var(--ali-color)';
-
-          let icon = mat.type === 'pdf' ? '📄' : (mat.type === 'youtube' ? '▶️' : '🔗');
-          
-          card.innerHTML = `
-            <div>
-              <div style="font-weight:800; font-size:0.83rem;">${icon} ${mat.title}</div>
-              <div style="font-size:0.72rem; color:var(--text-muted); margin-bottom:4px;">
-                Materia: <b>${mat.materia}</b> | <span style="color:var(--text);">${mat.owner}</span>
-              </div>
-              <a href="${mat.url}" target="_blank" class="resource-link">Abrir Recurso ↗</a>
-            </div>
-            <span class="delete-btn" onclick="deleteMaterialItem('${k}')">🗑️</span>
-          `;
-          container.appendChild(card);
-        }
-      });
-
-      if (count === 0) {
-        container.innerHTML = `<div style="text-align:center; font-size:0.8rem; color:var(--text-muted); padding:20px;">No se encontraron materiales cargados.</div>`;
+      if (matKeys.length === 0) {
+        container.innerHTML = `<div style="text-align:center; font-size:0.78rem; color:var(--text-muted); padding:16px;">No hay materias registradas. Haz clic en <b>"+ Materia"</b> para empezar.</div>`;
+        return;
       }
+
+      matKeys.forEach(mKey => {
+        const mat = allMaterias[mKey];
+        const card = document.createElement('div');
+        card.className = 'academic-card';
+        card.style.borderTop = `3px solid ${mat.owner === 'Jesus' ? 'var(--jesus-color)' : 'var(--ali-color)'}`;
+
+        const filesListHTML = Object.keys(allMaterials)
+          .map(k => ({ id: k, ...allMaterials[k] }))
+          .filter(f => f.materiaId === mKey)
+          .map(f => `
+            <div style="display:flex; justify-content:space-between; align-items:center; background:var(--bg); padding:6px 9px; border-radius:8px; font-size:0.72rem; gap:6px;">
+              <div style="overflow:hidden;">
+                <div style="font-weight:700; text-overflow:ellipsis; overflow:hidden; white-space:nowrap;">📄 ${f.title}</div>
+                <div style="font-size:0.62rem; color:var(--text-muted);">${f.fileName || 'Documento PDF'}</div>
+              </div>
+              <div style="display:flex; gap:4px; align-items:center; flex-shrink:0;">
+                <a href="${f.fileData}" download="${f.fileName || 'documento.pdf'}" class="resource-link" style="margin:0;">⬇️ Abrir</a>
+                <span class="delete-btn" onclick="deleteMaterial('${f.id}')">🗑️</span>
+              </div>
+            </div>
+          `).join('');
+
+        card.innerHTML = `
+          <h3>
+            <span>${mat.name} <span class="materia-badge">${mat.owner}</span></span>
+            <span class="delete-btn" onclick="deleteMateria('${mKey}')">🗑️</span>
+          </h3>
+          <div style="font-size:0.72rem; color:var(--text-muted);">${mat.desc || 'Sin descripción'}</div>
+          
+          <div style="margin-top:2px; display:flex; flex-direction:column; gap:6px;">
+            <strong style="font-size:0.7rem; color:var(--academic-color); text-transform:uppercase;">📁 Documentos PDF:</strong>
+            ${filesListHTML || '<div style="font-size:0.68rem; color:var(--text-muted); font-style:italic;">Sin PDFs subidos.</div>'}
+          </div>
+
+          <button class="add-btn" style="background:var(--card-bg-solid); border-color:var(--academic-color); color:var(--academic-color);" onclick="openUploadFileModal('${mKey}', '${mat.name}', '${mat.owner}')">
+            📁 Subir PDF
+          </button>
+        `;
+
+        container.appendChild(card);
+      });
     }
 
-    function openAddGradeModal() {
+    function openAddGradeForMateriaModal(materiaId, materiaName, owner) {
+      const isJesus = owner === 'Jesus';
       const html = `
         <div class="form-group">
-          <label>Estudiante</label>
-          <select id="modalGradeOwner">
-            <option value="Jesus">Jesús (Suma puntos)</option>
-            <option value="Ali">Ali (Promedio de notas)</option>
-          </select>
-        </div>
-        <div class="form-group">
           <label>Materia</label>
-          <input type="text" id="modalGradeMateria" placeholder="Ej: Algoritmos" required autofocus />
+          <input type="text" value="${materiaName} (${owner})" disabled />
         </div>
         <div class="form-group">
-          <label>Nombre del Examen / Tarea</label>
-          <input type="text" id="modalGradeTitle" placeholder="Ej: Parcial 1, Taller 2" required />
+          <label>Examen / Actividad</label>
+          <input type="text" id="modalGradeTitle" placeholder="Ej: Parcial 1, Taller 2" required autofocus />
         </div>
         <div class="form-group">
-          <label>Calificación Obtención (Número)</label>
-          <input type="number" step="0.1" id="modalGradeVal" placeholder="Ej: 85 (Jesús) ó 4.5 (Ali)" required />
+          <label>Calificación ${isJesus ? '(Puntos)' : '(Promedio 0 a 5.0)'}</label>
+          <input type="number" step="0.1" id="modalGradeVal" placeholder="${isJesus ? 'Ej: 85' : 'Ej: 4.5'}" required />
         </div>
       `;
 
-      openInputModal('Registrar Nueva Nota', html, () => {
-        const owner = document.getElementById('modalGradeOwner').value;
-        const materia = document.getElementById('modalGradeMateria').value.trim();
+      openInputModal(`Nueva Nota: ${materiaName}`, html, () => {
         const titulo = document.getElementById('modalGradeTitle').value.trim();
         const valor = parseFloat(document.getElementById('modalGradeVal').value);
 
-        if (materia && titulo && !isNaN(valor)) {
-          db.ref('academico/notas').push({ owner, materia, titulo, valor, date: getLocalDateStr(), timestamp: Date.now() });
+        if (titulo && !isNaN(valor)) {
+          db.ref('academico/notas').push({
+            materiaId,
+            materiaName,
+            owner,
+            titulo,
+            valor,
+            date: getLocalDateStr(),
+            timestamp: Date.now()
+          });
         }
       });
     }
 
     function deleteGradeItem(id) {
-      customConfirm('¿Eliminar nota?', 'Se actualizarán los cálculos.', () => {
+      customConfirm('¿Eliminar nota?', 'Se recalculará la nota final.', () => {
         db.ref('academico/notas/' + id).remove();
       });
     }
@@ -1784,37 +2235,28 @@
 
       containerJesus.innerHTML = ''; containerAli.innerHTML = '';
 
-      // Agrupar por materia para Jesús
-      const jesusMaterias = {};
-      // Agrupar por materia para Ali
-      const aliMaterias = {};
+      const jesusMaterias = Object.keys(allMaterias).filter(k => allMaterias[k].owner === 'Jesus');
+      const aliMaterias = Object.keys(allMaterias).filter(k => allMaterias[k].owner === 'Ali');
 
-      Object.keys(allGrades).forEach(k => {
-        const g = { id: k, ...allGrades[k] };
-        if (g.owner === 'Jesus') {
-          if (!jesusMaterias[g.materia]) jesusMaterias[g.materia] = [];
-          jesusMaterias[g.materia].push(g);
-        } else {
-          if (!aliMaterias[g.materia]) aliMaterias[g.materia] = [];
-          aliMaterias[g.materia].push(g);
-        }
-      });
-
-      // Render Jesús (Suma >= 300)
-      if (Object.keys(jesusMaterias).length === 0) {
-        containerJesus.innerHTML = `<div style="font-size:0.78rem; color:var(--text-muted);">Sin notas registradas.</div>`;
+      // Render Jesús
+      if (jesusMaterias.length === 0) {
+        containerJesus.innerHTML = `<div style="font-size:0.74rem; color:var(--text-muted);">No hay materias registradas para Jesús.</div>`;
       } else {
-        Object.keys(jesusMaterias).forEach(materia => {
-          const arr = jesusMaterias[materia];
-          const sum = arr.reduce((acc, curr) => acc + curr.valor, 0);
+        jesusMaterias.forEach(mKey => {
+          const mat = allMaterias[mKey];
+          const grades = Object.keys(allGrades)
+            .map(k => ({ id: k, ...allGrades[k] }))
+            .filter(g => g.materiaId === mKey);
+
+          const sum = grades.reduce((acc, curr) => acc + curr.valor, 0);
           const percent = Math.min(100, Math.round((sum / 300) * 100));
           const isPassed = sum >= 300;
 
           const box = document.createElement('div');
-          box.style.cssText = "background:rgba(30,41,59,0.6); padding:10px; border-radius:10px; margin-bottom:8px;";
-          
-          let listHTML = arr.map(i => `
-            <div style="display:flex; justify-content:space-between; font-size:0.75rem; margin-top:4px;">
+          box.style.cssText = "background:var(--bg); padding:10px; border-radius:12px; margin-bottom:8px; border:1px solid var(--card-border);";
+
+          let listHTML = grades.map(i => `
+            <div style="display:flex; justify-content:space-between; font-size:0.72rem; margin-top:4px; background:var(--card-bg-solid); padding:4px 8px; border-radius:6px; border:1px solid var(--card-border);">
               <span>${i.titulo}: <b>${i.valor} pts</b></span>
               <span class="delete-btn" onclick="deleteGradeItem('${i.id}')">✕</span>
             </div>
@@ -1822,7 +2264,7 @@
 
           box.innerHTML = `
             <div style="display:flex; justify-content:space-between; align-items:center;">
-              <strong style="font-size:0.85rem;">${materia}</strong>
+              <strong style="font-size:0.8rem;">${mat.name}</strong>
               <span class="grade-badge ${isPassed ? 'grade-pass' : 'grade-pending'}">
                 ${isPassed ? '🎉 GANADA' : `Suma: ${sum}/300 pts`}
               </span>
@@ -1830,26 +2272,31 @@
             <div class="progress-bar-container">
               <div class="progress-bar-fill" style="width: ${percent}%;"></div>
             </div>
-            <div style="margin-top:6px;">${listHTML}</div>
+            <div style="margin-top:4px;">${listHTML}</div>
+            <button class="add-btn" style="padding:5px; font-size:0.72rem; margin-top:6px;" onclick="openAddGradeForMateriaModal('${mKey}', '${mat.name}', 'Jesus')">+ Añadir Nota</button>
           `;
           containerJesus.appendChild(box);
         });
       }
 
-      // Render Ali (Promedio)
-      if (Object.keys(aliMaterias).length === 0) {
-        containerAli.innerHTML = `<div style="font-size:0.78rem; color:var(--text-muted);">Sin notas registradas.</div>`;
+      // Render Ali
+      if (aliMaterias.length === 0) {
+        containerAli.innerHTML = `<div style="font-size:0.74rem; color:var(--text-muted);">No hay materias registradas para Ali.</div>`;
       } else {
-        Object.keys(aliMaterias).forEach(materia => {
-          const arr = aliMaterias[materia];
-          const avg = (arr.reduce((acc, curr) => acc + curr.valor, 0) / arr.length).toFixed(2);
-          const isPassed = avg >= 3.0; // Asumiendo escala habitual 0 - 5.0
+        aliMaterias.forEach(mKey => {
+          const mat = allMaterias[mKey];
+          const grades = Object.keys(allGrades)
+            .map(k => ({ id: k, ...allGrades[k] }))
+            .filter(g => g.materiaId === mKey);
+
+          const avg = grades.length > 0 ? (grades.reduce((acc, curr) => acc + curr.valor, 0) / grades.length).toFixed(2) : 0;
+          const isPassed = avg >= 3.0;
 
           const box = document.createElement('div');
-          box.style.cssText = "background:rgba(30,41,59,0.6); padding:10px; border-radius:10px; margin-bottom:8px;";
+          box.style.cssText = "background:var(--bg); padding:10px; border-radius:12px; margin-bottom:8px; border:1px solid var(--card-border);";
 
-          let listHTML = arr.map(i => `
-            <div style="display:flex; justify-content:space-between; font-size:0.75rem; margin-top:4px;">
+          let listHTML = grades.map(i => `
+            <div style="display:flex; justify-content:space-between; font-size:0.72rem; margin-top:4px; background:var(--card-bg-solid); padding:4px 8px; border-radius:6px; border:1px solid var(--card-border);">
               <span>${i.titulo}: <b>${i.valor}</b></span>
               <span class="delete-btn" onclick="deleteGradeItem('${i.id}')">✕</span>
             </div>
@@ -1857,12 +2304,13 @@
 
           box.innerHTML = `
             <div style="display:flex; justify-content:space-between; align-items:center;">
-              <strong style="font-size:0.85rem;">${materia}</strong>
+              <strong style="font-size:0.8rem;">${mat.name}</strong>
               <span class="grade-badge ${isPassed ? 'grade-pass' : 'grade-pending'}">
-                Promedio: ${avg}
+                ${grades.length > 0 ? `Promedio: ${avg}` : 'Sin notas'}
               </span>
             </div>
-            <div style="margin-top:6px;">${listHTML}</div>
+            <div style="margin-top:4px;">${listHTML}</div>
+            <button class="add-btn" style="padding:5px; font-size:0.72rem; margin-top:6px;" onclick="openAddGradeForMateriaModal('${mKey}', '${mat.name}', 'Ali')">+ Añadir Nota</button>
           `;
           containerAli.appendChild(box);
         });
