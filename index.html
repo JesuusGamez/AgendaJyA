@@ -2,25 +2,20 @@
 <html lang="es" data-theme="light">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>J&A - Finanzas y Academia</title>
   
-  <!-- Manifest PWA -->
   <link rel="manifest" href="./manifest.json">
-
-  <!-- Tipografía Moderna -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-
-  <!-- Chart.js & Firebase Compat SDKs -->
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
   <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
   <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-messaging.js"></script>
 
   <style>
-    /* VARIABLES DE COLOR (Tema Claro: Azul Cielo Ejecutivo) */
+    /* ===== VARIABLES ===== */
     :root {
       --bg: #f0f7ff;
       --bg-gradient: linear-gradient(135deg, #e0f2fe 0%, #f0f7ff 50%, #eef2ff 100%);
@@ -47,9 +42,10 @@
       --unused-color: #94a3b8;
       --btn-hover: #e0f2fe;
       --shadow: 0 6px 18px -4px rgba(2, 132, 199, 0.08);
+      --paseo-color: #0d9488;
+      --paseo-glow: rgba(13, 148, 136, 0.15);
     }
 
-    /* MODO OSCURO */
     [data-theme="dark"] {
       --bg: #0b1329;
       --bg-gradient: linear-gradient(135deg, #0b1329 0%, #0f172a 60%, #111827 100%);
@@ -76,8 +72,11 @@
       --unused-color: #64748b;
       --btn-hover: #334155;
       --shadow: 0 12px 30px -10px rgba(0, 0, 0, 0.6);
+      --paseo-color: #2dd4bf;
+      --paseo-glow: rgba(45, 212, 191, 0.2);
     }
 
+    /* ===== RESET Y BASE ===== */
     * {
       box-sizing: border-box;
       margin: 0;
@@ -163,6 +162,7 @@
       transform: rotate(15deg);
     }
 
+    /* ===== HOME ===== */
     .home-screen {
       display: flex;
       flex-direction: column;
@@ -173,7 +173,6 @@
       width: 100%;
       animation: fadeIn 0.3s ease-out;
     }
-
     .home-screen.hidden { display: none; }
 
     .hero-brand {
@@ -214,7 +213,6 @@
       font-weight: 700;
       box-shadow: var(--shadow);
     }
-
     .badge-j { color: var(--jesus-color); }
     .badge-a { color: var(--ali-color); }
 
@@ -250,9 +248,9 @@
       background: var(--accent);
       border-radius: 4px 0 0 4px;
     }
-
     .hero-card[data-target="finanzas"]::before { background: linear-gradient(180deg, var(--gold), var(--green)); }
     .hero-card[data-target="academica"]::before { background: linear-gradient(180deg, var(--academic-color), var(--jesus-color)); }
+    .hero-card[data-target="paseos"]::before { background: linear-gradient(180deg, var(--paseo-color), var(--ali-color)); }
 
     .hero-card:hover {
       transform: translateY(-3px);
@@ -270,9 +268,9 @@
       font-size: 1.6rem;
       flex-shrink: 0;
     }
-
     .icon-finanzas { background: var(--gold-glow); color: var(--gold); }
     .icon-academica { background: var(--academic-glow); color: var(--academic-color); }
+    .icon-paseos { background: var(--paseo-glow); color: var(--paseo-color); }
 
     .hero-content h2 {
       font-size: 1.15rem;
@@ -280,14 +278,12 @@
       color: var(--text);
       margin-bottom: 2px;
     }
-
     .hero-content p {
       font-size: 0.76rem;
       color: var(--text-muted);
       font-weight: 500;
       line-height: 1.35;
     }
-
     .hero-arrow {
       margin-left: auto;
       font-size: 1.2rem;
@@ -295,11 +291,29 @@
       font-weight: 800;
     }
 
-    header {
-      text-align: center;
-      display: flex;
+    /* ===== TABS ===== */
+    .mode-section {
+      display: none;
       flex-direction: column;
-      gap: 6px;
+      gap: 14px;
+      width: 100%;
+    }
+    .mode-section.active { display: flex; }
+
+    .tab-content {
+      display: none;
+      flex-direction: column;
+      gap: 12px;
+      width: 100%;
+    }
+    .tab-content.active {
+      display: flex;
+      animation: fadeIn 0.22s ease-out forwards;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(4px); }
+      to { opacity: 1; transform: translateY(0); }
     }
 
     .tab-dropdown-container {
@@ -313,7 +327,6 @@
       box-shadow: var(--shadow);
       width: 100%;
     }
-
     .tab-dropdown-container label {
       font-size: 0.65rem;
       font-weight: 800;
@@ -321,7 +334,6 @@
       text-transform: uppercase;
       letter-spacing: 0.5px;
     }
-
     .tab-select {
       background: var(--bg);
       color: var(--text);
@@ -335,32 +347,7 @@
       outline: none;
     }
 
-    .mode-section {
-      display: none;
-      flex-direction: column;
-      gap: 14px;
-      width: 100%;
-    }
-
-    .mode-section.active { display: flex; }
-
-    .tab-content {
-      display: none;
-      flex-direction: column;
-      gap: 12px;
-      width: 100%;
-    }
-
-    .tab-content.active {
-      display: flex;
-      animation: fadeIn 0.22s ease-out forwards;
-    }
-
-    @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(4px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-
+    /* ===== COMPONENTES ===== */
     .date-indicator {
       text-align: center;
       font-size: 0.78rem;
@@ -373,48 +360,12 @@
       box-shadow: var(--shadow);
     }
 
-    .filter-box {
-      background: var(--card-bg-solid);
-      border: 1px solid var(--card-border);
-      border-radius: 14px;
-      padding: 8px 12px;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 4px;
-    }
-
-    .filter-box label {
-      font-size: 0.68rem;
-      font-weight: 800;
-      color: var(--text-muted);
-      text-transform: uppercase;
-    }
-
-    input[type="month"], input[type="number"], input[type="text"], input[type="url"], input[type="time"], input[type="file"], select {
-      background: var(--card-bg-solid);
-      border: 1px solid var(--card-border);
-      color: var(--text);
-      padding: 9px 11px;
-      border-radius: 10px;
-      font-size: 0.82rem;
-      outline: none;
-      width: 100%;
-      max-width: 100%;
-    }
-
-    input:focus, select:focus {
-      border-color: var(--accent);
-      box-shadow: 0 0 0 3px var(--accent-glow);
-    }
-
     .columns-grid {
       display: grid;
       grid-template-columns: repeat(2, minmax(0, 1fr));
       gap: 12px;
       width: 100%;
     }
-
     @media (max-width: 520px) {
       .columns-grid { grid-template-columns: 1fr; }
     }
@@ -433,7 +384,6 @@
       min-width: 0;
       word-break: break-word;
     }
-
     .col h2 {
       font-size: 0.85rem;
       font-weight: 800;
@@ -441,7 +391,6 @@
       padding-bottom: 6px;
       border-bottom: 1px solid var(--card-border);
     }
-
     .title-jesus { color: var(--jesus-color); }
     .title-ali { color: var(--ali-color); }
 
@@ -454,7 +403,6 @@
       overflow-y: auto;
       width: 100%;
     }
-
     .items-list li {
       background: var(--bg);
       padding: 8px 10px;
@@ -467,52 +415,9 @@
       gap: 6px;
       word-break: break-word;
     }
-
     .items-list.ingresos li { border-left-color: var(--green); }
     .items-list.gastos li { border-left-color: var(--red); }
     .items-list.ahorros li { border-left-color: var(--gold); }
-
-    .debt-subblock {
-      display: flex;
-      flex-direction: column;
-      gap: 6px;
-    }
-
-    .debt-subtitle {
-      font-size: 0.7rem;
-      font-weight: 800;
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
-      display: flex;
-      align-items: center;
-      gap: 4px;
-      margin-top: 4px;
-    }
-
-    .debt-subtitle.pending-header { color: var(--red); }
-    .debt-subtitle.paid-header { color: var(--green); }
-
-    .category-badge {
-      font-size: 0.62rem;
-      padding: 2px 6px;
-      border-radius: 6px;
-      margin-top: 2px;
-      display: inline-block;
-      font-weight: 800;
-    }
-
-    .cat-necesidades { background: rgba(239, 68, 68, 0.12); color: #ef4444; border: 1px solid rgba(239, 68, 68, 0.25); }
-    .cat-gustos { background: rgba(139, 92, 246, 0.12); color: var(--academic-color); border: 1px solid rgba(139, 92, 246, 0.25); }
-    .cat-ahorros { background: rgba(217, 119, 6, 0.12); color: var(--gold); border: 1px solid rgba(217, 119, 6, 0.25); }
-
-    .pending-item { border-left: 3.5px solid var(--red) !important; background: rgba(239, 68, 68, 0.05) !important; }
-    .paid-item { border-left: 3.5px solid var(--green) !important; background: rgba(16, 185, 129, 0.05) !important; opacity: 0.85; }
-
-    .actions { display: flex; align-items: center; gap: 5px; flex-shrink: 0; }
-    .check-btn { color: var(--green); cursor: pointer; font-weight: bold; padding: 3px 6px; background: var(--green-glow); border-radius: 6px; font-size: 0.75rem; }
-    .undo-btn { color: var(--red); cursor: pointer; font-weight: bold; padding: 3px 6px; background: var(--red-glow); border-radius: 6px; font-size: 0.75rem; }
-    .delete-btn { color: var(--text-muted); cursor: pointer; font-weight: bold; padding: 3px 6px; border-radius: 6px; font-size: 0.75rem; }
-    .delete-btn:hover { color: var(--red); background: var(--red-glow); }
 
     .add-btn {
       width: 100%;
@@ -526,7 +431,6 @@
       cursor: pointer;
       box-shadow: var(--shadow);
     }
-
     .add-btn:hover { border-color: var(--accent); color: var(--accent); }
     .add-btn:active { transform: scale(0.98); background: var(--btn-hover); }
 
@@ -542,13 +446,22 @@
       width: 100%;
       min-width: 0;
     }
-
     .user-summary-card.jesus-card { border-top: 3px solid var(--jesus-color); box-shadow: 0 4px 16px var(--jesus-glow); }
     .user-summary-card.ali-card { border-top: 3px solid var(--ali-color); box-shadow: 0 4px 16px var(--ali-glow); }
 
     .summary-metrics { display: flex; justify-content: space-around; text-align: center; }
     .summary-item .label { font-size: 0.65rem; color: var(--text-muted); font-weight: 700; text-transform: uppercase; }
     .summary-item .value { font-size: 0.9rem; font-weight: 800; margin-top: 2px; }
+
+    .balance-badge {
+      font-size: 0.8rem;
+      font-weight: 800;
+      padding: 4px 10px;
+      border-radius: 8px;
+      background: var(--bg);
+      display: inline-block;
+      border: 1px solid var(--card-border);
+    }
 
     .charts-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; width: 100%; }
     @media (max-width: 480px) { .charts-grid { grid-template-columns: 1fr; } }
@@ -566,18 +479,274 @@
       width: 100%;
       min-width: 0;
     }
-
     .chart-wrapper { position: relative; width: 100%; height: 130px; }
 
-    .balance-badge {
-      font-size: 0.8rem;
-      font-weight: 800;
-      padding: 4px 10px;
-      border-radius: 8px;
-      background: var(--bg);
-      display: inline-block;
-      border: 1px solid var(--card-border);
+    /* ===== MODALES ===== */
+    .modal-overlay {
+      position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+      background: rgba(15, 23, 42, 0.6); backdrop-filter: blur(8px);
+      display: none; justify-content: center; align-items: flex-end; z-index: 1000;
     }
+    .modal-overlay.active { display: flex; }
+
+    .modal-card {
+      background: var(--card-bg-solid); border-top: 1px solid var(--card-border); border-radius: 24px 24px 0 0;
+      width: 100%; max-width: 600px; padding: 20px; display: flex; flex-direction: column; gap: 12px;
+      animation: slideUp 0.22s ease-out forwards;
+      max-height: 85vh;
+      overflow-y: auto;
+      box-shadow: 0 -10px 40px rgba(0,0,0,0.25);
+    }
+    @keyframes slideUp {
+      from { transform: translateY(100%); }
+      to { transform: translateY(0); }
+    }
+
+    .modal-header { display: flex; justify-content: space-between; align-items: center; }
+    .close-btn { background: var(--bg); border: none; color: var(--text); width: 28px; height: 28px; border-radius: 50%; cursor: pointer; font-weight: bold; }
+    .form-group { display: flex; flex-direction: column; gap: 4px; }
+    .form-group label { font-size: 0.7rem; color: var(--text-muted); font-weight: 800; text-transform: uppercase; }
+
+    /* ===== ÁLBUMES Y FOTOS ===== */
+    .album-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 12px;
+      width: 100%;
+    }
+    @media (max-width: 420px) { .album-grid { grid-template-columns: 1fr 1fr; } }
+
+    .album-card {
+      background: var(--card-bg-solid);
+      border: 1px solid var(--card-border);
+      border-radius: 16px;
+      overflow: hidden;
+      box-shadow: var(--shadow);
+      cursor: pointer;
+      display: flex;
+      flex-direction: column;
+      transition: transform 0.2s ease;
+    }
+    .album-card:hover { transform: translateY(-3px); }
+
+    .album-cover {
+      width: 100%;
+      height: 110px;
+      background-size: cover;
+      background-position: center;
+      background-color: var(--btn-hover);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.8rem;
+      color: var(--text-muted);
+    }
+
+    .album-info { padding: 8px 10px; }
+    .album-name { font-size: 0.78rem; font-weight: 800; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .album-count { font-size: 0.65rem; color: var(--text-muted); font-weight: 600; margin-top: 2px; }
+
+    .photo-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 8px;
+      width: 100%;
+    }
+    .photo-item {
+      position: relative;
+      aspect-ratio: 1 / 1;
+      border-radius: 10px;
+      overflow: hidden;
+      background: var(--bg);
+      cursor: pointer;
+    }
+    .photo-item img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+    .photo-delete-btn {
+      position: absolute;
+      top: 4px;
+      right: 4px;
+      background: rgba(15, 23, 42, 0.65);
+      color: #fff;
+      border-radius: 50%;
+      width: 20px;
+      height: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.65rem;
+      cursor: pointer;
+    }
+
+    /* ===== VISOR DE FOTOS A PANTALLA COMPLETA ===== */
+    .photo-viewer-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.95);
+      backdrop-filter: blur(20px);
+      z-index: 3000;
+      display: none;
+      justify-content: center;
+      align-items: center;
+      flex-direction: column;
+      padding: 0;
+      margin: 0;
+      box-sizing: border-box;
+    }
+    .photo-viewer-overlay.active {
+      display: flex;
+      animation: fadeIn 0.3s ease;
+    }
+
+    .photo-viewer-image {
+      max-width: 100%;
+      max-height: 85vh;
+      width: auto;
+      height: auto;
+      object-fit: contain;
+      border-radius: 8px;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.8);
+      user-select: none;
+      -webkit-user-drag: none;
+      touch-action: none;
+    }
+
+    .photo-viewer-top-bar {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      padding: 16px 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: linear-gradient(to bottom, rgba(0,0,0,0.6) 0%, transparent 100%);
+      z-index: 10;
+    }
+
+    .photo-viewer-back {
+      background: rgba(255, 255, 255, 0.12);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      color: #fff;
+      padding: 8px 16px;
+      border-radius: 20px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      cursor: pointer;
+      backdrop-filter: blur(8px);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.2s;
+    }
+    .photo-viewer-back:hover {
+      background: rgba(255, 255, 255, 0.25);
+      transform: scale(1.02);
+    }
+
+    .photo-viewer-close-btn {
+      background: rgba(255, 255, 255, 0.12);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      color: #fff;
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      font-size: 1.2rem;
+      cursor: pointer;
+      backdrop-filter: blur(8px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.2s;
+    }
+    .photo-viewer-close-btn:hover {
+      background: rgba(255, 255, 255, 0.25);
+      transform: scale(1.05);
+    }
+
+    .photo-viewer-nav {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      background: rgba(255, 255, 255, 0.10);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      color: #fff;
+      width: 50px;
+      height: 50px;
+      border-radius: 50%;
+      font-size: 1.6rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      backdrop-filter: blur(8px);
+      transition: all 0.2s;
+      user-select: none;
+      z-index: 5;
+    }
+    .photo-viewer-nav:hover {
+      background: rgba(255, 255, 255, 0.25);
+      transform: translateY(-50%) scale(1.05);
+    }
+    .photo-viewer-nav.prev { left: 16px; }
+    .photo-viewer-nav.next { right: 16px; }
+
+    .photo-viewer-counter {
+      position: absolute;
+      bottom: 30px;
+      color: rgba(255, 255, 255, 0.8);
+      font-size: 0.9rem;
+      font-weight: 600;
+      background: rgba(0, 0, 0, 0.5);
+      padding: 6px 18px;
+      border-radius: 20px;
+      backdrop-filter: blur(4px);
+      z-index: 5;
+    }
+
+    @media (max-width: 600px) {
+      .photo-viewer-nav {
+        width: 40px;
+        height: 40px;
+        font-size: 1.2rem;
+      }
+      .photo-viewer-nav.prev { left: 8px; }
+      .photo-viewer-nav.next { right: 8px; }
+      .photo-viewer-back { font-size: 0.75rem; padding: 6px 12px; }
+      .photo-viewer-close-btn { width: 34px; height: 34px; font-size: 1rem; }
+      .photo-viewer-counter { font-size: 0.75rem; padding: 4px 14px; bottom: 20px; }
+      .photo-viewer-image { max-height: 80vh; }
+    }
+
+    /* ===== OTROS ===== */
+    .place-item {
+      background: var(--bg);
+      padding: 10px 12px;
+      border-radius: 12px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-left: 3.5px solid var(--paseo-color);
+      gap: 8px;
+    }
+    .place-item.visited { border-left-color: var(--green); opacity: 0.7; }
+    .place-item.visited .place-name { text-decoration: line-through; color: var(--text-muted); }
+    .place-name { font-size: 0.8rem; font-weight: 700; }
+    .place-note { font-size: 0.68rem; color: var(--text-muted); margin-top: 2px; }
+    .place-checkbox {
+      width: 20px; height: 20px; border-radius: 50%; border: 2px solid var(--paseo-color);
+      display: flex; align-items: center; justify-content: center; cursor: pointer;
+      flex-shrink: 0; font-size: 0.7rem; font-weight: 800; color: transparent;
+      background: var(--card-bg-solid);
+    }
+    .place-item.visited .place-checkbox { background: var(--green); border-color: var(--green); color: #fff; }
 
     .savings-container {
       background: var(--card-bg-solid);
@@ -591,42 +760,29 @@
       box-shadow: 0 6px 20px var(--gold-glow);
       width: 100%;
     }
-
     .savings-subtabs {
       display: flex; width: 100%; background: var(--bg); border-radius: 10px; padding: 3px; border: 1px solid var(--card-border); gap: 3px;
     }
-
     .savings-subtab-btn {
       flex: 1; padding: 7px 4px; background: transparent; border: none; color: var(--text-muted); font-weight: 700; font-size: 0.74rem; border-radius: 8px; cursor: pointer;
     }
-
     .savings-subtab-btn.active { background: var(--card-bg-solid); color: var(--text); border: 1px solid var(--gold); box-shadow: var(--shadow); }
 
-    .meta-control {
-      background: transparent; border: 1px solid var(--card-border); color: var(--text-muted); font-size: 0.7rem; font-weight: 700; padding: 4px 10px; border-radius: 8px; cursor: pointer;
-    }
-
     .visual-box { width: 130px; height: 150px; position: relative; display: flex; justify-content: center; align-items: center; }
-    
     .penguin-body {
       width: 100px; height: 140px; background: #0f172a; border: 2.5px solid var(--gold); border-radius: 50px 50px 30px 30px; position: relative; overflow: hidden; display: flex; flex-direction: column; justify-content: flex-end; box-shadow: 0 8px 18px rgba(0,0,0,0.2);
     }
-
     .coins-fill-container {
       width: 100%; position: absolute; bottom: 0; display: flex; flex-wrap: wrap-reverse; justify-content: center; align-content: flex-end; gap: 2px; padding: 4px 2px; background: rgba(245, 158, 11, 0.25); border-top: 2px solid var(--gold); transition: height 0.4s ease-in-out;
     }
-
     .coin-icon { font-size: 13px; }
-
     .penguin-text {
       position: absolute; width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 0.95rem; z-index: 10; text-shadow: 0 2px 5px #000; color: #fff;
     }
-
     .penguin-face { position: absolute; top: 10px; width: 100%; display: flex; flex-direction: column; align-items: center; z-index: 11; }
     .eyes { display: flex; gap: 18px; }
     .eye { width: 6px; height: 6px; background: #fff; border-radius: 50%; }
     .beak { width: 12px; height: 6px; background: #f59e0b; border-radius: 4px; margin-top: 2px; }
-
     .break-piggy-btn {
       width: 100%; padding: 11px; background: linear-gradient(135deg, #f59e0b, #e11d48); border: none; border-radius: 12px; color: #fff; font-weight: 800; cursor: pointer; box-shadow: 0 6px 16px rgba(225, 29, 72, 0.35); font-size: 0.85rem;
     }
@@ -643,122 +799,13 @@
       width: 100%;
       word-break: break-word;
     }
-
-    .academic-card h3 {
-      font-size: 0.85rem;
-      font-weight: 800;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 6px;
+    .student-tabs {
+      display: flex; background: var(--bg); border-radius: 10px; padding: 3px; border: 1px solid var(--card-border); gap: 3px; margin-bottom: 8px;
     }
-
-    .schedule-grid { display: flex; flex-direction: column; gap: 8px; }
-
-    .schedule-item {
-      background: var(--bg);
-      border-radius: 10px;
-      padding: 8px 10px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      border-left: 3.5px solid var(--academic-color);
-      gap: 6px;
+    .student-tab-btn {
+      flex: 1; padding: 7px; background: transparent; border: none; color: var(--text-muted); font-weight: 700; font-size: 0.78rem; border-radius: 8px; cursor: pointer;
     }
-
-    .schedule-item.jesus { border-left-color: var(--jesus-color); }
-    .schedule-item.ali { border-left-color: var(--ali-color); }
-
-    .materia-badge {
-      font-size: 0.65rem;
-      font-weight: 800;
-      padding: 2px 6px;
-      border-radius: 6px;
-      background: var(--academic-glow);
-      color: var(--academic-color);
-    }
-
-    .resource-link {
-      display: inline-flex;
-      align-items: center;
-      gap: 4px;
-      font-size: 0.72rem;
-      color: var(--accent);
-      text-decoration: none;
-      font-weight: 700;
-      background: var(--btn-hover);
-      padding: 4px 8px;
-      border-radius: 6px;
-    }
-
-    .progress-bar-container {
-      width: 100%;
-      height: 9px;
-      background: var(--bg);
-      border-radius: 8px;
-      overflow: hidden;
-      margin-top: 4px;
-      border: 1px solid var(--card-border);
-    }
-
-    .progress-bar-fill {
-      height: 100%;
-      background: linear-gradient(90deg, var(--jesus-color), var(--green));
-      width: 0%;
-      transition: width 0.4s ease;
-    }
-
-    .grade-badge {
-      font-size: 0.7rem;
-      font-weight: 800;
-      padding: 3px 7px;
-      border-radius: 6px;
-    }
-
-    .grade-pass { background: var(--green-glow); color: var(--green); border: 1px solid rgba(16, 185, 129, 0.3); }
-    .grade-pending { background: var(--gold-glow); color: var(--gold); border: 1px solid rgba(245, 158, 11, 0.3); }
-
-    .modal-overlay {
-      position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-      background: rgba(15, 23, 42, 0.6); backdrop-filter: blur(8px);
-      display: none; justify-content: center; align-items: flex-end; z-index: 1000;
-    }
-
-    .modal-overlay.active { display: flex; }
-
-    .modal-card {
-      background: var(--card-bg-solid); border-top: 1px solid var(--card-border); border-radius: 24px 24px 0 0;
-      width: 100%; max-width: 600px; padding: 20px; display: flex; flex-direction: column; gap: 12px;
-      animation: slideUp 0.22s ease-out forwards;
-      max-height: 85vh;
-      overflow-y: auto;
-      box-shadow: 0 -10px 40px rgba(0,0,0,0.25);
-    }
-
-    @keyframes slideUp {
-      from { transform: translateY(100%); }
-      to { transform: translateY(0); }
-    }
-
-    .modal-header { display: flex; justify-content: space-between; align-items: center; }
-    .close-btn { background: var(--bg); border: none; color: var(--text); width: 28px; height: 28px; border-radius: 50%; cursor: pointer; font-weight: bold; }
-    .form-group { display: flex; flex-direction: column; gap: 4px; }
-    .form-group label { font-size: 0.7rem; color: var(--text-muted); font-weight: 800; text-transform: uppercase; }
-
-    .rule-result-box { text-align: center; padding: 10px; border-radius: 12px; font-weight: 800; font-size: 0.82rem; border: 1px solid var(--card-border); }
-    .rule-pass { background: rgba(16, 185, 129, 0.12); color: var(--green); border-color: rgba(16, 185, 129, 0.3); }
-    .rule-fail { background: rgba(239, 68, 68, 0.12); color: var(--red); border-color: rgba(239, 68, 68, 0.3); }
-
-    .rule-cards-container { display: flex; flex-direction: column; gap: 8px; width: 100%; }
-    .rule-card-item { background: var(--card-bg-solid); border: 1px solid var(--card-border); border-radius: 12px; padding: 10px 12px; display: flex; justify-content: space-between; align-items: center; box-shadow: var(--shadow); }
-    .rule-card-item.needs-card { border-left: 4px solid var(--red); }
-    .rule-card-item.wants-card { border-left: 4px solid var(--academic-color); }
-    .rule-card-item.savings-card { border-left: 4px solid var(--gold); }
-    .rule-card-item.unused-card { border-left: 4px solid var(--unused-color); }
-    .rule-card-info { display: flex; flex-direction: column; }
-    .rule-card-title { font-size: 0.76rem; font-weight: 800; }
-    .rule-card-ideal { font-size: 0.65rem; color: var(--text-muted); margin-top: 1px; }
-    .rule-card-val { font-size: 0.88rem; font-weight: 800; }
+    .student-tab-btn.active { background: var(--card-bg-solid); color: var(--text); border: 1px solid var(--card-border); box-shadow: var(--shadow); }
 
     .notif-permission-banner {
       background: var(--card-bg-solid);
@@ -774,33 +821,71 @@
       box-shadow: var(--shadow);
       width: 100%;
     }
+    .rule-result-box { text-align: center; padding: 10px; border-radius: 12px; font-weight: 800; font-size: 0.82rem; border: 1px solid var(--card-border); }
+    .rule-pass { background: rgba(16, 185, 129, 0.12); color: var(--green); border-color: rgba(16, 185, 129, 0.3); }
+    .rule-fail { background: rgba(239, 68, 68, 0.12); color: var(--red); border-color: rgba(239, 68, 68, 0.3); }
+    .rule-cards-container { display: flex; flex-direction: column; gap: 8px; width: 100%; }
+    .rule-card-item { background: var(--card-bg-solid); border: 1px solid var(--card-border); border-radius: 12px; padding: 10px 12px; display: flex; justify-content: space-between; align-items: center; box-shadow: var(--shadow); }
+    .rule-card-item.needs-card { border-left: 4px solid var(--red); }
+    .rule-card-item.wants-card { border-left: 4px solid var(--academic-color); }
+    .rule-card-item.savings-card { border-left: 4px solid var(--gold); }
+    .rule-card-item.unused-card { border-left: 4px solid var(--unused-color); }
+    .rule-card-info { display: flex; flex-direction: column; }
+    .rule-card-title { font-size: 0.76rem; font-weight: 800; }
+    .rule-card-ideal { font-size: 0.65rem; color: var(--text-muted); margin-top: 1px; }
+    .rule-card-val { font-size: 0.88rem; font-weight: 800; }
 
-    /* Pestañas de Estudiante para Horarios Compactos */
-    .student-tabs {
-      display: flex;
+    .category-badge {
+      font-size: 0.62rem; padding: 2px 6px; border-radius: 6px; margin-top: 2px; display: inline-block; font-weight: 800;
+    }
+    .cat-necesidades { background: rgba(239, 68, 68, 0.12); color: #ef4444; border: 1px solid rgba(239, 68, 68, 0.25); }
+    .cat-gustos { background: rgba(139, 92, 246, 0.12); color: var(--academic-color); border: 1px solid rgba(139, 92, 246, 0.25); }
+    .cat-ahorros { background: rgba(217, 119, 6, 0.12); color: var(--gold); border: 1px solid rgba(217, 119, 6, 0.25); }
+    .pending-item { border-left: 3.5px solid var(--red) !important; background: rgba(239, 68, 68, 0.05) !important; }
+    .paid-item { border-left: 3.5px solid var(--green) !important; background: rgba(16, 185, 129, 0.05) !important; opacity: 0.85; }
+    .actions { display: flex; align-items: center; gap: 5px; flex-shrink: 0; }
+    .check-btn { color: var(--green); cursor: pointer; font-weight: bold; padding: 3px 6px; background: var(--green-glow); border-radius: 6px; font-size: 0.75rem; }
+    .undo-btn { color: var(--red); cursor: pointer; font-weight: bold; padding: 3px 6px; background: var(--red-glow); border-radius: 6px; font-size: 0.75rem; }
+    .delete-btn { color: var(--text-muted); cursor: pointer; font-weight: bold; padding: 3px 6px; border-radius: 6px; font-size: 0.75rem; }
+    .delete-btn:hover { color: var(--red); background: var(--red-glow); }
+
+    .schedule-item {
       background: var(--bg);
       border-radius: 10px;
-      padding: 3px;
-      border: 1px solid var(--card-border);
-      gap: 3px;
-      margin-bottom: 8px;
+      padding: 8px 10px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-left: 3.5px solid var(--academic-color);
+      gap: 6px;
     }
-    .student-tab-btn {
-      flex: 1;
-      padding: 7px;
-      background: transparent;
-      border: none;
-      color: var(--text-muted);
-      font-weight: 700;
-      font-size: 0.78rem;
-      border-radius: 8px;
-      cursor: pointer;
+    .schedule-item.jesus { border-left-color: var(--jesus-color); }
+    .schedule-item.ali { border-left-color: var(--ali-color); }
+    .materia-badge {
+      font-size: 0.65rem; font-weight: 800; padding: 2px 6px; border-radius: 6px; background: var(--academic-glow); color: var(--academic-color);
     }
-    .student-tab-btn.active {
-      background: var(--card-bg-solid);
-      color: var(--text);
-      border: 1px solid var(--card-border);
-      box-shadow: var(--shadow);
+    .resource-link {
+      display: inline-flex; align-items: center; gap: 4px; font-size: 0.72rem; color: var(--accent); text-decoration: none; font-weight: 700; background: var(--btn-hover); padding: 4px 8px; border-radius: 6px;
+    }
+    .progress-bar-container {
+      width: 100%; height: 9px; background: var(--bg); border-radius: 8px; overflow: hidden; margin-top: 4px; border: 1px solid var(--card-border);
+    }
+    .progress-bar-fill {
+      height: 100%; background: linear-gradient(90deg, var(--jesus-color), var(--green)); width: 0%; transition: width 0.4s ease;
+    }
+    .grade-badge {
+      font-size: 0.7rem; font-weight: 800; padding: 3px 7px; border-radius: 6px;
+    }
+    .grade-pass { background: var(--green-glow); color: var(--green); border: 1px solid rgba(16, 185, 129, 0.3); }
+    .grade-pending { background: var(--gold-glow); color: var(--gold); border: 1px solid rgba(245, 158, 11, 0.3); }
+    .debt-subblock { display: flex; flex-direction: column; gap: 6px; }
+    .debt-subtitle {
+      font-size: 0.7rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.5px; display: flex; align-items: center; gap: 4px; margin-top: 4px;
+    }
+    .debt-subtitle.pending-header { color: var(--red); }
+    .debt-subtitle.paid-header { color: var(--green); }
+    .meta-control {
+      background: transparent; border: 1px solid var(--card-border); color: var(--text-muted); font-size: 0.7rem; font-weight: 700; padding: 4px 10px; border-radius: 8px; cursor: pointer;
     }
   </style>
 </head>
@@ -817,6 +902,7 @@
       </button>
     </div>
 
+    <!-- ===== HOME ===== -->
     <div id="homeScreen" class="home-screen">
       <div class="hero-brand">
         <h1 class="logo-home">J&A</h1>
@@ -846,9 +932,19 @@
           </div>
           <span class="hero-arrow">→</span>
         </div>
+
+        <div class="hero-card" data-target="paseos" onclick="openMode('paseos')">
+          <div class="hero-icon icon-paseos">🧳</div>
+          <div class="hero-content">
+            <h2>Paseos y Viajes</h2>
+            <p>Lista de sitios por visitar y álbum de fotos de sus recuerdos</p>
+          </div>
+          <span class="hero-arrow">→</span>
+        </div>
       </div>
     </div>
 
+    <!-- ===== HEADER ===== -->
     <header id="mainHeader" style="display:none;">
       <div id="notifBanner" class="notif-permission-banner" onclick="requestNotificationPermission()">
         <span>🔔 Recordatorio de clases (1h antes)</span>
@@ -856,7 +952,7 @@
       </div>
     </header>
 
-    <!-- SECCIÓN 1: FINANZAS -->
+    <!-- ===== SECCIÓN 1: FINANZAS ===== -->
     <div id="sec-finanzas" class="mode-section">
       <div class="tab-dropdown-container">
         <label>Módulo Finanzas</label>
@@ -1043,19 +1139,15 @@
             <h3 id="savingsTitleHeading" style="color:var(--gold); font-size:0.88rem; font-weight:800;">Fondo Conjunto</h3>
             <button class="meta-control" onclick="setSavingsGoal()">⚙️ Ajustar Meta</button>
           </div>
-
           <div class="visual-box" id="visualBoxContainer"></div>
-
           <div style="text-align:center;">
             <div style="font-size:1.15rem; font-weight:800; color:var(--gold);" id="savingsTotalAmount">$0</div>
             <div style="font-size:0.72rem; color:var(--text-muted);">Meta: <span id="savingsGoalAmount">$0</span></div>
             <div style="font-size:0.78rem; font-weight:700; margin-top:2px;" id="savingsPercentage">0% alcanzado</div>
           </div>
-
           <button class="add-btn" style="border-color:var(--gold); color:var(--gold);" id="addSavingsBtn" onclick="addSavingsRecord()">+ Aportar Ahorro</button>
           <button class="break-piggy-btn" id="breakPiggyBtn" style="display:none;" onclick="breakPiggyBank()">🎉 ¡Romper Alcancía!</button>
         </div>
-
         <div class="user-summary-card">
           <h3 id="savingsHistoryTitle" style="color:var(--gold); font-size:0.82rem; font-weight:800;">Historial de Aportes</h3>
           <ul class="items-list ahorros" id="savingsList"></ul>
@@ -1063,7 +1155,7 @@
       </div>
     </div>
 
-    <!-- SECCIÓN 2: ACADÉMICA -->
+    <!-- ===== SECCIÓN 2: ACADÉMICA ===== -->
     <div id="sec-academica" class="mode-section">
       <div class="tab-dropdown-container">
         <label>Módulo Académico</label>
@@ -1079,13 +1171,10 @@
           <h3 style="font-size:0.88rem; color:var(--academic-color); font-weight:800;">Horario Semanal</h3>
           <button class="add-btn" style="width:auto; padding:6px 12px; margin:0;" onclick="openAddClassModal()">+ Agregar Clase</button>
         </div>
-
-        <!-- Pestañas para alternar horario sin scroll excesivo -->
         <div class="student-tabs">
           <button class="student-tab-btn active" id="schedTabJesus" onclick="switchScheduleTab('Jesus')">Horario Jesús 💙</button>
           <button class="student-tab-btn" id="schedTabAli" onclick="switchScheduleTab('Ali')">Horario Ali 🩷</button>
         </div>
-
         <div id="scheduleContainer" class="academic-card"></div>
       </div>
 
@@ -1094,7 +1183,6 @@
           <h3 style="font-size:0.88rem; color:var(--academic-color); font-weight:800;">Materias</h3>
           <button class="add-btn" style="width:auto; padding:6px 12px; margin:0;" onclick="openAddMateriaModal()">+ Materia</button>
         </div>
-
         <div id="materiasListContainer" style="display:flex; flex-direction:column; gap:12px;"></div>
       </div>
 
@@ -1102,7 +1190,6 @@
         <div style="display:flex; justify-content:space-between; align-items:center;">
           <h3 style="font-size:0.88rem; color:var(--academic-color); font-weight:800;">Control de Calificaciones</h3>
         </div>
-
         <div class="academic-card" style="border-top: 3px solid var(--jesus-color);">
           <h3 class="title-jesus">
             <span>Jesús 💙</span> 
@@ -1110,7 +1197,6 @@
           </h3>
           <div id="jesusGradesContainer"></div>
         </div>
-
         <div class="academic-card" style="border-top: 3px solid var(--ali-color);">
           <h3 class="title-ali">
             <span>Ali 🩷</span>
@@ -1120,9 +1206,43 @@
         </div>
       </div>
     </div>
+
+    <!-- ===== SECCIÓN 3: PASEOS Y VIAJES ===== -->
+    <div id="sec-paseos" class="mode-section">
+      <div class="tab-dropdown-container">
+        <label>Módulo Paseos</label>
+        <select class="tab-select" id="paseosDropdown" onchange="switchTabFromDropdown(this, 'sec-paseos')">
+          <option value="lugares">🗺️ Sitios por Visitar</option>
+          <option value="album">📸 Álbum de Fotos</option>
+        </select>
+      </div>
+
+      <div id="paseos-lugares" class="tab-content active">
+        <div style="display:flex; justify-content:space-between; align-items:center;">
+          <h3 style="font-size:0.88rem; color:var(--paseo-color); font-weight:800;">Lista de Sitios</h3>
+          <button class="add-btn" style="width:auto; padding:6px 12px; margin:0; border-color:var(--paseo-color); color:var(--paseo-color);" onclick="openAddPlaceModal()">+ Agregar Sitio</button>
+        </div>
+        <div class="user-summary-card">
+          <span class="debt-subtitle" style="color:var(--paseo-color);">📌 Por Visitar</span>
+          <ul class="items-list" id="placesPendingList" style="max-height: none;"></ul>
+        </div>
+        <div class="user-summary-card">
+          <span class="debt-subtitle paid-header">✅ Ya Visitados</span>
+          <ul class="items-list" id="placesVisitedList" style="max-height: none;"></ul>
+        </div>
+      </div>
+
+      <div id="paseos-album" class="tab-content">
+        <div style="display:flex; justify-content:space-between; align-items:center;">
+          <h3 style="font-size:0.88rem; color:var(--paseo-color); font-weight:800;">Álbumes de Fotos</h3>
+          <button class="add-btn" style="width:auto; padding:6px 12px; margin:0; border-color:var(--paseo-color); color:var(--paseo-color);" onclick="openAddAlbumModal()">+ Nuevo Álbum</button>
+        </div>
+        <div id="albumGridContainer" class="album-grid"></div>
+      </div>
+    </div>
   </div>
 
-  <!-- MODALES -->
+  <!-- ===== MODALES ===== -->
   <div id="inputModal" class="modal-overlay">
     <div class="modal-card">
       <div class="modal-header">
@@ -1161,6 +1281,32 @@
     </div>
   </div>
 
+  <div id="albumDetailModal" class="modal-overlay">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h3 id="albumDetailTitle" style="font-size:0.92rem; font-weight:800; color:var(--paseo-color);">Álbum</h3>
+        <button class="close-btn" onclick="closeAlbumDetailModal()">✕</button>
+      </div>
+      <div style="display:flex; gap:6px; flex-wrap:wrap;">
+        <button class="add-btn" style="border-color:var(--paseo-color); color:var(--paseo-color); flex:1;" onclick="openAddPhotoModal()">📷 Agregar Fotos</button>
+        <button class="add-btn" style="border-color:var(--red); color:var(--red); flex:1;" onclick="deleteCurrentAlbum()">🗑️ Eliminar Álbum</button>
+      </div>
+      <div id="albumPhotosGrid" class="photo-grid"></div>
+    </div>
+  </div>
+
+  <!-- ===== VISOR DE FOTOS A PANTALLA COMPLETA ===== -->
+  <div id="photoViewer" class="photo-viewer-overlay" onclick="closePhotoViewer(event)">
+    <div class="photo-viewer-top-bar">
+      <button class="photo-viewer-back" onclick="closePhotoViewer()">‹ Volver al álbum</button>
+      <button class="photo-viewer-close-btn" onclick="closePhotoViewer()">✕</button>
+    </div>
+    <button class="photo-viewer-nav prev" onclick="event.stopPropagation(); navigatePhoto(-1)">‹</button>
+    <img id="photoViewerImage" class="photo-viewer-image" src="" alt="Foto" draggable="false">
+    <button class="photo-viewer-nav next" onclick="event.stopPropagation(); navigatePhoto(1)">›</button>
+    <div class="photo-viewer-counter" id="photoViewerCounter">1 / 1</div>
+  </div>
+
   <script>
     const firebaseConfig = {
       apiKey: "AIzaSyCbsHxOR1w4gDjQCAV0cdej3CEp83-WQs0",
@@ -1181,6 +1327,10 @@
     let triggeredReminders = {};
     let currentScheduleOwner = 'Jesus';
 
+    // Variables para el visor de fotos
+    let viewerPhotos = [];
+    let viewerCurrentIndex = 0;
+
     function unlockAudio() {
       if (!audioCtx) {
         audioCtx = new (window.AudioContext || window.webkitAudioContext)();
@@ -1191,7 +1341,6 @@
       document.removeEventListener('click', unlockAudio);
       document.removeEventListener('touchstart', unlockAudio);
     }
-
     document.addEventListener('click', unlockAudio);
     document.addEventListener('touchstart', unlockAudio);
 
@@ -1199,7 +1348,6 @@
       const html = document.documentElement;
       const currentTheme = html.getAttribute('data-theme');
       const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
-      
       html.setAttribute('data-theme', newTheme);
       const themeIcon = document.getElementById('themeIcon');
       if (themeIcon) themeIcon.textContent = newTheme === 'dark' ? '☀️' : '🌙';
@@ -1218,14 +1366,12 @@
         renderData();
       }
     }
-
     checkAutoDarkMode();
 
     function openMode(mode) {
       document.getElementById('homeScreen').classList.add('hidden');
       document.getElementById('mainHeader').style.display = 'flex';
       document.getElementById('backBtn').style.visibility = 'visible';
-      
       document.querySelectorAll('.mode-section').forEach(s => s.classList.remove('active'));
       document.getElementById(`sec-${mode}`).classList.add('active');
     }
@@ -1235,6 +1381,7 @@
       document.getElementById('mainHeader').style.display = 'none';
       document.getElementById('homeScreen').classList.remove('hidden');
       document.getElementById('backBtn').style.visibility = 'hidden';
+      closePhotoViewer();
     }
 
     function initAudio() {
@@ -1289,7 +1436,6 @@
 
     function triggerNativeNotification(title, message) {
       playSoundNotification();
-
       if ("Notification" in window && Notification.permission === "granted") {
         try {
           if (navigator.serviceWorker && navigator.serviceWorker.controller) {
@@ -1304,7 +1450,6 @@
           console.log("Notificación nativa falló", e);
         }
       }
-
       showInAppToast(`${title}: ${message}`);
     }
 
@@ -1326,7 +1471,6 @@
       toast.style.display = 'block';
       setTimeout(() => { toast.style.display = 'none'; }, 5000);
     }
-
     updateNotifBanner();
 
     function getLocalDateStr(dateObj = new Date()) {
@@ -1390,10 +1534,11 @@
     function switchTabFromDropdown(selectElem, sectionId) {
       const tabTarget = selectElem.value;
       const parent = document.getElementById(sectionId);
-      
       parent.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
-      
-      const targetContent = sectionId === 'sec-finanzas' ? `tab-${tabTarget}` : `acad-${tabTarget}`;
+      let prefix = 'tab';
+      if (sectionId === 'sec-academica') prefix = 'acad';
+      else if (sectionId === 'sec-paseos') prefix = 'paseos';
+      const targetContent = `${prefix}-${tabTarget}`;
       const elem = document.getElementById(targetContent);
       if (elem) elem.classList.add('active');
     }
@@ -1429,6 +1574,7 @@
       confirmModalCallback = null;
     }
 
+    // ===== LISTENERS FIREBASE =====
     db.ref('registros').on('child_added', (snapshot) => {
       const val = snapshot.val();
       if (val && val.timestamp && val.timestamp > appStartTime) {
@@ -1514,9 +1660,9 @@
         }
       });
     }
-
     setInterval(checkClassReminders, 30000);
 
+    // ===== FUNCIONES FINANZAS =====
     function addRecord(type, owner) {
       const html = `
         <div class="form-group">
@@ -1528,11 +1674,9 @@
           <input type="number" id="modalAmount" placeholder="Ej: 50000" required />
         </div>
       `;
-
       openInputModal(`Nuevo ${type} (${owner})`, html, () => {
         const desc = document.getElementById('modalDesc').value.trim();
         const amount = parseFloat(document.getElementById('modalAmount').value);
-
         if (desc && !isNaN(amount) && amount > 0) {
           db.ref('registros').push({
             type: type, owner: owner, description: desc, amount: amount, date: getLocalDateStr(), timestamp: Date.now()
@@ -1548,7 +1692,6 @@
         document.getElementById('categoryModal').classList.add('active');
         return;
       }
-
       const html = `
         <div class="form-group">
           <label>Descripción (${owner})</label>
@@ -1559,11 +1702,9 @@
           <input type="number" id="modalGastoAmount" placeholder="Ej: 20000" required />
         </div>
       `;
-
       openInputModal(`Nuevo Gasto (${owner})`, html, () => {
         const desc = document.getElementById('modalGastoDesc').value.trim();
         const amount = parseFloat(document.getElementById('modalGastoAmount').value);
-
         if (desc && !isNaN(amount) && amount > 0) {
           pendingGastoContext = { owner, desc, amount, pendingKey };
           document.getElementById('modalCategoryTitle').innerText = 'Selecciona categoría';
@@ -1580,9 +1721,7 @@
     function confirmCategory(category) {
       document.getElementById('categoryModal').classList.remove('active');
       if (!pendingGastoContext) return;
-
       const { owner, desc, amount, pendingKey } = pendingGastoContext;
-
       if (pendingKey) {
         const newExpenseRef = db.ref('registros').push();
         newExpenseRef.set({
@@ -1617,14 +1756,11 @@
           <input type="number" id="modalSavingsAmount" placeholder="Ej: 30000" required autofocus />
         </div>
       `;
-
       openInputModal('Ingresar Ahorro', html, () => {
         let owner = currentSavingsMode === 'jesus' ? 'Jesus' : (currentSavingsMode === 'ali' ? 'Ali' : 'Jesus');
         if (isJoint) owner = document.getElementById('modalSavingsOwner').value;
-
         const desc = document.getElementById('modalSavingsDesc').value.trim();
         const amount = parseFloat(document.getElementById('modalSavingsAmount').value);
-
         if (!isNaN(amount) && amount > 0) {
           db.ref('registros').push({
             type: 'ahorro', owner: owner, scope: currentSavingsMode, category: 'ahorros', description: desc || 'Ahorro', amount: amount, date: getLocalDateStr(), timestamp: Date.now()
@@ -1641,7 +1777,6 @@
           <input type="number" id="modalGoalAmount" value="${currentConfig.goal || 300000}" required autofocus />
         </div>
       `;
-
       openInputModal('Meta Alcancía', html, () => {
         const newGoal = parseFloat(document.getElementById('modalGoalAmount').value);
         if (!isNaN(newGoal) && newGoal > 0) {
@@ -1663,7 +1798,6 @@
         const item = allRecords[key];
         if (item && item.type === 'ahorro' && (item.scope || 'joint') === currentSavingsMode) recordKeys.push(key);
       });
-
       customConfirm('🎉 ¡Meta Alcanzada!', '¿Deseas romper la alcancía y reiniciar?', () => {
         recordKeys.forEach(key => db.ref('registros/' + key).remove());
       });
@@ -1680,11 +1814,9 @@
           <input type="number" id="modalPendingAmount" placeholder="Ej: 45000" required />
         </div>
       `;
-
       openInputModal(`Registrar Deuda (${owner})`, html, () => {
         const desc = document.getElementById('modalPendingDesc').value.trim();
         const amount = parseFloat(document.getElementById('modalPendingAmount').value);
-
         if (desc && !isNaN(amount) && amount > 0) {
           db.ref('pendientes').push({ owner: owner, description: desc, amount: amount, paid: false, expenseId: null });
         }
@@ -1722,10 +1854,8 @@
       const paidJesus = document.getElementById('paidJesusList');
       const pendingAli = document.getElementById('pendingAliList');
       const paidAli = document.getElementById('paidAliList');
-
       pendingJesus.innerHTML = ''; paidJesus.innerHTML = '';
       pendingAli.innerHTML = ''; paidAli.innerHTML = '';
-
       let totalJesus = 0, totalAli = 0;
       let countPendingJesus = 0, countPaidJesus = 0;
       let countPendingAli = 0, countPaidAli = 0;
@@ -1733,11 +1863,9 @@
       Object.keys(allPendings).forEach(key => {
         const p = allPendings[key];
         if (!p) return;
-
         const amount = parseFloat(p.amount || 0);
         const owner = (p.owner || '').toLowerCase() === 'ali' ? 'Ali' : 'Jesus';
         const li = document.createElement('li');
-
         if (!p.paid) {
           li.className = 'pending-item';
           li.innerHTML = `
@@ -1747,15 +1875,8 @@
               <span class="delete-btn" onclick="deletePending('${key}')">🗑️</span>
             </div>
           `;
-          if (owner === 'Jesus') {
-            pendingJesus.appendChild(li);
-            totalJesus += amount;
-            countPendingJesus++;
-          } else {
-            pendingAli.appendChild(li);
-            totalAli += amount;
-            countPendingAli++;
-          }
+          if (owner === 'Jesus') { pendingJesus.appendChild(li); totalJesus += amount; countPendingJesus++; }
+          else { pendingAli.appendChild(li); totalAli += amount; countPendingAli++; }
         } else {
           li.className = 'paid-item';
           li.innerHTML = `
@@ -1765,13 +1886,8 @@
               <span class="delete-btn" onclick="deletePending('${key}')">🗑️</span>
             </div>
           `;
-          if (owner === 'Jesus') {
-            paidJesus.appendChild(li);
-            countPaidJesus++;
-          } else {
-            paidAli.appendChild(li);
-            countPaidAli++;
-          }
+          if (owner === 'Jesus') { paidJesus.appendChild(li); countPaidJesus++; }
+          else { paidAli.appendChild(li); countPaidAli++; }
         }
       });
 
@@ -1779,7 +1895,6 @@
       if (countPaidJesus === 0) paidJesus.innerHTML = `<li style="border:none; font-style:italic; color:var(--text-muted);">Sin deudas pagadas</li>`;
       if (countPendingAli === 0) pendingAli.innerHTML = `<li style="border:none; font-style:italic; color:var(--text-muted);">Sin deudas pendientes</li>`;
       if (countPaidAli === 0) paidAli.innerHTML = `<li style="border:none; font-style:italic; color:var(--text-muted);">Sin deudas pagadas</li>`;
-
       document.getElementById('totalPendingJesus').innerText = `$${totalJesus.toLocaleString()}`;
       document.getElementById('totalPendingAli').innerText = `$${totalAli.toLocaleString()}`;
     }
@@ -1788,11 +1903,9 @@
       const savingsList = document.getElementById('savingsList');
       savingsList.innerHTML = '';
       let totalSavings = 0;
-
       Object.keys(allRecords).forEach(key => {
         const item = allRecords[key];
         if (!item) return;
-
         if (item.type === 'ahorro' && (item.scope || 'joint') === currentSavingsMode) {
           const amount = parseFloat(item.amount || 0);
           totalSavings += amount;
@@ -1843,15 +1956,12 @@
       const ingAli = document.getElementById('dailyIngresosAli');
       const gasJesus = document.getElementById('dailyGastosJesus');
       const gasAli = document.getElementById('dailyGastosAli');
-
       ingJesus.innerHTML = ''; ingAli.innerHTML = ''; gasJesus.innerHTML = ''; gasAli.innerHTML = '';
 
       let dIngJesus = 0, dGasJesus = 0, dIngAli = 0, dGasAli = 0;
       let mIngJesus = 0, mGasJesus = 0, mIngAli = 0, mGasAli = 0;
-
       const selectedMonth = document.getElementById('monthPicker').value;
       const ruleMonth = document.getElementById('ruleMonthPicker').value;
-
       let totalNetIncomeRule = 0, totalNeedsRule = 0, totalWantsRule = 0, totalSavingsRule = 0;
       const monthlyDetailList = document.getElementById('monthlyDetailList');
       monthlyDetailList.innerHTML = '';
@@ -1859,11 +1969,9 @@
       Object.keys(allRecords).forEach(key => {
         const item = allRecords[key];
         if (!item) return;
-
         const rawDate = item.date || item.timestamp;
         const itemDateStr = formatDateSafe(rawDate);
         const itemMonthStr = itemDateStr ? itemDateStr.slice(0, 7) : "";
-        
         const owner = (item.owner || '').toLowerCase() === 'ali' ? 'Ali' : 'Jesus';
         const amount = parseFloat(item.amount || 0);
 
@@ -1871,7 +1979,6 @@
           const badge = getCatBadgeHTML(item.category);
           const li = document.createElement('li');
           li.innerHTML = `<span>${item.description || ''} ${badge} (<b>$${amount.toLocaleString()}</b>)</span><span class="delete-btn" onclick="deleteRecord('${key}')">✕</span>`;
-
           if (item.type === 'ingreso') {
             if (owner === 'Jesus') { ingJesus.appendChild(li); dIngJesus += amount; }
             else { ingAli.appendChild(li); dIngAli += amount; }
@@ -1887,7 +1994,6 @@
           } else {
             if (owner === 'Jesus') mGasJesus += amount; else mGasAli += amount;
           }
-
           const liHist = document.createElement('li');
           let typeIcon = item.type === 'ingreso' ? '🟢' : '🔴';
           liHist.innerHTML = `
@@ -1911,14 +2017,11 @@
       document.getElementById('dailyIngJesus').innerText = `$${dIngJesus.toLocaleString()}`;
       document.getElementById('dailyGasJesus').innerText = `$${dGasJesus.toLocaleString()}`;
       updateBalanceBadge('dailyBalJesus', dIngJesus - dGasJesus);
-
       document.getElementById('dailyIngAli').innerText = `$${dIngAli.toLocaleString()}`;
       document.getElementById('dailyGasAli').innerText = `$${dGasAli.toLocaleString()}`;
       updateBalanceBadge('dailyBalAli', dIngAli - dGasAli);
-
       document.getElementById('monthlyBalJesus').innerText = `$${(mIngJesus - mGasJesus).toLocaleString()}`;
       document.getElementById('monthlyBalAli').innerText = `$${(mIngAli - mGasAli).toLocaleString()}`;
-
       renderCharts(mIngJesus, mGasJesus, mIngAli, mGasAli);
       renderRule502525(totalNetIncomeRule, totalNeedsRule, totalWantsRule, totalSavingsRule);
       renderSavings();
@@ -1933,18 +2036,14 @@
     function renderCharts(ingJesus, gasJesus, ingAli, gasAli) {
       const ctxJesus = document.getElementById('chartJesus').getContext('2d');
       const ctxAli = document.getElementById('chartAli').getContext('2d');
-
       if (chartJesusInstance) chartJesusInstance.destroy();
       if (chartAliInstance) chartAliInstance.destroy();
-
       const opts = { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } } };
-
       chartJesusInstance = new Chart(ctxJesus, {
         type: 'doughnut',
         data: { labels: ['Ingresos', 'Gastos'], datasets: [{ data: [ingJesus, gasJesus], backgroundColor: ['#10b981', '#ef4444'] }] },
         options: opts
       });
-
       chartAliInstance = new Chart(ctxAli, {
         type: 'doughnut',
         data: { labels: ['Ingresos', 'Gastos'], datasets: [{ data: [ingAli, gasAli], backgroundColor: ['#10b981', '#ef4444'] }] },
@@ -1955,7 +2054,6 @@
     function renderRule502525(netIncome, needs, wants, savings) {
       const totalSpent = needs + wants + savings;
       const unused = Math.max(0, netIncome - totalSpent);
-
       const idealNeeds = netIncome * 0.50;
       const idealWants = netIncome * 0.25;
       const idealSavings = netIncome * 0.25;
@@ -1963,7 +2061,6 @@
       document.getElementById('idealNeeds').innerText = `$${idealNeeds.toLocaleString()}`;
       document.getElementById('idealWants').innerText = `$${idealWants.toLocaleString()}`;
       document.getElementById('idealSavings').innerText = `$${idealSavings.toLocaleString()}`;
-
       document.getElementById('valNeeds').innerText = `$${needs.toLocaleString()}`;
       document.getElementById('valWants').innerText = `$${wants.toLocaleString()}`;
       document.getElementById('valSavings').innerText = `$${savings.toLocaleString()}`;
@@ -1982,13 +2079,11 @@
       const ctxReal = document.getElementById('chartRuleReal').getContext('2d');
       if (chartRuleIdealInstance) chartRuleIdealInstance.destroy();
       if (chartRuleRealInstance) chartRuleRealInstance.destroy();
-
       chartRuleIdealInstance = new Chart(ctxIdeal, {
         type: 'doughnut',
         data: { labels: ['Necesidades (50%)', 'Gustos (25%)', 'Ahorros (25%)'], datasets: [{ data: [50, 25, 25], backgroundColor: ['#ef4444', '#8b5cf6', '#f59e0b'] }] },
         options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } } }
       });
-
       chartRuleRealInstance = new Chart(ctxReal, {
         type: 'doughnut',
         data: { labels: ['Necesidades', 'Gustos', 'Ahorros', 'Libre'], datasets: [{ data: [needs, wants, savings, unused], backgroundColor: ['#ef4444', '#8b5cf6', '#f59e0b', '#64748b'] }] },
@@ -1996,6 +2091,7 @@
       });
     }
 
+    // ===== FUNCIONES ACADÉMICAS =====
     function openAddClassModal() {
       const html = `
         <div class="form-group">
@@ -2035,7 +2131,6 @@
           <input type="text" id="modalClassInfo" placeholder="Ej: Aula 201" required />
         </div>
       `;
-
       openInputModal('Agregar Clase', html, () => {
         const owner = document.getElementById('modalClassOwner').value;
         const materia = document.getElementById('modalClassMateria').value.trim();
@@ -2043,7 +2138,6 @@
         const startTime = document.getElementById('modalClassStartTime').value;
         const endTime = document.getElementById('modalClassEndTime').value;
         const info = document.getElementById('modalClassInfo').value.trim();
-
         if (materia && startTime && endTime) {
           db.ref('academico/horarios').push({ owner, materia, day, startTime, endTime, info });
         }
@@ -2067,10 +2161,8 @@
       const container = document.getElementById('scheduleContainer');
       container.innerHTML = '';
       container.style.borderTop = `3px solid ${currentScheduleOwner === 'Jesus' ? 'var(--jesus-color)' : 'var(--ali-color)'}`;
-
       const days = ["Lunes", "Martes", "Miércoles", "Jueves", "Viernes", "Sábado"];
       let hasClasses = false;
-
       const titleEl = document.createElement('h3');
       titleEl.className = currentScheduleOwner === 'Jesus' ? 'title-jesus' : 'title-ali';
       titleEl.innerHTML = `<span>Horario de ${currentScheduleOwner}</span>`;
@@ -2080,13 +2172,11 @@
         const dayClasses = Object.keys(allSchedules)
           .map(k => ({ id: k, ...allSchedules[k] }))
           .filter(c => c && (c.owner || '').toLowerCase() === currentScheduleOwner.toLowerCase() && c.day === d);
-
         if (dayClasses.length > 0) {
           hasClasses = true;
           const dayBox = document.createElement('div');
           dayBox.style.cssText = "margin-top:6px; background:var(--bg); padding:8px; border-radius:10px; border:1px solid var(--card-border);";
           dayBox.innerHTML = `<h4 style="font-size:0.75rem; color:var(--text-muted); border-bottom:1px solid var(--card-border); padding-bottom:2px; margin-bottom:4px;">${d}</h4>`;
-
           dayClasses.forEach(c => {
             const item = document.createElement('div');
             item.className = `schedule-item ${currentScheduleOwner.toLowerCase() === 'jesus' ? 'jesus' : 'ali'}`;
@@ -2104,7 +2194,6 @@
           container.appendChild(dayBox);
         }
       });
-
       if (!hasClasses) {
         const emptyDiv = document.createElement('div');
         emptyDiv.style.cssText = "text-align:center; font-size:0.78rem; color:var(--text-muted); padding:16px;";
@@ -2131,12 +2220,10 @@
           <input type="text" id="modalMatDesc" placeholder="Ej: Prof. Pérez" />
         </div>
       `;
-
       openInputModal('Nueva Materia', html, () => {
         const owner = document.getElementById('modalMatOwner').value;
         const name = document.getElementById('modalMatName').value.trim();
         const desc = document.getElementById('modalMatDesc').value.trim();
-
         if (name) {
           db.ref('academico/materias').push({ owner, name, desc, timestamp: Date.now() });
         }
@@ -2146,7 +2233,6 @@
     function deleteMateria(materiaId) {
       customConfirm('¿Eliminar materia?', 'Se borrarán sus archivos y notas asociadas.', () => {
         db.ref('academico/materias/' + materiaId).remove();
-
         Object.keys(allMaterials).forEach(k => {
           if (allMaterials[k] && allMaterials[k].materiaId === materiaId) db.ref('academico/materiales/' + k).remove();
         });
@@ -2178,50 +2264,27 @@
           <input type="url" id="modalUrlInput" placeholder="https://youtube.com/..." />
         </div>
       `;
-
       openInputModal(`Material para: ${materiaName}`, html, () => {
         const title = document.getElementById('modalFileTitle').value.trim();
         const resourceType = document.getElementById('modalResourceType').value;
-
         if (!title) return;
-
         if (resourceType === 'url') {
           const urlVal = document.getElementById('modalUrlInput').value.trim();
           if (urlVal) {
-            db.ref('academico/materiales').push({
-              materiaId,
-              materiaName,
-              owner,
-              title,
-              type: 'url',
-              fileData: urlVal,
-              fileName: 'Enlace Web',
-              timestamp: Date.now()
-            });
+            db.ref('academico/materiales').push({ materiaId, materiaName, owner, title, type: 'url', fileData: urlVal, fileName: 'Enlace Web', timestamp: Date.now() });
           }
         } else {
           const fileInput = document.getElementById('modalFileInput');
           if (fileInput.files && fileInput.files[0]) {
             const file = fileInput.files[0];
-            
             if (file.size > 4200000) {
               alert("El archivo es demasiado grande (máximo 4MB).");
               return;
             }
-
             const reader = new FileReader();
             reader.onload = function(e) {
               const base64Data = e.target.result;
-              db.ref('academico/materiales').push({
-                materiaId,
-                materiaName,
-                owner,
-                title,
-                type: 'file',
-                fileName: file.name,
-                fileData: base64Data,
-                timestamp: Date.now()
-              });
+              db.ref('academico/materiales').push({ materiaId, materiaName, owner, title, type: 'file', fileName: file.name, fileData: base64Data, timestamp: Date.now() });
             };
             reader.readAsDataURL(file);
           }
@@ -2234,7 +2297,6 @@
       document.getElementById('urlInputWrapper').style.display = val === 'url' ? 'flex' : 'none';
     }
 
-    // Solución robusta para abrir archivos base64 sin errores de seguridad o tamaño en navegadores
     function openStoredFile(base64Data, fileName) {
       try {
         const arr = base64Data.split(',');
@@ -2243,12 +2305,9 @@
         const bstr = atob(arr[1]);
         let n = bstr.length;
         const u8arr = new Uint8Array(n);
-        while (n--) {
-          u8arr[n] = bstr.charCodeAt(n);
-        }
+        while (n--) { u8arr[n] = bstr.charCodeAt(n); }
         const blob = new Blob([u8arr], { type: mime });
         const blobUrl = URL.createObjectURL(blob);
-        
         const a = document.createElement('a');
         a.href = blobUrl;
         a.download = fileName || 'documento';
@@ -2270,22 +2329,17 @@
     function renderMaterias() {
       const container = document.getElementById('materiasListContainer');
       container.innerHTML = '';
-
       const matKeys = Object.keys(allMaterias);
-
       if (matKeys.length === 0) {
         container.innerHTML = `<div style="text-align:center; font-size:0.78rem; color:var(--text-muted); padding:16px;">No hay materias registradas. Haz clic en <b>"+ Materia"</b> para empezar.</div>`;
         return;
       }
-
       matKeys.forEach(mKey => {
         const mat = allMaterias[mKey];
         if (!mat) return;
-
         const card = document.createElement('div');
         card.className = 'academic-card';
         card.style.borderTop = `3px solid ${(mat.owner || '').toLowerCase() === 'jesus' ? 'var(--jesus-color)' : 'var(--ali-color)'}`;
-
         const filesListHTML = Object.keys(allMaterials)
           .map(k => ({ id: k, ...allMaterials[k] }))
           .filter(f => f && f.materiaId === mKey)
@@ -2293,7 +2347,6 @@
             const isUrl = f.type === 'url';
             const actionClick = isUrl ? `window.open('${f.fileData}', '_blank')` : `openStoredFile('${f.fileData}', '${f.fileName || 'archivo'}')`;
             const icon = isUrl ? '🔗' : '📄';
-
             return `
               <div style="display:flex; justify-content:space-between; align-items:center; background:var(--bg); padding:6px 9px; border-radius:8px; font-size:0.72rem; gap:6px;">
                 <div style="overflow:hidden;">
@@ -2307,24 +2360,20 @@
               </div>
             `;
           }).join('');
-
         card.innerHTML = `
           <h3>
             <span>${mat.name || 'Materia'} <span class="materia-badge">${mat.owner || 'Usuario'}</span></span>
             <span class="delete-btn" onclick="deleteMateria('${mKey}')">🗑️</span>
           </h3>
           <div style="font-size:0.72rem; color:var(--text-muted);">${mat.desc || 'Sin descripción'}</div>
-          
           <div style="margin-top:2px; display:flex; flex-direction:column; gap:6px;">
             <strong style="font-size:0.7rem; color:var(--academic-color); text-transform:uppercase;">📁 Archivos y Enlaces:</strong>
             ${filesListHTML || '<div style="font-size:0.68rem; color:var(--text-muted); font-style:italic;">Sin recursos agregados.</div>'}
           </div>
-
           <button class="add-btn" style="background:var(--card-bg-solid); border-color:var(--academic-color); color:var(--academic-color);" onclick="openUploadFileModal('${mKey}', '${mat.name || 'Materia'}', '${mat.owner || 'Usuario'}')">
             📁 Subir Archivo o Enlace
           </button>
         `;
-
         container.appendChild(card);
       });
     }
@@ -2345,21 +2394,11 @@
           <input type="number" step="0.1" id="modalGradeVal" placeholder="${isJesus ? 'Ej: 85' : 'Ej: 4.5'}" required />
         </div>
       `;
-
       openInputModal(`Nueva Nota: ${materiaName}`, html, () => {
         const titulo = document.getElementById('modalGradeTitle').value.trim();
         const valor = parseFloat(document.getElementById('modalGradeVal').value);
-
         if (titulo && !isNaN(valor)) {
-          db.ref('academico/notas').push({
-            materiaId,
-            materiaName,
-            owner,
-            titulo,
-            valor,
-            date: getLocalDateStr(),
-            timestamp: Date.now()
-          });
+          db.ref('academico/notas').push({ materiaId, materiaName, owner, titulo, valor, date: getLocalDateStr(), timestamp: Date.now() });
         }
       });
     }
@@ -2373,9 +2412,7 @@
     function renderGrades() {
       const containerJesus = document.getElementById('jesusGradesContainer');
       const containerAli = document.getElementById('aliGradesContainer');
-
       containerJesus.innerHTML = ''; containerAli.innerHTML = '';
-
       const jesusMaterias = Object.keys(allMaterias).filter(k => allMaterias[k] && (allMaterias[k].owner || '').toLowerCase() === 'jesus');
       const aliMaterias = Object.keys(allMaterias).filter(k => allMaterias[k] && (allMaterias[k].owner || '').toLowerCase() === 'ali');
 
@@ -2384,24 +2421,18 @@
       } else {
         jesusMaterias.forEach(mKey => {
           const mat = allMaterias[mKey];
-          const grades = Object.keys(allGrades)
-            .map(k => ({ id: k, ...allGrades[k] }))
-            .filter(g => g && g.materiaId === mKey);
-
+          const grades = Object.keys(allGrades).map(k => ({ id: k, ...allGrades[k] })).filter(g => g && g.materiaId === mKey);
           const sum = grades.reduce((acc, curr) => acc + parseFloat(curr.valor || 0), 0);
           const percent = Math.min(100, Math.round((sum / 300) * 100));
           const isPassed = sum >= 300;
-
           const box = document.createElement('div');
           box.style.cssText = "background:var(--bg); padding:10px; border-radius:12px; margin-bottom:8px; border:1px solid var(--card-border);";
-
           let listHTML = grades.map(i => `
             <div style="display:flex; justify-content:space-between; font-size:0.72rem; margin-top:4px; background:var(--card-bg-solid); padding:4px 8px; border-radius:6px; border:1px solid var(--card-border);">
               <span>${i.titulo}: <b>${parseFloat(i.valor || 0)} pts</b></span>
               <span class="delete-btn" onclick="deleteGradeItem('${i.id}')">✕</span>
             </div>
           `).join('');
-
           box.innerHTML = `
             <div style="display:flex; justify-content:space-between; align-items:center;">
               <strong style="font-size:0.8rem;">${mat.name || 'Materia'}</strong>
@@ -2424,23 +2455,17 @@
       } else {
         aliMaterias.forEach(mKey => {
           const mat = allMaterias[mKey];
-          const grades = Object.keys(allGrades)
-            .map(k => ({ id: k, ...allGrades[k] }))
-            .filter(g => g && g.materiaId === mKey);
-
+          const grades = Object.keys(allGrades).map(k => ({ id: k, ...allGrades[k] })).filter(g => g && g.materiaId === mKey);
           const avg = grades.length > 0 ? (grades.reduce((acc, curr) => acc + parseFloat(curr.valor || 0), 0) / grades.length).toFixed(2) : 0;
           const isPassed = parseFloat(avg) >= 3.0;
-
           const box = document.createElement('div');
           box.style.cssText = "background:var(--bg); padding:10px; border-radius:12px; margin-bottom:8px; border:1px solid var(--card-border);";
-
           let listHTML = grades.map(i => `
             <div style="display:flex; justify-content:space-between; font-size:0.72rem; margin-top:4px; background:var(--card-bg-solid); padding:4px 8px; border-radius:6px; border:1px solid var(--card-border);">
               <span>${i.titulo}: <b>${parseFloat(i.valor || 0)}</b></span>
               <span class="delete-btn" onclick="deleteGradeItem('${i.id}')">✕</span>
             </div>
           `).join('');
-
           box.innerHTML = `
             <div style="display:flex; justify-content:space-between; align-items:center;">
               <strong style="font-size:0.8rem;">${mat.name || 'Materia'}</strong>
@@ -2454,6 +2479,313 @@
           containerAli.appendChild(box);
         });
       }
+    }
+
+    // ===== PASEOS Y VIAJES =====
+    let allPlaces = {};
+    let allAlbumes = {};
+    let allFotos = {};
+    let currentAlbumId = null;
+
+    db.ref('paseos/lugares').on('value', (snapshot) => {
+      allPlaces = snapshot.val() || {};
+      renderPlaces();
+    });
+
+    db.ref('paseos/albumes').on('value', (snapshot) => {
+      allAlbumes = snapshot.val() || {};
+      renderAlbums();
+    });
+
+    db.ref('paseos/fotos').on('value', (snapshot) => {
+      allFotos = snapshot.val() || {};
+      renderAlbums();
+      if (currentAlbumId) renderAlbumPhotos(currentAlbumId);
+    });
+
+    function openAddPlaceModal() {
+      const html = `
+        <div class="form-group">
+          <label>Nombre del Sitio</label>
+          <input type="text" id="modalPlaceName" placeholder="Ej: Parque Tayrona" required autofocus />
+        </div>
+        <div class="form-group">
+          <label>Nota (opcional)</label>
+          <input type="text" id="modalPlaceNote" placeholder="Ej: Ir en diciembre, llevar sombrilla" />
+        </div>
+      `;
+      openInputModal('Agregar Sitio', html, () => {
+        const name = document.getElementById('modalPlaceName').value.trim();
+        const note = document.getElementById('modalPlaceNote').value.trim();
+        if (name) {
+          db.ref('paseos/lugares').push({ name, note, visited: false, timestamp: Date.now() });
+        }
+      });
+    }
+
+    function togglePlaceVisited(key) {
+      const p = allPlaces[key];
+      if (!p) return;
+      db.ref('paseos/lugares/' + key).update({ visited: !p.visited });
+    }
+
+    function deletePlace(key) {
+      customConfirm('¿Eliminar sitio?', 'Se borrará de la lista permanentemente.', () => {
+        db.ref('paseos/lugares/' + key).remove();
+      });
+    }
+
+    function renderPlaces() {
+      const pendingList = document.getElementById('placesPendingList');
+      const visitedList = document.getElementById('placesVisitedList');
+      pendingList.innerHTML = '';
+      visitedList.innerHTML = '';
+      let countPending = 0, countVisited = 0;
+      Object.keys(allPlaces).forEach(key => {
+        const p = allPlaces[key];
+        if (!p) return;
+        const li = document.createElement('li');
+        li.className = `place-item ${p.visited ? 'visited' : ''}`;
+        li.innerHTML = `
+          <div class="place-checkbox" onclick="togglePlaceVisited('${key}')">✓</div>
+          <div style="flex:1;">
+            <div class="place-name">${p.name || 'Sitio'}</div>
+            ${p.note ? `<div class="place-note">${p.note}</div>` : ''}
+          </div>
+          <span class="delete-btn" onclick="deletePlace('${key}')">🗑️</span>
+        `;
+        if (p.visited) { visitedList.appendChild(li); countVisited++; }
+        else { pendingList.appendChild(li); countPending++; }
+      });
+      if (countPending === 0) pendingList.innerHTML = `<li style="border:none; font-style:italic; color:var(--text-muted);">Sin sitios pendientes por visitar</li>`;
+      if (countVisited === 0) visitedList.innerHTML = `<li style="border:none; font-style:italic; color:var(--text-muted);">Aún no han marcado ningún sitio como visitado</li>`;
+    }
+
+    function compressImage(file, maxDim = 1920, startQuality = 0.8, maxBytes = 1600000) {
+      return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onload = (e) => {
+          const img = new Image();
+          img.onload = () => {
+            let { width, height } = img;
+            if (width > maxDim || height > maxDim) {
+              if (width > height) {
+                height = Math.round(height * (maxDim / width));
+                width = maxDim;
+              } else {
+                width = Math.round(width * (maxDim / height));
+                height = maxDim;
+              }
+            }
+            const canvas = document.createElement('canvas');
+            canvas.width = width;
+            canvas.height = height;
+            const ctx = canvas.getContext('2d');
+            ctx.drawImage(img, 0, 0, width, height);
+            let quality = startQuality;
+            let dataUrl = canvas.toDataURL('image/jpeg', quality);
+            while (dataUrl.length * 0.75 > maxBytes && quality > 0.35) {
+              quality -= 0.1;
+              dataUrl = canvas.toDataURL('image/jpeg', quality);
+            }
+            if (dataUrl.length * 0.75 > maxBytes && maxDim > 900) {
+              resolve(compressImage(file, Math.round(maxDim * 0.75), 0.7, maxBytes));
+              return;
+            }
+            resolve(dataUrl);
+          };
+          img.onerror = reject;
+          img.src = e.target.result;
+        };
+        reader.onerror = reject;
+        reader.readAsDataURL(file);
+      });
+    }
+
+    function openAddAlbumModal() {
+      const html = `
+        <div class="form-group">
+          <label>Nombre del Álbum</label>
+          <input type="text" id="modalAlbumName" placeholder="Ej: Viaje a Cartagena" required autofocus />
+        </div>
+        <div class="form-group">
+          <label>Foto de Portada</label>
+          <input type="file" id="modalAlbumCover" accept="image/*" />
+        </div>
+      `;
+      openInputModal('Nuevo Álbum', html, async () => {
+        const name = document.getElementById('modalAlbumName').value.trim();
+        const coverInput = document.getElementById('modalAlbumCover');
+        if (!name) return;
+        let coverData = null;
+        if (coverInput.files && coverInput.files[0]) {
+          const file = coverInput.files[0];
+          if (file.size > 25000000) {
+            alert("La imagen es demasiado grande (máximo 25MB).");
+            return;
+          }
+          coverData = await compressImage(file);
+        }
+        const newAlbumRef = db.ref('paseos/albumes').push();
+        newAlbumRef.set({ name, coverData: coverData || null, timestamp: Date.now() });
+        if (coverData) {
+          db.ref('paseos/fotos').push({ albumId: newAlbumRef.key, photoData: coverData, timestamp: Date.now() });
+        }
+      });
+    }
+
+    function renderAlbums() {
+      const container = document.getElementById('albumGridContainer');
+      container.innerHTML = '';
+      const albumKeys = Object.keys(allAlbumes);
+      if (albumKeys.length === 0) {
+        container.innerHTML = `<div style="grid-column: 1 / -1; text-align:center; font-size:0.78rem; color:var(--text-muted); padding:16px;">No hay álbumes creados. Haz clic en <b>"+ Nuevo Álbum"</b> para empezar.</div>`;
+        return;
+      }
+      albumKeys.forEach(key => {
+        const album = allAlbumes[key];
+        if (!album) return;
+        const photoCount = Object.keys(allFotos).filter(k => allFotos[k] && allFotos[k].albumId === key).length;
+        const card = document.createElement('div');
+        card.className = 'album-card';
+        card.onclick = () => openAlbumDetail(key);
+        const coverStyle = album.coverData ? `background-image: url('${album.coverData}');` : '';
+        card.innerHTML = `
+          <div class="album-cover" style="${coverStyle}">${album.coverData ? '' : '📸'}</div>
+          <div class="album-info">
+            <div class="album-name">${album.name || 'Álbum'}</div>
+            <div class="album-count">${photoCount} foto${photoCount === 1 ? '' : 's'}</div>
+          </div>
+        `;
+        container.appendChild(card);
+      });
+    }
+
+    function openAlbumDetail(albumId) {
+      currentAlbumId = albumId;
+      const album = allAlbumes[albumId];
+      document.getElementById('albumDetailTitle').innerText = album ? (album.name || 'Álbum') : 'Álbum';
+      renderAlbumPhotos(albumId);
+      document.getElementById('albumDetailModal').classList.add('active');
+    }
+
+    function closeAlbumDetailModal() {
+      document.getElementById('albumDetailModal').classList.remove('active');
+      currentAlbumId = null;
+      closePhotoViewer();
+    }
+
+    function renderAlbumPhotos(albumId) {
+      const grid = document.getElementById('albumPhotosGrid');
+      grid.innerHTML = '';
+      const photoKeys = Object.keys(allFotos).filter(k => allFotos[k] && allFotos[k].albumId === albumId);
+      if (photoKeys.length === 0) {
+        grid.innerHTML = `<div style="grid-column: 1 / -1; text-align:center; font-size:0.75rem; color:var(--text-muted); padding:10px;">Aún no hay fotos en este álbum.</div>`;
+        return;
+      }
+      viewerPhotos = photoKeys.map(k => allFotos[k].photoData);
+      viewerCurrentIndex = 0;
+      photoKeys.forEach((key, index) => {
+        const foto = allFotos[key];
+        const item = document.createElement('div');
+        item.className = 'photo-item';
+        item.innerHTML = `
+          <img src="${foto.photoData}" alt="Foto" onclick="openPhotoViewer(${index})" />
+          <span class="photo-delete-btn" onclick="event.stopPropagation(); deletePhoto('${key}')">✕</span>
+        `;
+        grid.appendChild(item);
+      });
+    }
+
+    // ===== VISOR DE FOTOS A PANTALLA COMPLETA =====
+    function openPhotoViewer(index) {
+      if (!viewerPhotos.length) return;
+      viewerCurrentIndex = index;
+      const viewer = document.getElementById('photoViewer');
+      const img = document.getElementById('photoViewerImage');
+      const counter = document.getElementById('photoViewerCounter');
+      img.src = viewerPhotos[viewerCurrentIndex];
+      counter.innerText = `${viewerCurrentIndex + 1} / ${viewerPhotos.length}`;
+      viewer.classList.add('active');
+      document.body.style.overflow = 'hidden';
+    }
+
+    function closePhotoViewer(event) {
+      if (event && event.target !== event.currentTarget) return;
+      document.getElementById('photoViewer').classList.remove('active');
+      document.body.style.overflow = '';
+    }
+
+    function navigatePhoto(direction) {
+      if (!viewerPhotos.length) return;
+      viewerCurrentIndex = (viewerCurrentIndex + direction + viewerPhotos.length) % viewerPhotos.length;
+      const img = document.getElementById('photoViewerImage');
+      const counter = document.getElementById('photoViewerCounter');
+      img.src = viewerPhotos[viewerCurrentIndex];
+      counter.innerText = `${viewerCurrentIndex + 1} / ${viewerPhotos.length}`;
+    }
+
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') closePhotoViewer();
+      if (e.key === 'ArrowLeft') navigatePhoto(-1);
+      if (e.key === 'ArrowRight') navigatePhoto(1);
+    });
+
+    function setAsCover(photoData) {
+      if (!currentAlbumId) return;
+      customConfirm('¿Usar como portada?', 'Esta foto se mostrará como portada del álbum.', () => {
+        db.ref('paseos/albumes/' + currentAlbumId).update({ coverData: photoData });
+      });
+    }
+
+    // ===== AGREGAR FOTOS - MODAL CORREGIDO =====
+    function openAddPhotoModal() {
+      if (!currentAlbumId) return;
+      // Primero cerramos el modal de detalles del álbum para que no se superpongan
+      document.getElementById('albumDetailModal').classList.remove('active');
+      
+      const html = `
+        <div class="form-group">
+          <label>Seleccionar Foto(s) — se comprimen automáticamente</label>
+          <input type="file" id="modalPhotoInput" accept="image/*" multiple required autofocus />
+        </div>
+      `;
+
+      openInputModal('Agregar Fotos al Álbum', html, async () => {
+        const input = document.getElementById('modalPhotoInput');
+        if (!input.files || input.files.length === 0) return;
+
+        for (const file of Array.from(input.files)) {
+          if (file.size > 25000000) {
+            alert(`"${file.name}" es demasiado grande (máximo 25MB) y no se subió.`);
+            continue;
+          }
+          const data = await compressImage(file);
+          db.ref('paseos/fotos').push({ albumId: currentAlbumId, photoData: data, timestamp: Date.now() });
+        }
+        // Reabrir el modal del álbum después de agregar
+        setTimeout(() => {
+          document.getElementById('albumDetailModal').classList.add('active');
+        }, 300);
+      });
+    }
+
+    function deletePhoto(key) {
+      customConfirm('¿Eliminar foto?', 'Esta acción no se puede deshacer.', () => {
+        db.ref('paseos/fotos/' + key).remove();
+      });
+    }
+
+    function deleteCurrentAlbum() {
+      if (!currentAlbumId) return;
+      const albumId = currentAlbumId;
+      customConfirm('¿Eliminar álbum?', 'Se borrarán también todas sus fotos.', () => {
+        db.ref('paseos/albumes/' + albumId).remove();
+        Object.keys(allFotos).forEach(k => {
+          if (allFotos[k] && allFotos[k].albumId === albumId) db.ref('paseos/fotos/' + k).remove();
+        });
+        closeAlbumDetailModal();
+      });
     }
   </script>
 </body>
