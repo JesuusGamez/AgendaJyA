@@ -774,6 +774,34 @@
       box-shadow: var(--shadow);
       width: 100%;
     }
+
+    /* Pestañas de Estudiante para Horarios Compactos */
+    .student-tabs {
+      display: flex;
+      background: var(--bg);
+      border-radius: 10px;
+      padding: 3px;
+      border: 1px solid var(--card-border);
+      gap: 3px;
+      margin-bottom: 8px;
+    }
+    .student-tab-btn {
+      flex: 1;
+      padding: 7px;
+      background: transparent;
+      border: none;
+      color: var(--text-muted);
+      font-weight: 700;
+      font-size: 0.78rem;
+      border-radius: 8px;
+      cursor: pointer;
+    }
+    .student-tab-btn.active {
+      background: var(--card-bg-solid);
+      color: var(--text);
+      border: 1px solid var(--card-border);
+      box-shadow: var(--shadow);
+    }
   </style>
 </head>
 <body>
@@ -1041,32 +1069,24 @@
         <label>Módulo Académico</label>
         <select class="tab-select" id="academicaDropdown" onchange="switchTabFromDropdown(this, 'sec-academica')">
           <option value="horarios">📅 Horario Semanal</option>
-          <option value="materias">📚 Materias y PDFs</option>
+          <option value="materias">📚 Materias y Archivos</option>
           <option value="notas">📝 Notas y Calificaciones</option>
         </select>
       </div>
 
       <div id="acad-horarios" class="tab-content active">
         <div style="display:flex; justify-content:space-between; align-items:center;">
-          <h3 style="font-size:0.88rem; color:var(--academic-color); font-weight:800;">Horario de Clases</h3>
+          <h3 style="font-size:0.88rem; color:var(--academic-color); font-weight:800;">Horario Semanal</h3>
           <button class="add-btn" style="width:auto; padding:6px 12px; margin:0;" onclick="openAddClassModal()">+ Agregar Clase</button>
         </div>
 
-        <div class="columns-grid">
-          <div class="user-summary-card jesus-card">
-            <h3 class="title-jesus" style="font-size:0.85rem; border-bottom:1px solid var(--card-border); padding-bottom:6px;">
-              Horario Jesús 💙
-            </h3>
-            <div class="schedule-grid" id="scheduleJesusContainer"></div>
-          </div>
-
-          <div class="user-summary-card ali-card">
-            <h3 class="title-ali" style="font-size:0.85rem; border-bottom:1px solid var(--card-border); padding-bottom:6px;">
-              Horario Ali 🩷
-            </h3>
-            <div class="schedule-grid" id="scheduleAliContainer"></div>
-          </div>
+        <!-- Pestañas para alternar horario sin scroll excesivo -->
+        <div class="student-tabs">
+          <button class="student-tab-btn active" id="schedTabJesus" onclick="switchScheduleTab('Jesus')">Horario Jesús 💙</button>
+          <button class="student-tab-btn" id="schedTabAli" onclick="switchScheduleTab('Ali')">Horario Ali 🩷</button>
         </div>
+
+        <div id="scheduleContainer" class="academic-card"></div>
       </div>
 
       <div id="acad-materias" class="tab-content">
@@ -1159,8 +1179,8 @@
     const appStartTime = Date.now();
     let audioCtx = null;
     let triggeredReminders = {};
+    let currentScheduleOwner = 'Jesus';
 
-    // Desbloqueo global de audio en el primer clic/tap
     function unlockAudio() {
       if (!audioCtx) {
         audioCtx = new (window.AudioContext || window.webkitAudioContext)();
@@ -1191,7 +1211,6 @@
       const hours = now.getHours();
       const html = document.documentElement;
       const currentTheme = html.getAttribute('data-theme');
-      // A las 6 PM (18:00) o más tarde, activar modo oscuro automáticamente si está en light
       if (hours >= 18 && currentTheme === 'light') {
         html.setAttribute('data-theme', 'dark');
         const themeIcon = document.getElementById('themeIcon');
@@ -1200,7 +1219,6 @@
       }
     }
 
-    // Comprobar al iniciar
     checkAutoDarkMode();
 
     function openMode(mode) {
@@ -1283,7 +1301,7 @@
           }
           return;
         } catch (e) {
-          console.log("Notificación nativa falló, usando fallback visual", e);
+          console.log("Notificación nativa falló", e);
         }
       }
 
@@ -1471,7 +1489,7 @@
     const daysMap = { 0: 'Domingo', 1: 'Lunes', 2: 'Martes', 3: 'Miércoles', 4: 'Jueves', 5: 'Viernes', 6: 'Sábado' };
 
     function checkClassReminders() {
-      checkAutoDarkMode(); // Ejecutar verificación de modo oscuro automático
+      checkAutoDarkMode();
       const now = new Date();
       const currentDayName = daysMap[now.getDay()];
       const nowMinutes = now.getHours() * 60 + now.getMinutes();
@@ -2038,54 +2056,61 @@
       });
     }
 
+    function switchScheduleTab(owner) {
+      currentScheduleOwner = owner;
+      document.getElementById('schedTabJesus').classList.toggle('active', owner === 'Jesus');
+      document.getElementById('schedTabAli').classList.toggle('active', owner === 'Ali');
+      renderSchedules();
+    }
+
     function renderSchedules() {
-      const containerJesus = document.getElementById('scheduleJesusContainer');
-      const containerAli = document.getElementById('scheduleAliContainer');
-      containerJesus.innerHTML = ''; containerAli.innerHTML = '';
+      const container = document.getElementById('scheduleContainer');
+      container.innerHTML = '';
+      container.style.borderTop = `3px solid ${currentScheduleOwner === 'Jesus' ? 'var(--jesus-color)' : 'var(--ali-color)'}`;
 
       const days = ["Lunes", "Martes", "Miércoles", "Jueves", "Viernes", "Sábado"];
+      let hasClasses = false;
 
-      function buildStudentSchedule(owner) {
-        let hasClasses = false;
-        const wrapper = document.createElement('div');
-        wrapper.className = 'schedule-grid';
+      const titleEl = document.createElement('h3');
+      titleEl.className = currentScheduleOwner === 'Jesus' ? 'title-jesus' : 'title-ali';
+      titleEl.innerHTML = `<span>Horario de ${currentScheduleOwner}</span>`;
+      container.appendChild(titleEl);
 
-        days.forEach(d => {
-          const dayClasses = Object.keys(allSchedules)
-            .map(k => ({ id: k, ...allSchedules[k] }))
-            .filter(c => c && (c.owner || '').toLowerCase() === owner.toLowerCase() && c.day === d);
+      days.forEach(d => {
+        const dayClasses = Object.keys(allSchedules)
+          .map(k => ({ id: k, ...allSchedules[k] }))
+          .filter(c => c && (c.owner || '').toLowerCase() === currentScheduleOwner.toLowerCase() && c.day === d);
 
-          if (dayClasses.length > 0) {
-            hasClasses = true;
-            const dayBox = document.createElement('div');
-            dayBox.className = 'academic-card';
-            dayBox.innerHTML = `<h4 style="font-size:0.75rem; color:var(--text-muted); border-bottom:1px solid var(--card-border); padding-bottom:2px;">${d}</h4>`;
+        if (dayClasses.length > 0) {
+          hasClasses = true;
+          const dayBox = document.createElement('div');
+          dayBox.style.cssText = "margin-top:6px; background:var(--bg); padding:8px; border-radius:10px; border:1px solid var(--card-border);";
+          dayBox.innerHTML = `<h4 style="font-size:0.75rem; color:var(--text-muted); border-bottom:1px solid var(--card-border); padding-bottom:2px; margin-bottom:4px;">${d}</h4>`;
 
-            dayClasses.forEach(c => {
-              const item = document.createElement('div');
-              item.className = `schedule-item ${owner.toLowerCase() === 'jesus' ? 'jesus' : 'ali'}`;
-              item.innerHTML = `
-                <div>
-                  <strong style="font-size:0.78rem;">${c.materia || 'Clase'}</strong>
-                  <div style="font-size:0.7rem; color:var(--gold); font-weight:700;">⏰ ${c.startTime || 'S/H'} - ${c.endTime || 'S/H'}</div>
-                  <div style="font-size:0.65rem; color:var(--text-muted);">${c.info || ''}</div>
-                </div>
-                <span class="delete-btn" onclick="deleteScheduleItem('${c.id}')">🗑️</span>
-              `;
-              dayBox.appendChild(item);
-            });
-            wrapper.appendChild(dayBox);
-          }
-        });
-
-        if (!hasClasses) {
-          wrapper.innerHTML = `<div style="text-align:center; font-size:0.74rem; color:var(--text-muted); padding:8px;">Sin clases registradas.</div>`;
+          dayClasses.forEach(c => {
+            const item = document.createElement('div');
+            item.className = `schedule-item ${currentScheduleOwner.toLowerCase() === 'jesus' ? 'jesus' : 'ali'}`;
+            item.style.marginBottom = '4px';
+            item.innerHTML = `
+              <div>
+                <strong style="font-size:0.78rem;">${c.materia || 'Clase'}</strong>
+                <div style="font-size:0.7rem; color:var(--gold); font-weight:700;">⏰ ${c.startTime || 'S/H'} - ${c.endTime || 'S/H'}</div>
+                <div style="font-size:0.65rem; color:var(--text-muted);">${c.info || ''}</div>
+              </div>
+              <span class="delete-btn" onclick="deleteScheduleItem('${c.id}')">🗑️</span>
+            `;
+            dayBox.appendChild(item);
+          });
+          container.appendChild(dayBox);
         }
-        return wrapper;
-      }
+      });
 
-      containerJesus.appendChild(buildStudentSchedule('Jesus'));
-      containerAli.appendChild(buildStudentSchedule('Ali'));
+      if (!hasClasses) {
+        const emptyDiv = document.createElement('div');
+        emptyDiv.style.cssText = "text-align:center; font-size:0.78rem; color:var(--text-muted); padding:16px;";
+        emptyDiv.innerHTML = `No hay clases registradas para ${currentScheduleOwner}.`;
+        container.appendChild(emptyDiv);
+      }
     }
 
     function openAddMateriaModal() {
@@ -2134,47 +2159,110 @@
     function openUploadFileModal(materiaId, materiaName, owner) {
       const html = `
         <div class="form-group">
-          <label>Nombre del Archivo</label>
-          <input type="text" id="modalFileTitle" placeholder="Ej: Guía de Ejercicios" required autofocus />
+          <label>Título del Material / Enlace</label>
+          <input type="text" id="modalFileTitle" placeholder="Ej: Guía de Ejercicios o Video YT" required autofocus />
         </div>
         <div class="form-group">
-          <label>Seleccionar PDF (Máx 2MB)</label>
-          <input type="file" id="modalFileInput" accept="application/pdf,.pdf" required />
+          <label>Tipo de Recurso</label>
+          <select id="modalResourceType" onchange="toggleResourceType(this.value)">
+            <option value="file">Archivo (PDF, Word, Excel, PPT)</option>
+            <option value="url">Enlace Web / YouTube (URL)</option>
+          </select>
+        </div>
+        <div class="form-group" id="fileInputWrapper">
+          <label>Seleccionar Archivo (Máx 4MB)</label>
+          <input type="file" id="modalFileInput" accept=".pdf,.doc,.docx,.xls,.xlsx,.ppt,.pptx" />
+        </div>
+        <div class="form-group" id="urlInputWrapper" style="display:none;">
+          <label>URL / Enlace</label>
+          <input type="url" id="modalUrlInput" placeholder="https://youtube.com/..." />
         </div>
       `;
 
-      openInputModal(`PDF para: ${materiaName}`, html, () => {
+      openInputModal(`Material para: ${materiaName}`, html, () => {
         const title = document.getElementById('modalFileTitle').value.trim();
-        const fileInput = document.getElementById('modalFileInput');
+        const resourceType = document.getElementById('modalResourceType').value;
 
-        if (title && fileInput.files && fileInput.files[0]) {
-          const file = fileInput.files[0];
-          
-          if (file.size > 2200000) {
-            alert("El archivo es demasiado grande (máximo 2MB).");
-            return;
-          }
+        if (!title) return;
 
-          const reader = new FileReader();
-          reader.onload = function(e) {
-            const base64Data = e.target.result;
+        if (resourceType === 'url') {
+          const urlVal = document.getElementById('modalUrlInput').value.trim();
+          if (urlVal) {
             db.ref('academico/materiales').push({
               materiaId,
               materiaName,
               owner,
               title,
-              fileName: file.name,
-              fileData: base64Data,
+              type: 'url',
+              fileData: urlVal,
+              fileName: 'Enlace Web',
               timestamp: Date.now()
             });
-          };
-          reader.readAsDataURL(file);
+          }
+        } else {
+          const fileInput = document.getElementById('modalFileInput');
+          if (fileInput.files && fileInput.files[0]) {
+            const file = fileInput.files[0];
+            
+            if (file.size > 4200000) {
+              alert("El archivo es demasiado grande (máximo 4MB).");
+              return;
+            }
+
+            const reader = new FileReader();
+            reader.onload = function(e) {
+              const base64Data = e.target.result;
+              db.ref('academico/materiales').push({
+                materiaId,
+                materiaName,
+                owner,
+                title,
+                type: 'file',
+                fileName: file.name,
+                fileData: base64Data,
+                timestamp: Date.now()
+              });
+            };
+            reader.readAsDataURL(file);
+          }
         }
       });
     }
 
+    function toggleResourceType(val) {
+      document.getElementById('fileInputWrapper').style.display = val === 'file' ? 'flex' : 'none';
+      document.getElementById('urlInputWrapper').style.display = val === 'url' ? 'flex' : 'none';
+    }
+
+    // Solución robusta para abrir archivos base64 sin errores de seguridad o tamaño en navegadores
+    function openStoredFile(base64Data, fileName) {
+      try {
+        const arr = base64Data.split(',');
+        const mimeMatch = arr[0].match(/:(.*?);/);
+        const mime = mimeMatch ? mimeMatch[1] : 'application/octet-stream';
+        const bstr = atob(arr[1]);
+        let n = bstr.length;
+        const u8arr = new Uint8Array(n);
+        while (n--) {
+          u8arr[n] = bstr.charCodeAt(n);
+        }
+        const blob = new Blob([u8arr], { type: mime });
+        const blobUrl = URL.createObjectURL(blob);
+        
+        const a = document.createElement('a');
+        a.href = blobUrl;
+        a.download = fileName || 'documento';
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+      } catch (err) {
+        console.error("Error abriendo archivo:", err);
+        alert("No se pudo abrir el archivo directamente. Intenta descargarlo o verificar el formato.");
+      }
+    }
+
     function deleteMaterial(id) {
-      customConfirm('¿Eliminar archivo?', 'Esta acción no se puede deshacer.', () => {
+      customConfirm('¿Eliminar recurso?', 'Esta acción no se puede deshacer.', () => {
         db.ref('academico/materiales/' + id).remove();
       });
     }
@@ -2201,18 +2289,24 @@
         const filesListHTML = Object.keys(allMaterials)
           .map(k => ({ id: k, ...allMaterials[k] }))
           .filter(f => f && f.materiaId === mKey)
-          .map(f => `
-            <div style="display:flex; justify-content:space-between; align-items:center; background:var(--bg); padding:6px 9px; border-radius:8px; font-size:0.72rem; gap:6px;">
-              <div style="overflow:hidden;">
-                <div style="font-weight:700; text-overflow:ellipsis; overflow:hidden; white-space:nowrap;">📄 ${f.title || 'Archivo'}</div>
-                <div style="font-size:0.62rem; color:var(--text-muted);">${f.fileName || 'Documento PDF'}</div>
+          .map(f => {
+            const isUrl = f.type === 'url';
+            const actionClick = isUrl ? `window.open('${f.fileData}', '_blank')` : `openStoredFile('${f.fileData}', '${f.fileName || 'archivo'}')`;
+            const icon = isUrl ? '🔗' : '📄';
+
+            return `
+              <div style="display:flex; justify-content:space-between; align-items:center; background:var(--bg); padding:6px 9px; border-radius:8px; font-size:0.72rem; gap:6px;">
+                <div style="overflow:hidden;">
+                  <div style="font-weight:700; text-overflow:ellipsis; overflow:hidden; white-space:nowrap;">${icon} ${f.title || 'Recurso'}</div>
+                  <div style="font-size:0.62rem; color:var(--text-muted);">${f.fileName || 'Enlace web'}</div>
+                </div>
+                <div style="display:flex; gap:4px; align-items:center; flex-shrink:0;">
+                  <button class="resource-link" style="border:none; cursor:pointer;" onclick="${actionClick}">${isUrl ? '🌐 Visitar' : '⬇️ Abrir'}</button>
+                  <span class="delete-btn" onclick="deleteMaterial('${f.id}')">🗑️</span>
+                </div>
               </div>
-              <div style="display:flex; gap:4px; align-items:center; flex-shrink:0;">
-                <a href="${f.fileData}" download="${f.fileName || 'documento.pdf'}" class="resource-link" style="margin:0;">⬇️ Abrir</a>
-                <span class="delete-btn" onclick="deleteMaterial('${f.id}')">🗑️</span>
-              </div>
-            </div>
-          `).join('');
+            `;
+          }).join('');
 
         card.innerHTML = `
           <h3>
@@ -2222,12 +2316,12 @@
           <div style="font-size:0.72rem; color:var(--text-muted);">${mat.desc || 'Sin descripción'}</div>
           
           <div style="margin-top:2px; display:flex; flex-direction:column; gap:6px;">
-            <strong style="font-size:0.7rem; color:var(--academic-color); text-transform:uppercase;">📁 Documentos PDF:</strong>
-            ${filesListHTML || '<div style="font-size:0.68rem; color:var(--text-muted); font-style:italic;">Sin PDFs subidos.</div>'}
+            <strong style="font-size:0.7rem; color:var(--academic-color); text-transform:uppercase;">📁 Archivos y Enlaces:</strong>
+            ${filesListHTML || '<div style="font-size:0.68rem; color:var(--text-muted); font-style:italic;">Sin recursos agregados.</div>'}
           </div>
 
           <button class="add-btn" style="background:var(--card-bg-solid); border-color:var(--academic-color); color:var(--academic-color);" onclick="openUploadFileModal('${mKey}', '${mat.name || 'Materia'}', '${mat.owner || 'Usuario'}')">
-            📁 Subir PDF
+            📁 Subir Archivo o Enlace
           </button>
         `;
 
