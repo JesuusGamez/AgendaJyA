@@ -96,6 +96,22 @@
       overflow-x: hidden;
     }
 
+    /* ===== FONDO DINÁMICO SEGÚN LA HORA DEL DÍA ===== */
+    /* Dos capas superpuestas que se cruzan en opacidad para lograr
+       una transición suave entre día / tarde / atardecer / noche / madrugada,
+       sin depender de que el navegador interpole los gradientes. */
+    .time-bg-layer {
+      position: fixed;
+      inset: 0;
+      z-index: -1;
+      opacity: 0;
+      transition: opacity 4s ease;
+      pointer-events: none;
+    }
+    .time-bg-layer.active {
+      opacity: 1;
+    }
+
     .app-container {
       width: 100%;
       max-width: 650px;
@@ -948,6 +964,9 @@
 </head>
 <body>
 
+  <div class="time-bg-layer" id="timeBgA"></div>
+  <div class="time-bg-layer" id="timeBgB"></div>
+
   <div class="app-container">
     
     <div class="top-bar">
@@ -1240,6 +1259,10 @@
           <h3 style="font-size:0.88rem; color:var(--academic-color); font-weight:800;">Materias</h3>
           <button class="add-btn" style="width:auto; padding:6px 12px; margin:0;" onclick="openAddMateriaModal()">+ Materia</button>
         </div>
+        <div class="student-tabs">
+          <button class="student-tab-btn active" id="matTabJesus" onclick="switchMateriaTab('Jesus')">Materias Jesús 💙</button>
+          <button class="student-tab-btn" id="matTabAli" onclick="switchMateriaTab('Ali')">Materias Ali 🩷</button>
+        </div>
         <div id="materiasListContainer" style="display:flex; flex-direction:column; gap:12px;"></div>
       </div>
 
@@ -1383,6 +1406,7 @@
     let audioCtx = null;
     let triggeredReminders = {};
     let currentScheduleOwner = 'Jesus';
+    let currentMateriaOwner = 'Jesus';
 
     // Variables para el visor de fotos
     let viewerPhotos = [];
@@ -1409,6 +1433,39 @@
       const themeIcon = document.getElementById('themeIcon');
       if (themeIcon) themeIcon.textContent = newTheme === 'dark' ? '☀️' : '🌙';
       renderData();
+    }
+
+    // ===== FONDO DINÁMICO SEGÚN LA HORA (día / tarde / atardecer / noche / madrugada) =====
+    const TIME_GRADIENTS = [
+      { name: 'madrugada', from: 0,  to: 6,  gradient: 'linear-gradient(135deg, #05070f 0%, #0d1128 50%, #171235 100%)' },
+      { name: 'dia',       from: 6,  to: 12, gradient: 'linear-gradient(135deg, #cfeeff 0%, #eef8ff 50%, #fff9ec 100%)' },
+      { name: 'tarde',     from: 12, to: 17, gradient: 'linear-gradient(135deg, #a8d8f0 0%, #cfe9f7 50%, #ffe9b8 100%)' },
+      { name: 'atardecer', from: 17, to: 19, gradient: 'linear-gradient(135deg, #ff9966 0%, #ff6f91 50%, #6a4c93 100%)' },
+      { name: 'noche',     from: 19, to: 24, gradient: 'linear-gradient(135deg, #0b1329 0%, #0f172a 55%, #1b1035 100%)' },
+    ];
+
+    function getTimeGradient(hours) {
+      return (TIME_GRADIENTS.find(p => hours >= p.from && hours < p.to) || TIME_GRADIENTS[1]).gradient;
+    }
+
+    let activeTimeBgLayer = 'A';
+    let lastTimeGradient = null;
+
+    function updateTimeBasedBackground() {
+      const hours = new Date().getHours();
+      const gradient = getTimeGradient(hours);
+      if (gradient === lastTimeGradient) return;
+      lastTimeGradient = gradient;
+
+      const showLayer = document.getElementById(activeTimeBgLayer === 'A' ? 'timeBgB' : 'timeBgA');
+      const hideLayer = document.getElementById(activeTimeBgLayer === 'A' ? 'timeBgA' : 'timeBgB');
+      showLayer.style.background = gradient;
+      // Se fuerza un reflow para que el navegador registre el nuevo fondo
+      // antes de animar la opacidad, y así se vea la transición suave.
+      void showLayer.offsetWidth;
+      showLayer.classList.add('active');
+      hideLayer.classList.remove('active');
+      activeTimeBgLayer = activeTimeBgLayer === 'A' ? 'B' : 'A';
     }
 
     // FIX: esta función ya NO se llama inmediatamente aquí arriba.
@@ -2388,12 +2445,20 @@
       });
     }
 
+    function switchMateriaTab(owner) {
+      currentMateriaOwner = owner;
+      document.getElementById('matTabJesus').classList.toggle('active', owner === 'Jesus');
+      document.getElementById('matTabAli').classList.toggle('active', owner === 'Ali');
+      renderMaterias();
+    }
+
     function renderMaterias() {
       const container = document.getElementById('materiasListContainer');
       container.innerHTML = '';
-      const matKeys = Object.keys(allMaterias);
+      const matKeys = Object.keys(allMaterias)
+        .filter(k => allMaterias[k] && (allMaterias[k].owner || '').toLowerCase() === currentMateriaOwner.toLowerCase());
       if (matKeys.length === 0) {
-        container.innerHTML = `<div style="text-align:center; font-size:0.78rem; color:var(--text-muted); padding:16px;">No hay materias registradas. Haz clic en <b>"+ Materia"</b> para empezar.</div>`;
+        container.innerHTML = `<div style="text-align:center; font-size:0.78rem; color:var(--text-muted); padding:16px;">No hay materias registradas para ${currentMateriaOwner}. Haz clic en <b>"+ Materia"</b> para empezar.</div>`;
         return;
       }
       matKeys.forEach(mKey => {
@@ -2910,6 +2975,8 @@
     // cuando ya existen todayStr, allRecords, renderData y todos los listeners
     // de Firebase ya quedaron registrados arriba.
     checkAutoDarkMode();
+    updateTimeBasedBackground();
+    setInterval(updateTimeBasedBackground, 5 * 60 * 1000);
   </script>
 </body>
 </html>
