@@ -19,7 +19,7 @@
     :root {
       --bg: #f0f7ff;
       --bg-gradient: linear-gradient(135deg, #e0f2fe 0%, #f0f7ff 50%, #eef2ff 100%);
-      --card-bg: rgba(255, 255, 255, 0.92);
+      --card-bg: rgba(255, 255, 255, 0.55);
       --card-bg-solid: #ffffff;
       --card-border: rgba(186, 230, 253, 0.8);
       --card-shadow: 0 8px 24px -6px rgba(14, 165, 233, 0.12);
@@ -49,7 +49,7 @@
     [data-theme="dark"] {
       --bg: #0b1329;
       --bg-gradient: linear-gradient(135deg, #0b1329 0%, #0f172a 60%, #111827 100%);
-      --card-bg: rgba(30, 41, 59, 0.9);
+      --card-bg: rgba(30, 41, 59, 0.55);
       --card-bg-solid: #1e293b;
       --card-border: rgba(255, 255, 255, 0.1);
       --card-shadow: 0 12px 30px -10px rgba(0, 0, 0, 0.6);
@@ -87,7 +87,7 @@
     }
 
     body {
-      background: var(--bg-gradient);
+      background: transparent;
       color: var(--text);
       display: flex;
       justify-content: center;
@@ -99,7 +99,11 @@
     /* ===== FONDO DINÁMICO SEGÚN LA HORA DEL DÍA ===== */
     /* Dos capas superpuestas que se cruzan en opacidad para lograr
        una transición suave entre día / tarde / atardecer / noche / madrugada,
-       sin depender de que el navegador interpole los gradientes. */
+       sin depender de que el navegador interpole los gradientes.
+       IMPORTANTE: sin z-index (auto) y antes del app-container en el HTML,
+       para que no queden "detrás" del fondo raíz de la página (el <body>
+       con background actúa como fondo del canvas y siempre pinta por debajo
+       de TODO, incluso de elementos con z-index negativo). */
     .time-bg-layer {
       position: fixed;
       inset: 0;
@@ -110,6 +114,9 @@
     }
     .time-bg-layer.active {
       opacity: 1;
+    }
+    .theme-menu-wrap {
+      position: relative;
     }
 
     .app-container {
@@ -973,9 +980,11 @@
       <button id="backBtn" class="back-btn" onclick="goHome()">
         &#8592; Menú Principal
       </button>
-      <button id="themeBtn" class="theme-toggle" onclick="toggleTheme()" aria-label="Cambiar modo oscuro">
-        <span id="themeIcon">🌙</span>
-      </button>
+      <div class="theme-menu-wrap">
+        <button id="themeBtn" class="theme-toggle" onclick="cycleBgMode()" aria-label="Cambiar ambiente" title="Toca para cambiar de ambiente">
+          <span id="themeIcon">🔄</span>
+        </button>
+      </div>
     </div>
 
     <!-- ===== HOME ===== -->
@@ -1425,41 +1434,88 @@
     document.addEventListener('click', unlockAudio);
     document.addEventListener('touchstart', unlockAudio);
 
-    function toggleTheme() {
-      const html = document.documentElement;
-      const currentTheme = html.getAttribute('data-theme');
-      const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
-      html.setAttribute('data-theme', newTheme);
-      const themeIcon = document.getElementById('themeIcon');
-      if (themeIcon) themeIcon.textContent = newTheme === 'dark' ? '☀️' : '🌙';
-      renderData();
-    }
-
     // ===== FONDO DINÁMICO SEGÚN LA HORA (día / tarde / atardecer / noche / madrugada) =====
-    const TIME_GRADIENTS = [
-      { name: 'madrugada', from: 0,  to: 6,  gradient: 'linear-gradient(135deg, #05070f 0%, #0d1128 50%, #171235 100%)' },
-      { name: 'dia',       from: 6,  to: 12, gradient: 'linear-gradient(135deg, #cfeeff 0%, #eef8ff 50%, #fff9ec 100%)' },
-      { name: 'tarde',     from: 12, to: 17, gradient: 'linear-gradient(135deg, #a8d8f0 0%, #cfe9f7 50%, #ffe9b8 100%)' },
-      { name: 'atardecer', from: 17, to: 19, gradient: 'linear-gradient(135deg, #ff9966 0%, #ff6f91 50%, #6a4c93 100%)' },
-      { name: 'noche',     from: 19, to: 24, gradient: 'linear-gradient(135deg, #0b1329 0%, #0f172a 55%, #1b1035 100%)' },
+    // O manual: si el usuario elige una opción fija en el botón de ambiente,
+    // se guarda en localStorage y ya no se recalcula según la hora real.
+    const TIME_GRADIENTS = {
+      madrugada: { gradient: 'linear-gradient(135deg, #05070f 0%, #0d1128 50%, #171235 100%)', theme: 'dark' },
+      dia:       { gradient: 'linear-gradient(135deg, #cfeeff 0%, #eef8ff 50%, #fff9ec 100%)', theme: 'light' },
+      tarde:     { gradient: 'linear-gradient(135deg, #a8d8f0 0%, #cfe9f7 50%, #ffe9b8 100%)', theme: 'light' },
+      atardecer: { gradient: 'linear-gradient(135deg, #ff9966 0%, #ff6f91 50%, #6a4c93 100%)', theme: 'light' },
+      noche:     { gradient: 'linear-gradient(135deg, #0b1329 0%, #0f172a 55%, #1b1035 100%)', theme: 'dark' },
+    };
+    const TIME_RANGES = [
+      { name: 'madrugada', from: 0,  to: 6  },
+      { name: 'dia',       from: 6,  to: 12 },
+      { name: 'tarde',     from: 12, to: 17 },
+      { name: 'atardecer', from: 17, to: 19 },
+      { name: 'noche',     from: 19, to: 24 },
     ];
 
-    function getTimeGradient(hours) {
-      return (TIME_GRADIENTS.find(p => hours >= p.from && hours < p.to) || TIME_GRADIENTS[1]).gradient;
+    // Orden en el que el botón va cambiando de ambiente al presionarlo,
+    // y el ícono que representa a cada uno (null = automático según la hora).
+    const BG_MODE_CYCLE = [null, 'dia', 'tarde', 'atardecer', 'noche', 'madrugada'];
+    const BG_MODE_ICONS = {
+      auto: '🔄',
+      dia: '🌅',
+      tarde: '🌤️',
+      atardecer: '🌇',
+      noche: '🌙',
+      madrugada: '🌌',
+    };
+
+    function getAutoPeriodName(hours) {
+      return (TIME_RANGES.find(p => hours >= p.from && hours < p.to) || TIME_RANGES[1]).name;
+    }
+
+    let manualBgMode = null;
+    try { manualBgMode = localStorage.getItem('bgMode') || null; } catch (e) {}
+
+    function setBgMode(mode) {
+      manualBgMode = mode;
+      try {
+        if (mode) localStorage.setItem('bgMode', mode);
+        else localStorage.removeItem('bgMode');
+      } catch (e) {}
+      lastTimeGradient = null; // fuerza recalcular ya mismo
+      updateTimeBasedBackground();
+    }
+
+    // Al presionar el botón, simplemente pasa al siguiente ambiente de la
+    // lista (sin mostrar ningún menú de opciones).
+    function cycleBgMode() {
+      const currentIndex = BG_MODE_CYCLE.indexOf(manualBgMode);
+      const nextIndex = (currentIndex + 1) % BG_MODE_CYCLE.length;
+      setBgMode(BG_MODE_CYCLE[nextIndex]);
     }
 
     let activeTimeBgLayer = 'A';
     let lastTimeGradient = null;
 
     function updateTimeBasedBackground() {
-      const hours = new Date().getHours();
-      const gradient = getTimeGradient(hours);
-      if (gradient === lastTimeGradient) return;
-      lastTimeGradient = gradient;
+      const periodName = manualBgMode || getAutoPeriodName(new Date().getHours());
+      const period = TIME_GRADIENTS[periodName] || TIME_GRADIENTS.dia;
+
+      // El tema claro/oscuro de tarjetas y texto sigue al periodo elegido.
+      const html = document.documentElement;
+      if (html.getAttribute('data-theme') !== period.theme) {
+        html.setAttribute('data-theme', period.theme);
+        renderData();
+      }
+
+      // El ícono del botón refleja el ambiente activo: el elegido manualmente,
+      // o el que corresponde a la hora actual si está en modo automático.
+      const themeIcon = document.getElementById('themeIcon');
+      if (themeIcon) {
+        themeIcon.textContent = manualBgMode ? BG_MODE_ICONS[manualBgMode] : BG_MODE_ICONS.auto;
+      }
+
+      if (period.gradient === lastTimeGradient) return;
+      lastTimeGradient = period.gradient;
 
       const showLayer = document.getElementById(activeTimeBgLayer === 'A' ? 'timeBgB' : 'timeBgA');
       const hideLayer = document.getElementById(activeTimeBgLayer === 'A' ? 'timeBgA' : 'timeBgB');
-      showLayer.style.background = gradient;
+      showLayer.style.background = period.gradient;
       // Se fuerza un reflow para que el navegador registre el nuevo fondo
       // antes de animar la opacidad, y así se vea la transición suave.
       void showLayer.offsetWidth;
@@ -1471,20 +1527,11 @@
     // FIX: esta función ya NO se llama inmediatamente aquí arriba.
     // Antes se invocaba antes de que existieran todayStr/allRecords/renderData,
     // lo cual lanzaba un error de JS después de las 6pm y detenía TODO el script
-    // (incluyendo los listeners de Firebase). Ahora solo se define aquí;
-    // la primera llamada real está al final del archivo, y también se
-    // revisa periódicamente dentro de checkClassReminders().
+    // (incluyendo los listeners de Firebase). Ahora el tema claro/oscuro y el
+    // fondo por hora los maneja updateTimeBasedBackground(), que respeta el
+    // modo manual si el usuario eligió uno en el botón de ambiente.
     function checkAutoDarkMode() {
-      const now = new Date();
-      const hours = now.getHours();
-      const html = document.documentElement;
-      const currentTheme = html.getAttribute('data-theme');
-      if (hours >= 18 && currentTheme === 'light') {
-        html.setAttribute('data-theme', 'dark');
-        const themeIcon = document.getElementById('themeIcon');
-        if (themeIcon) themeIcon.textContent = '☀️';
-        renderData();
-      }
+      updateTimeBasedBackground();
     }
 
     function openMode(mode) {
@@ -2971,10 +3018,8 @@
       });
     }
 
-    // FIX: llamada segura de checkAutoDarkMode() al final del script,
-    // cuando ya existen todayStr, allRecords, renderData y todos los listeners
-    // de Firebase ya quedaron registrados arriba.
-    checkAutoDarkMode();
+    // FIX: llamada segura al final del script, cuando ya existen todayStr,
+    // allRecords, renderData y todos los listeners de Firebase registrados arriba.
     updateTimeBasedBackground();
     setInterval(updateTimeBasedBackground, 5 * 60 * 1000);
   </script>
