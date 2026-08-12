@@ -601,8 +601,7 @@
       background: var(--bg);
       cursor: pointer;
     }
-    .photo-item img,
-    .photo-item video {
+    .photo-item img {
       width: 100%;
       height: 100%;
       object-fit: cover;
@@ -939,8 +938,7 @@
       background: var(--bg);
       border: 1px solid var(--card-border);
     }
-    .pending-photo-item img,
-    .pending-photo-item video {
+    .pending-photo-item img {
       width: 100%;
       height: 100%;
       object-fit: cover;
@@ -1362,7 +1360,6 @@
     </div>
     <button class="photo-viewer-nav prev" onclick="event.stopPropagation(); navigatePhoto(-1)">‹</button>
     <img id="photoViewerImage" class="photo-viewer-image" src="" alt="Foto" draggable="false">
-    <video id="photoViewerVideo" class="photo-viewer-image" src="" controls playsinline style="display:none;"></video>
     <button class="photo-viewer-nav next" onclick="event.stopPropagation(); navigatePhoto(1)">›</button>
     <div class="photo-viewer-counter" id="photoViewerCounter">1 / 1</div>
   </div>
@@ -2667,17 +2664,6 @@
       });
     }
 
-    // Los videos no se comprimen (no se pueden re-codificar con canvas),
-    // simplemente se leen como base64 tal cual.
-    function readVideoAsDataUrl(file) {
-      return new Promise((resolve, reject) => {
-        const reader = new FileReader();
-        reader.onload = (e) => resolve(e.target.result);
-        reader.onerror = reject;
-        reader.readAsDataURL(file);
-      });
-    }
-
     function openAddAlbumModal() {
       const html = `
         <div class="form-group">
@@ -2763,14 +2749,12 @@
       viewerCurrentIndex = 0;
       photoKeys.forEach((key, index) => {
         const foto = allFotos[key];
-        const isVideo = foto.photoData.startsWith('data:video');
         const item = document.createElement('div');
         item.className = 'photo-item';
-        item.innerHTML = isVideo
-          ? `<video src="${foto.photoData}" muted preload="metadata" onclick="openPhotoViewer(${index})"></video>
-             <span class="photo-delete-btn" onclick="event.stopPropagation(); deletePhoto('${key}')">✕</span>`
-          : `<img src="${foto.photoData}" alt="Foto" onclick="openPhotoViewer(${index})" />
-             <span class="photo-delete-btn" onclick="event.stopPropagation(); deletePhoto('${key}')">✕</span>`;
+        item.innerHTML = `
+          <img src="${foto.photoData}" alt="Foto" onclick="openPhotoViewer(${index})" />
+          <span class="photo-delete-btn" onclick="event.stopPropagation(); deletePhoto('${key}')">✕</span>
+        `;
         grid.appendChild(item);
       });
     }
@@ -2780,43 +2764,26 @@
       if (!viewerPhotos.length) return;
       viewerCurrentIndex = index;
       const viewer = document.getElementById('photoViewer');
+      const img = document.getElementById('photoViewerImage');
       const counter = document.getElementById('photoViewerCounter');
-      showViewerMedia();
+      img.src = viewerPhotos[viewerCurrentIndex];
       counter.innerText = `${viewerCurrentIndex + 1} / ${viewerPhotos.length}`;
       viewer.classList.add('active');
       document.body.style.overflow = 'hidden';
     }
 
-    function showViewerMedia() {
-      const img = document.getElementById('photoViewerImage');
-      const video = document.getElementById('photoViewerVideo');
-      const current = viewerPhotos[viewerCurrentIndex];
-      video.pause();
-      if (current.startsWith('data:video')) {
-        video.src = current;
-        video.style.display = '';
-        img.style.display = 'none';
-        img.src = '';
-      } else {
-        img.src = current;
-        img.style.display = '';
-        video.style.display = 'none';
-        video.src = '';
-      }
-    }
-
     function closePhotoViewer(event) {
       if (event && event.target !== event.currentTarget) return;
       document.getElementById('photoViewer').classList.remove('active');
-      document.getElementById('photoViewerVideo').pause();
       document.body.style.overflow = '';
     }
 
     function navigatePhoto(direction) {
       if (!viewerPhotos.length) return;
       viewerCurrentIndex = (viewerCurrentIndex + direction + viewerPhotos.length) % viewerPhotos.length;
+      const img = document.getElementById('photoViewerImage');
       const counter = document.getElementById('photoViewerCounter');
-      showViewerMedia();
+      img.src = viewerPhotos[viewerCurrentIndex];
       counter.innerText = `${viewerCurrentIndex + 1} / ${viewerPhotos.length}`;
     }
 
@@ -2845,21 +2812,20 @@
 
       const html = `
         <div class="form-group">
-          <label>Seleccionar Fotos y Videos — elige varios a la vez desde la galería y toca "Listo"</label>
-          <input type="file" id="modalPhotoInput" accept="image/*,video/*" multiple />
+          <label>Seleccionar Fotos — elige varias a la vez desde la galería y toca "Listo"</label>
+          <input type="file" id="modalPhotoInput" accept="image/*" multiple />
         </div>
-        <div id="pendingPhotosCount" style="font-size:0.7rem; color:var(--text-muted); text-align:center;">Nada seleccionado todavía</div>
+        <div id="pendingPhotosCount" style="font-size:0.7rem; color:var(--text-muted); text-align:center;">Ninguna foto seleccionada todavía</div>
         <div id="pendingPhotosPreview" class="photo-grid"></div>
       `;
 
-      openInputModal('Agregar Fotos y Videos al Álbum', html, async () => {
+      openInputModal('Agregar Fotos al Álbum', html, async () => {
         if (pendingPhotoFiles.length === 0) return;
         const filesToUpload = pendingPhotoFiles.slice();
         pendingPhotoFiles = [];
         pendingPhotoPreviewUrls = [];
         for (const file of filesToUpload) {
-          const isVideo = file.type.startsWith('video/');
-          const data = isVideo ? await readVideoAsDataUrl(file) : await compressImage(file);
+          const data = await compressImage(file);
           db.ref('paseos/fotos').push({ albumId: currentAlbumId, photoData: data, timestamp: Date.now() });
         }
         setTimeout(() => {
@@ -2874,16 +2840,14 @@
         fileInput.addEventListener('change', (e) => {
           const newFiles = Array.from(e.target.files || []);
           newFiles.forEach(file => {
-            const isVideo = file.type.startsWith('video/');
-            const maxSize = isVideo ? 8000000 : 25000000;
-            if (file.size > maxSize) {
-              alert(`"${file.name}" es demasiado grande (máximo ${isVideo ? '8MB para video' : '25MB'}) y no se agregó.`);
+            if (file.size > 25000000) {
+              alert(`"${file.name}" es demasiado grande (máximo 25MB) y no se agregó.`);
               return;
             }
             pendingPhotoFiles.push(file);
           });
-          // Se limpia el input para poder volver a elegir más después
-          // (agregándolos a la selección) sin perder lo ya elegido.
+          // Se limpia el input para poder volver a elegir más fotos después
+          // (agregándolas a la selección) sin perder lo ya elegido.
           fileInput.value = '';
           renderPendingPhotosPreview();
         });
@@ -2901,22 +2865,20 @@
 
       grid.innerHTML = '';
       if (pendingPhotoFiles.length === 0) {
-        countLabel.innerText = 'Nada seleccionado todavía';
+        countLabel.innerText = 'Ninguna foto seleccionada todavía';
         return;
       }
-      countLabel.innerText = `${pendingPhotoFiles.length} archivo${pendingPhotoFiles.length === 1 ? '' : 's'} listo${pendingPhotoFiles.length === 1 ? '' : 's'} para subir`;
+      countLabel.innerText = `${pendingPhotoFiles.length} foto${pendingPhotoFiles.length === 1 ? '' : 's'} lista${pendingPhotoFiles.length === 1 ? '' : 's'} para subir`;
 
       pendingPhotoFiles.forEach((file, index) => {
         const url = URL.createObjectURL(file);
         pendingPhotoPreviewUrls.push(url);
-        const isVideo = file.type.startsWith('video/');
         const item = document.createElement('div');
         item.className = 'pending-photo-item';
-        item.innerHTML = isVideo
-          ? `<video src="${url}" muted preload="metadata"></video>
-             <span class="photo-delete-btn" onclick="removePendingPhoto(${index})" title="Quitar de la selección">✕</span>`
-          : `<img src="${url}" alt="Vista previa" />
-             <span class="photo-delete-btn" onclick="removePendingPhoto(${index})" title="Quitar de la selección">✕</span>`;
+        item.innerHTML = `
+          <img src="${url}" alt="Vista previa" />
+          <span class="photo-delete-btn" onclick="removePendingPhoto(${index})" title="Quitar de la selección">✕</span>
+        `;
         grid.appendChild(item);
       });
     }
