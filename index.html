@@ -928,6 +928,22 @@
     .meta-control {
       background: transparent; border: 1px solid var(--card-border); color: var(--text-muted); font-size: 0.7rem; font-weight: 700; padding: 4px 10px; border-radius: 8px; cursor: pointer;
     }
+
+    /* ===== VISTA PREVIA DE FOTOS PENDIENTES (antes de subir) ===== */
+    .pending-photo-item {
+      position: relative;
+      aspect-ratio: 1 / 1;
+      border-radius: 10px;
+      overflow: hidden;
+      background: var(--bg);
+      border: 1px solid var(--card-border);
+    }
+    .pending-photo-item img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
   </style>
 </head>
 <body>
@@ -2784,27 +2800,31 @@
       });
     }
 
-    // ===== AGREGAR FOTOS =====
+    // ===== AGREGAR FOTOS (selección múltiple + quitar antes de subir) =====
+    let pendingPhotoFiles = [];
+    let pendingPhotoPreviewUrls = [];
+
     function openAddPhotoModal() {
       if (!currentAlbumId) return;
       document.getElementById('albumDetailModal').classList.remove('active');
-      
+      pendingPhotoFiles = [];
+      pendingPhotoPreviewUrls = [];
+
       const html = `
         <div class="form-group">
-          <label>Seleccionar Foto(s) — se comprimen automáticamente</label>
-          <input type="file" id="modalPhotoInput" accept="image/*" multiple required autofocus />
+          <label>Seleccionar Foto(s) — puedes elegir varias a la vez</label>
+          <input type="file" id="modalPhotoInput" accept="image/*" multiple />
         </div>
+        <div id="pendingPhotosCount" style="font-size:0.7rem; color:var(--text-muted); text-align:center;">Ninguna foto seleccionada todavía</div>
+        <div id="pendingPhotosPreview" class="photo-grid"></div>
       `;
 
       openInputModal('Agregar Fotos al Álbum', html, async () => {
-        const input = document.getElementById('modalPhotoInput');
-        if (!input.files || input.files.length === 0) return;
-
-        for (const file of Array.from(input.files)) {
-          if (file.size > 25000000) {
-            alert(`"${file.name}" es demasiado grande (máximo 25MB) y no se subió.`);
-            continue;
-          }
+        if (pendingPhotoFiles.length === 0) return;
+        const filesToUpload = pendingPhotoFiles.slice();
+        pendingPhotoFiles = [];
+        pendingPhotoPreviewUrls = [];
+        for (const file of filesToUpload) {
           const data = await compressImage(file);
           db.ref('paseos/fotos').push({ albumId: currentAlbumId, photoData: data, timestamp: Date.now() });
         }
@@ -2812,6 +2832,60 @@
           document.getElementById('albumDetailModal').classList.add('active');
         }, 300);
       });
+
+      // Se engancha el listener después de que el input ya existe en el DOM.
+      setTimeout(() => {
+        const fileInput = document.getElementById('modalPhotoInput');
+        if (!fileInput) return;
+        fileInput.addEventListener('change', (e) => {
+          const newFiles = Array.from(e.target.files || []);
+          newFiles.forEach(file => {
+            if (file.size > 25000000) {
+              alert(`"${file.name}" es demasiado grande (máximo 25MB) y no se agregó.`);
+              return;
+            }
+            pendingPhotoFiles.push(file);
+          });
+          // Se limpia el input para poder volver a elegir más fotos después
+          // (agregándolas a la selección) sin perder lo ya elegido.
+          fileInput.value = '';
+          renderPendingPhotosPreview();
+        });
+      }, 0);
+    }
+
+    function renderPendingPhotosPreview() {
+      const grid = document.getElementById('pendingPhotosPreview');
+      const countLabel = document.getElementById('pendingPhotosCount');
+      if (!grid || !countLabel) return;
+
+      // Se liberan las URLs de vista previa anteriores para no acumular memoria.
+      pendingPhotoPreviewUrls.forEach(url => URL.revokeObjectURL(url));
+      pendingPhotoPreviewUrls = [];
+
+      grid.innerHTML = '';
+      if (pendingPhotoFiles.length === 0) {
+        countLabel.innerText = 'Ninguna foto seleccionada todavía';
+        return;
+      }
+      countLabel.innerText = `${pendingPhotoFiles.length} foto${pendingPhotoFiles.length === 1 ? '' : 's'} lista${pendingPhotoFiles.length === 1 ? '' : 's'} para subir`;
+
+      pendingPhotoFiles.forEach((file, index) => {
+        const url = URL.createObjectURL(file);
+        pendingPhotoPreviewUrls.push(url);
+        const item = document.createElement('div');
+        item.className = 'pending-photo-item';
+        item.innerHTML = `
+          <img src="${url}" alt="Vista previa" />
+          <span class="photo-delete-btn" onclick="removePendingPhoto(${index})" title="Quitar de la selección">✕</span>
+        `;
+        grid.appendChild(item);
+      });
+    }
+
+    function removePendingPhoto(index) {
+      pendingPhotoFiles.splice(index, 1);
+      renderPendingPhotosPreview();
     }
 
     function deletePhoto(key) {
