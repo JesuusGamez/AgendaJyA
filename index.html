@@ -522,6 +522,14 @@
     }
     .modal-overlay.active { display: flex; }
 
+    /* Estos modales de ACCIÓN (confirmar, formulario, categoría) deben quedar
+       SIEMPRE por encima de cualquier otro modal de contenido (ej: álbum de fotos),
+       sin importar el orden en el HTML. Antes tenían el mismo z-index y el modal
+       del álbum lo tapaba, obligando a cerrarlo manualmente para ver la confirmación. */
+    #inputModal, #confirmModal, #categoryModal {
+      z-index: 1500;
+    }
+
     .modal-card {
       background: var(--card-bg-solid); border-top: 1px solid var(--card-border); border-radius: 24px 24px 0 0;
       width: 100%; max-width: 600px; padding: 20px; display: flex; flex-direction: column; gap: 12px;
