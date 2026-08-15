@@ -2120,19 +2120,54 @@
     // necesidades y gustos piden un paso más para elegir la subcategoría
     // específica (Transporte, Comida Chatarra, etc.) y así poder mostrar
     // luego un desglose más útil en el resumen mensual.
+    // También sirve para EDITAR un gasto ya existente (pendingGastoContext.mode === 'edit'):
+    // en vez de crear un registro nuevo, actualiza la categoría/subcategoría del que ya existe.
     function confirmCategory(category) {
       document.getElementById('categoryModal').classList.remove('active');
       if (!pendingGastoContext) return;
-      const { owner, desc, amount, pendingKey } = pendingGastoContext;
+      const { owner, desc, amount, pendingKey, mode, editKey } = pendingGastoContext;
+
+      if (mode === 'edit') {
+        pendingGastoContext = null;
+        if (category === 'ahorros') {
+          applySubcategoryEdit(editKey, category, DEFAULT_SUBCATEGORIES.ahorros[0]);
+          return;
+        }
+        pendingSubcategoryContext = { mode: 'edit', category, editKey };
+        openSubcategoryModal(category);
+        return;
+      }
+
       if (category === 'ahorros') {
         const ahorroSub = DEFAULT_SUBCATEGORIES.ahorros[0];
         saveGastoWithSubcategory(owner, desc, amount, pendingKey, category, ahorroSub);
         pendingGastoContext = null;
         return;
       }
-      pendingSubcategoryContext = { owner, desc, amount, pendingKey, category };
+      pendingSubcategoryContext = { mode: 'create', owner, desc, amount, pendingKey, category };
       pendingGastoContext = null;
       openSubcategoryModal(category);
+    }
+
+    // Abre el flujo de categoría/subcategoría para un gasto que YA existe,
+    // para poder asignarle o corregirle su categoría desde el Resumen Mensual.
+    function editGastoCategory(key) {
+      const item = allRecords[key];
+      if (!item || item.type !== 'gasto') return;
+      pendingGastoContext = { mode: 'edit', editKey: key };
+      document.getElementById('modalCategoryTitle').innerText = 'Editar Categoría del Gasto';
+      document.getElementById('categoryModal').classList.add('active');
+    }
+
+    function applySubcategoryEdit(key, category, sc) {
+      if (!key) return;
+      db.ref('registros/' + key).update({
+        category: category,
+        subCategory: sc.key,
+        subCategoryLabel: sc.label,
+        subCategoryIcon: sc.icon,
+        subCategoryColor: sc.color,
+      });
     }
 
     function openSubcategoryModal(category) {
@@ -2156,8 +2191,12 @@
     function selectSubcategory(idx) {
       const sc = currentSubcategoryList[idx];
       if (!sc || !pendingSubcategoryContext) return;
-      const { owner, desc, amount, pendingKey, category } = pendingSubcategoryContext;
-      saveGastoWithSubcategory(owner, desc, amount, pendingKey, category, sc);
+      if (pendingSubcategoryContext.mode === 'edit') {
+        applySubcategoryEdit(pendingSubcategoryContext.editKey, pendingSubcategoryContext.category, sc);
+      } else {
+        const { owner, desc, amount, pendingKey, category } = pendingSubcategoryContext;
+        saveGastoWithSubcategory(owner, desc, amount, pendingKey, category, sc);
+      }
       document.getElementById('subcategoryModal').classList.remove('active');
       pendingSubcategoryContext = null;
     }
@@ -2189,8 +2228,12 @@
         const newSub = { key, label, icon, color };
         db.ref(`configCategorias/${category}/${key}`).set({ label, icon, color, timestamp: Date.now() });
         if (!pendingSubcategoryContext) return;
-        const { owner, desc, amount, pendingKey } = pendingSubcategoryContext;
-        saveGastoWithSubcategory(owner, desc, amount, pendingKey, category, newSub);
+        if (pendingSubcategoryContext.mode === 'edit') {
+          applySubcategoryEdit(pendingSubcategoryContext.editKey, category, newSub);
+        } else {
+          const { owner, desc, amount, pendingKey } = pendingSubcategoryContext;
+          saveGastoWithSubcategory(owner, desc, amount, pendingKey, category, newSub);
+        }
         pendingSubcategoryContext = null;
       });
     }
@@ -2517,9 +2560,10 @@
           const liHist = document.createElement('li');
           let typeIcon = item.type === 'ingreso' ? '🟢' : '🔴';
           const subBadge = item.type === 'gasto' ? getCatBadgeHTML(item) : '';
+          const editBtn = item.type === 'gasto' ? `<span class="delete-btn" style="color:var(--accent);" onclick="editGastoCategory('${key}')" title="Editar categoría / subcategoría">✏️</span>` : '';
           liHist.innerHTML = `
             <div><b>${typeIcon}</b> ${item.description || ''} ${subBadge}</div>
-            <div><b>$${amount.toLocaleString()}</b> <span class="delete-btn" onclick="deleteRecord('${key}')">✕</span></div>
+            <div><b>$${amount.toLocaleString()}</b> ${editBtn} <span class="delete-btn" onclick="deleteRecord('${key}')">✕</span></div>
           `;
           (owner === 'Jesus' ? monthlyDetailListJesus : monthlyDetailListAli).appendChild(liHist);
         }
@@ -2565,6 +2609,35 @@
       totalsObj[subKey].amount += amount;
     }
 
+    // Plugin de Chart.js "casero" (sin librerías extra) que dibuja el
+    // emoji de cada subcategoría directamente encima de su porción en el
+    // diagrama de torta, para identificarla de un vistazo.
+    function makeCategoryIconsPlugin(entries) {
+      return {
+        id: 'categoryIcons',
+        afterDraw(chart) {
+          if (!entries || entries.length === 0) return;
+          const { ctx } = chart;
+          const meta = chart.getDatasetMeta(0);
+          if (!meta || !meta.data) return;
+          ctx.save();
+          ctx.font = '14px sans-serif';
+          ctx.textAlign = 'center';
+          ctx.textBaseline = 'middle';
+          meta.data.forEach((arc, i) => {
+            const entry = entries[i];
+            if (!entry || !entry.icon) return;
+            const angle = (arc.startAngle + arc.endAngle) / 2;
+            const radius = (arc.innerRadius + arc.outerRadius) / 2;
+            const x = arc.x + Math.cos(angle) * radius;
+            const y = arc.y + Math.sin(angle) * radius;
+            ctx.fillText(entry.icon, x, y);
+          });
+          ctx.restore();
+        }
+      };
+    }
+
     function renderCategoryChartFor(owner, totalsObj) {
       const canvasId = owner === 'Jesus' ? 'chartCatJesus' : 'chartCatAli';
       const legendId = owner === 'Jesus' ? 'catLegendJesus' : 'catLegendAli';
@@ -2590,7 +2663,8 @@
             labels: entries.map(e => `${e.icon} ${e.label}`),
             datasets: [{ data: entries.map(e => e.amount), backgroundColor: entries.map(e => e.color) }]
           },
-          options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } } }
+          options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } } },
+          plugins: [makeCategoryIconsPlugin(entries)]
         });
       }
       if (owner === 'Jesus') chartCatJesusInstance = newInstance; else chartCatAliInstance = newInstance;
