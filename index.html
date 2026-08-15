@@ -1820,10 +1820,17 @@
     };
     let customSubcategories = { necesidades: {}, gustos: {}, ahorros: {} };
 
+    // Combina las subcategorías predefinidas con las personalizadas.
+    // Si alguien EDITÓ una predefinida (mismo key en Firebase), esa edición
+    // "pisa" el ícono/nombre/color por defecto, sin duplicar la fila.
     function getSubcategoriesForParent(parent) {
       const defaults = DEFAULT_SUBCATEGORIES[parent] || [];
-      const custom = Object.keys(customSubcategories[parent] || {}).map(k => ({ key: k, ...customSubcategories[parent][k] }));
-      return [...defaults, ...custom];
+      const customMap = customSubcategories[parent] || {};
+      const merged = defaults.map(d => customMap[d.key] ? { key: d.key, ...customMap[d.key] } : d);
+      const customOnly = Object.keys(customMap)
+        .filter(k => !defaults.find(d => d.key === k))
+        .map(k => ({ key: k, ...customMap[k] }));
+      return [...merged, ...customOnly];
     }
 
     db.ref('configCategorias').on('value', (snapshot) => {
@@ -1842,6 +1849,13 @@
         if (val && val.timestamp && val.timestamp > appStartTime) {
           triggerNativeNotification("🏷️ Nueva Subcategoría", `Se creó "${val.icon || ''} ${val.label}" en ${catLabel}`);
         }
+      });
+      // child_changed cubre tanto la edición de una subcategoría personalizada
+      // como la primera vez que se "sobrescribe" una predefinida.
+      db.ref(`configCategorias/${cat}`).on('child_changed', (snapshot) => {
+        const val = snapshot.val();
+        if (!val) return;
+        triggerNativeNotification("✏️ Subcategoría Editada", `Se actualizó "${val.icon || ''} ${val.label}" en ${catLabel}`);
       });
     });
 
@@ -2176,9 +2190,12 @@
       const label = category === 'necesidades' ? 'necesidad' : 'gusto';
       document.getElementById('subcategoryModalTitle').innerText = `¿Qué tipo de ${label}?`;
       container.innerHTML = currentSubcategoryList.map((sc, idx) => `
-        <button type="button" class="add-btn" style="text-align:left; display:flex; align-items:center; gap:8px; border-left:4px solid ${sc.color};" onclick="selectSubcategory(${idx})">
-          <span style="font-size:1.1rem;">${sc.icon}</span> ${sc.label}
-        </button>
+        <div style="display:flex; align-items:stretch; gap:0; border:1px solid var(--card-border); border-left:4px solid ${sc.color}; border-radius:10px; overflow:hidden; box-shadow:var(--shadow);">
+          <button type="button" style="flex:1; text-align:left; display:flex; align-items:center; gap:8px; padding:10px; background:var(--card-bg-solid); border:none; color:var(--text); font-weight:700; font-size:0.78rem; cursor:pointer;" onclick="selectSubcategory(${idx})">
+            <span style="font-size:1.1rem;">${sc.icon}</span> ${sc.label}
+          </button>
+          <button type="button" style="width:40px; background:var(--card-bg-solid); border:none; border-left:1px solid var(--card-border); color:var(--text-muted); font-size:0.85rem; cursor:pointer;" onclick="event.stopPropagation(); editSubcategoryDefinition(${idx})" title="Editar nombre, ícono o color">✏️</button>
+        </div>
       `).join('');
       document.getElementById('subcategoryModal').classList.add('active');
     }
@@ -2236,6 +2253,55 @@
         }
         pendingSubcategoryContext = null;
       });
+    }
+
+    // Permite editar el nombre, ícono o color de una subcategoría YA
+    // existente (predefinida o personalizada), sin cerrar el flujo en el
+    // que se estaba (crear/editar un gasto): al terminar, vuelve a mostrar
+    // la lista de subcategorías actualizada para que se pueda elegir.
+    function editSubcategoryDefinition(idx) {
+      const sc = currentSubcategoryList[idx];
+      if (!sc || !pendingSubcategoryContext) return;
+      const category = pendingSubcategoryContext.category;
+      document.getElementById('subcategoryModal').classList.remove('active');
+      const html = `
+        <div class="form-group">
+          <label>Nombre de la subcategoría</label>
+          <input type="text" id="modalEditSubLabel" value="${(sc.label || '').replace(/"/g, '&quot;')}" required autofocus />
+        </div>
+        <div class="form-group">
+          <label>Ícono (emoji)</label>
+          <input type="text" id="modalEditSubIcon" value="${sc.icon || ''}" maxlength="4" required />
+        </div>
+        <div class="form-group">
+          <label>Color</label>
+          <input type="color" id="modalEditSubColor" value="${sc.color || '#0284c7'}" required />
+        </div>
+      `;
+      openInputModal('Editar Subcategoría', html, () => {
+        const label = document.getElementById('modalEditSubLabel').value.trim();
+        const icon = document.getElementById('modalEditSubIcon').value.trim() || '⚪';
+        const color = document.getElementById('modalEditSubColor').value;
+        if (!label) { openSubcategoryModal(category); return; }
+        db.ref(`configCategorias/${category}/${sc.key}`).set({ label, icon, color, timestamp: Date.now() });
+        // Actualiza también los gastos ya guardados con esta subcategoría,
+        // para que el histórico y el diagrama de torta reflejen el cambio.
+        updateExistingRecordsForSubcategory(sc.key, { label, icon, color });
+        setTimeout(() => openSubcategoryModal(category), 250);
+      });
+    }
+
+    function updateExistingRecordsForSubcategory(subKey, def) {
+      const updates = {};
+      Object.keys(allRecords).forEach(key => {
+        const item = allRecords[key];
+        if (item && item.type === 'gasto' && item.subCategory === subKey) {
+          updates[`registros/${key}/subCategoryLabel`] = def.label;
+          updates[`registros/${key}/subCategoryIcon`] = def.icon;
+          updates[`registros/${key}/subCategoryColor`] = def.color;
+        }
+      });
+      if (Object.keys(updates).length > 0) db.ref().update(updates);
     }
 
     function saveGastoWithSubcategory(owner, desc, amount, pendingKey, category, sc) {
