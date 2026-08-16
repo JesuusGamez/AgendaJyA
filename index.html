@@ -936,6 +936,8 @@
     .student-tab-btn.active { background: var(--card-bg-solid); color: var(--text); border: 1px solid var(--card-border); box-shadow: var(--shadow); }
     .notas-panel { display: none; flex-direction: column; gap: 12px; }
     .notas-panel.active { display: flex; }
+    .mensual-subpanel { display: none; flex-direction: column; gap: 12px; }
+    .mensual-subpanel.active { display: flex; }
 
     .notif-permission-banner {
       background: var(--card-bg-solid);
@@ -1178,36 +1180,66 @@
         </div>
 
         <div id="mensualPanelJesus" class="notas-panel active">
-          <div class="chart-box">
-            <h3 class="title-jesus" style="font-size:0.82rem;">Ingresos vs Gastos</h3>
-            <div class="chart-wrapper"><canvas id="chartJesus"></canvas></div>
-            <span class="balance-badge" id="monthlyBalJesus">$0</span>
+          <div class="savings-subtabs">
+            <button class="savings-subtab-btn active" id="mensualSubJesus-resumen" onclick="switchMensualSubTab('Jesus','resumen')">💰 Ingresos/Gastos</button>
+            <button class="savings-subtab-btn" id="mensualSubJesus-categoria" onclick="switchMensualSubTab('Jesus','categoria')">🏷️ Por Categoría</button>
+            <button class="savings-subtab-btn" id="mensualSubJesus-diario" onclick="switchMensualSubTab('Jesus','diario')">📅 Resumen Diario</button>
           </div>
-          <div class="chart-box">
-            <h3 class="title-jesus" style="font-size:0.82rem;">Gastos por Categoría</h3>
-            <div class="chart-wrapper"><canvas id="chartCatJesus"></canvas></div>
-            <div id="catLegendJesus" style="display:flex; flex-wrap:wrap; gap:6px; justify-content:center; width:100%;"></div>
+
+          <div id="mensualSub-Jesus-resumen" class="mensual-subpanel active">
+            <div class="chart-box" style="min-height:300px;">
+              <h3 class="title-jesus" style="font-size:0.85rem;">Ingresos vs Gastos</h3>
+              <div class="chart-wrapper" style="height:230px;"><canvas id="chartJesus"></canvas></div>
+              <span class="balance-badge" id="monthlyBalJesus">$0</span>
+            </div>
           </div>
-          <div class="user-summary-card">
-            <h3 class="title-jesus" style="font-size:0.85rem; font-weight:800;">Movimientos del Mes</h3>
-            <ul class="items-list" id="monthlyDetailListJesus" style="max-height: 220px;"></ul>
+
+          <div id="mensualSub-Jesus-categoria" class="mensual-subpanel">
+            <div class="chart-box" style="min-height:300px;">
+              <h3 class="title-jesus" style="font-size:0.85rem;">Gastos por Categoría</h3>
+              <div class="chart-wrapper" style="height:230px;"><canvas id="chartCatJesus"></canvas></div>
+              <div id="catLegendJesus" style="display:flex; flex-wrap:wrap; gap:6px; justify-content:center; width:100%;"></div>
+            </div>
+          </div>
+
+          <div id="mensualSub-Jesus-diario" class="mensual-subpanel">
+            <div class="savings-subtabs">
+              <button class="savings-subtab-btn active" id="dailyModeJesus-diario" onclick="switchDailyWeeklyMode('Jesus','diario')">📅 Diario</button>
+              <button class="savings-subtab-btn" id="dailyModeJesus-semanal" onclick="switchDailyWeeklyMode('Jesus','semanal')">🗓️ Semanal</button>
+            </div>
+            <div id="dailyWeeklyContainerJesus" style="display:flex; flex-direction:column; gap:8px;"></div>
           </div>
         </div>
 
         <div id="mensualPanelAli" class="notas-panel">
-          <div class="chart-box">
-            <h3 class="title-ali" style="font-size:0.82rem;">Ingresos vs Gastos</h3>
-            <div class="chart-wrapper"><canvas id="chartAli"></canvas></div>
-            <span class="balance-badge" id="monthlyBalAli">$0</span>
+          <div class="savings-subtabs">
+            <button class="savings-subtab-btn active" id="mensualSubAli-resumen" onclick="switchMensualSubTab('Ali','resumen')">💰 Ingresos/Gastos</button>
+            <button class="savings-subtab-btn" id="mensualSubAli-categoria" onclick="switchMensualSubTab('Ali','categoria')">🏷️ Por Categoría</button>
+            <button class="savings-subtab-btn" id="mensualSubAli-diario" onclick="switchMensualSubTab('Ali','diario')">📅 Resumen Diario</button>
           </div>
-          <div class="chart-box">
-            <h3 class="title-ali" style="font-size:0.82rem;">Gastos por Categoría</h3>
-            <div class="chart-wrapper"><canvas id="chartCatAli"></canvas></div>
-            <div id="catLegendAli" style="display:flex; flex-wrap:wrap; gap:6px; justify-content:center; width:100%;"></div>
+
+          <div id="mensualSub-Ali-resumen" class="mensual-subpanel active">
+            <div class="chart-box" style="min-height:300px;">
+              <h3 class="title-ali" style="font-size:0.85rem;">Ingresos vs Gastos</h3>
+              <div class="chart-wrapper" style="height:230px;"><canvas id="chartAli"></canvas></div>
+              <span class="balance-badge" id="monthlyBalAli">$0</span>
+            </div>
           </div>
-          <div class="user-summary-card">
-            <h3 class="title-ali" style="font-size:0.85rem; font-weight:800;">Movimientos del Mes</h3>
-            <ul class="items-list" id="monthlyDetailListAli" style="max-height: 220px;"></ul>
+
+          <div id="mensualSub-Ali-categoria" class="mensual-subpanel">
+            <div class="chart-box" style="min-height:300px;">
+              <h3 class="title-ali" style="font-size:0.85rem;">Gastos por Categoría</h3>
+              <div class="chart-wrapper" style="height:230px;"><canvas id="chartCatAli"></canvas></div>
+              <div id="catLegendAli" style="display:flex; flex-wrap:wrap; gap:6px; justify-content:center; width:100%;"></div>
+            </div>
+          </div>
+
+          <div id="mensualSub-Ali-diario" class="mensual-subpanel">
+            <div class="savings-subtabs">
+              <button class="savings-subtab-btn active" id="dailyModeAli-diario" onclick="switchDailyWeeklyMode('Ali','diario')">📅 Diario</button>
+              <button class="savings-subtab-btn" id="dailyModeAli-semanal" onclick="switchDailyWeeklyMode('Ali','semanal')">🗓️ Semanal</button>
+            </div>
+            <div id="dailyWeeklyContainerAli" style="display:flex; flex-direction:column; gap:8px;"></div>
           </div>
         </div>
       </div>
@@ -1350,7 +1382,12 @@
           <button class="student-tab-btn active" id="schedTabJesus" onclick="switchScheduleTab('Jesus')">Horario Jesús 💙</button>
           <button class="student-tab-btn" id="schedTabAli" onclick="switchScheduleTab('Ali')">Horario Ali 🩷</button>
         </div>
+        <div class="savings-subtabs">
+          <button class="savings-subtab-btn active" id="scheduleViewList" onclick="switchScheduleView('list')">📋 Lista</button>
+          <button class="savings-subtab-btn" id="scheduleViewCalendar" onclick="switchScheduleView('calendar')">🗓️ Calendario</button>
+        </div>
         <div id="scheduleContainer" class="academic-card"></div>
+        <div id="scheduleCalendarContainer" class="academic-card" style="display:none;"></div>
       </div>
 
       <div id="acad-materias" class="tab-content">
@@ -1882,6 +1919,12 @@
     let chartRuleIdealInstance = null;
     let chartRuleRealInstance = null;
 
+    // Caché del último cálculo de movimientos por día del mes (Resumen Mensual
+    // > Resumen Diario), para poder re-dibujar en modo diario/semanal sin
+    // tener que recorrer todos los registros otra vez.
+    let lastDayBucketsJesus = {};
+    let lastDayBucketsAli = {};
+
     let inputModalSubmitCallback = null;
     let confirmModalCallback = null;
 
@@ -1890,6 +1933,29 @@
       document.getElementById('mensualTabAli').classList.toggle('active', owner === 'Ali');
       document.getElementById('mensualPanelJesus').classList.toggle('active', owner === 'Jesus');
       document.getElementById('mensualPanelAli').classList.toggle('active', owner === 'Ali');
+    }
+
+    // Sub-pestañas dentro del Resumen Mensual de cada persona: Ingresos/Gastos,
+    // Gastos por Categoría, y Resumen Diario. Al mostrar cada gráfico solo en
+    // pantalla completa (sin competir por espacio con el otro), se ve más grande.
+    function switchMensualSubTab(owner, subTab) {
+      ['resumen', 'categoria', 'diario'].forEach(t => {
+        const btn = document.getElementById(`mensualSub${owner}-${t}`);
+        const panel = document.getElementById(`mensualSub-${owner}-${t}`);
+        if (btn) btn.classList.toggle('active', t === subTab);
+        if (panel) panel.classList.toggle('active', t === subTab);
+      });
+    }
+
+    // Estado (por persona) de si el Resumen Diario se muestra agrupado por
+    // día o por semana.
+    let dailyWeeklyMode = { Jesus: 'diario', Ali: 'diario' };
+
+    function switchDailyWeeklyMode(owner, mode) {
+      dailyWeeklyMode[owner] = mode;
+      document.getElementById(`dailyMode${owner}-diario`).classList.toggle('active', mode === 'diario');
+      document.getElementById(`dailyMode${owner}-semanal`).classList.toggle('active', mode === 'semanal');
+      renderDailyWeeklySummary(owner, owner === 'Jesus' ? lastDayBucketsJesus : lastDayBucketsAli);
     }
 
     function switchTabFromDropdown(selectElem, sectionId) {
@@ -2005,6 +2071,7 @@
     db.ref('academico/horarios').on('value', (snapshot) => {
       allSchedules = snapshot.val() || {};
       renderSchedules();
+      renderScheduleCalendar();
     });
 
     db.ref('academico/materias').on('child_added', (snapshot) => {
@@ -2587,12 +2654,10 @@
       const selectedMonth = document.getElementById('monthPicker').value;
       const ruleMonth = document.getElementById('ruleMonthPicker').value;
       let totalNetIncomeRule = 0, totalNeedsRule = 0, totalWantsRule = 0, totalSavingsRule = 0;
-      const monthlyDetailListJesus = document.getElementById('monthlyDetailListJesus');
-      const monthlyDetailListAli = document.getElementById('monthlyDetailListAli');
-      monthlyDetailListJesus.innerHTML = '';
-      monthlyDetailListAli.innerHTML = '';
       const catTotalsJesus = {};
       const catTotalsAli = {};
+      const dayBucketsJesus = {};
+      const dayBucketsAli = {};
 
       Object.keys(allRecords).forEach(key => {
         const item = allRecords[key];
@@ -2623,15 +2688,8 @@
             if (owner === 'Jesus') mGasJesus += amount; else mGasAli += amount;
             if (item.type === 'gasto') addCategoryTotal(owner === 'Jesus' ? catTotalsJesus : catTotalsAli, item, amount);
           }
-          const liHist = document.createElement('li');
-          let typeIcon = item.type === 'ingreso' ? '🟢' : '🔴';
-          const subBadge = item.type === 'gasto' ? getCatBadgeHTML(item) : '';
-          const editBtn = item.type === 'gasto' ? `<span class="delete-btn" style="color:var(--accent);" onclick="editGastoCategory('${key}')" title="Editar categoría / subcategoría">✏️</span>` : '';
-          liHist.innerHTML = `
-            <div><b>${typeIcon}</b> ${item.description || ''} ${subBadge}</div>
-            <div><b>$${amount.toLocaleString()}</b> ${editBtn} <span class="delete-btn" onclick="deleteRecord('${key}')">✕</span></div>
-          `;
-          (owner === 'Jesus' ? monthlyDetailListJesus : monthlyDetailListAli).appendChild(liHist);
+          const bucketsObj = owner === 'Jesus' ? dayBucketsJesus : dayBucketsAli;
+          addToDayBucket(bucketsObj, itemDateStr || selectedMonth + '-01', key, item, amount);
         }
 
         if (itemMonthStr === ruleMonth) {
@@ -2656,8 +2714,116 @@
       renderCharts(mIngJesus, mGasJesus, mIngAli, mGasAli);
       renderCategoryChartFor('Jesus', catTotalsJesus);
       renderCategoryChartFor('Ali', catTotalsAli);
+      lastDayBucketsJesus = dayBucketsJesus;
+      lastDayBucketsAli = dayBucketsAli;
+      renderDailyWeeklySummary('Jesus', dayBucketsJesus);
+      renderDailyWeeklySummary('Ali', dayBucketsAli);
       renderRule502525(totalNetIncomeRule, totalNeedsRule, totalWantsRule, totalSavingsRule);
       renderSavings();
+    }
+
+    // Agrupa los movimientos del mes por día, para el Resumen Diario (que
+    // luego, si se pide vista Semanal, se vuelve a agrupar por semana).
+    function addToDayBucket(bucketsObj, dateStr, key, item, amount) {
+      if (!bucketsObj[dateStr]) bucketsObj[dateStr] = { date: dateStr, ingresos: 0, gastos: 0, items: [] };
+      if (item.type === 'ingreso') bucketsObj[dateStr].ingresos += amount;
+      else if (item.type === 'gasto') bucketsObj[dateStr].gastos += amount;
+      bucketsObj[dateStr].items.push({ key, ...item, amount });
+    }
+
+    function renderDailyWeeklySummary(owner, buckets) {
+      const container = document.getElementById(`dailyWeeklyContainer${owner}`);
+      if (!container) return;
+      const mode = dailyWeeklyMode[owner] || 'diario';
+      const days = Object.values(buckets).sort((a, b) => b.date.localeCompare(a.date));
+
+      if (days.length === 0) {
+        container.innerHTML = `<div style="text-align:center; font-size:0.78rem; color:var(--text-muted); padding:16px;">Sin movimientos este mes.</div>`;
+        return;
+      }
+
+      if (mode === 'diario') {
+        container.innerHTML = days.map(d => renderDayCard(d)).join('');
+      } else {
+        const weeks = groupDaysIntoWeeks(days);
+        container.innerHTML = weeks.map(w => renderWeekCard(w)).join('');
+      }
+    }
+
+    function renderMovementItemRow(it, showDate) {
+      const typeIcon = it.type === 'ingreso' ? '🟢' : (it.type === 'ahorro' ? '🟡' : '🔴');
+      const badge = it.type === 'gasto' ? getCatBadgeHTML(it) : '';
+      const editBtn = it.type === 'gasto' ? `<span class="delete-btn" style="color:var(--accent);" onclick="editGastoCategory('${it.key}')" title="Editar categoría / subcategoría">✏️</span>` : '';
+      const dateLabel = showDate && it.date ? `<span style="color:var(--text-muted); font-weight:600;">${it.date.slice(8, 10)}/${it.date.slice(5, 7)}</span> ` : '';
+      return `
+        <div style="display:flex; justify-content:space-between; align-items:center; background:var(--bg); padding:6px 9px; border-radius:8px; font-size:0.72rem; gap:6px; flex-wrap:wrap;">
+          <span>${dateLabel}${typeIcon} ${it.description || ''} ${badge}</span>
+          <span style="display:flex; align-items:center; gap:4px; flex-shrink:0;"><b>$${it.amount.toLocaleString()}</b> ${editBtn} <span class="delete-btn" onclick="deleteRecord('${it.key}')">✕</span></span>
+        </div>
+      `;
+    }
+
+    function renderDayCard(d) {
+      const dateObj = new Date(d.date + 'T00:00:00');
+      const label = isNaN(dateObj.getTime()) ? d.date : dateObj.toLocaleDateString('es-ES', { weekday: 'long', day: 'numeric', month: 'long' });
+      const balance = d.ingresos - d.gastos;
+      const itemsHTML = d.items.map(it => renderMovementItemRow(it, false)).join('');
+      return `
+        <div class="user-summary-card" style="gap:6px;">
+          <div style="display:flex; justify-content:space-between; align-items:center;">
+            <strong style="font-size:0.78rem; text-transform:capitalize;">${label}</strong>
+            <span class="balance-badge" style="color:${balance >= 0 ? 'var(--green)' : 'var(--red)'};">${balance >= 0 ? '+' : '-'}$${Math.abs(balance).toLocaleString()}</span>
+          </div>
+          <div style="display:flex; flex-direction:column; gap:4px;">${itemsHTML}</div>
+        </div>
+      `;
+    }
+
+    // Lunes como inicio de semana.
+    function getWeekBounds(dateStr) {
+      const d = new Date(dateStr + 'T00:00:00');
+      const dayIdx = (d.getDay() + 6) % 7; // 0 = lunes ... 6 = domingo
+      const monday = new Date(d);
+      monday.setDate(d.getDate() - dayIdx);
+      const sunday = new Date(monday);
+      sunday.setDate(monday.getDate() + 6);
+      return { key: getLocalDateStr(monday), start: monday, end: sunday };
+    }
+
+    function groupDaysIntoWeeks(days) {
+      const weeksMap = {};
+      days.forEach(d => {
+        const { key, start, end } = getWeekBounds(d.date);
+        if (!weeksMap[key]) weeksMap[key] = { key, start, end, ingresos: 0, gastos: 0, items: [] };
+        weeksMap[key].ingresos += d.ingresos;
+        weeksMap[key].gastos += d.gastos;
+        weeksMap[key].items.push(...d.items);
+      });
+      return Object.values(weeksMap).sort((a, b) => b.key.localeCompare(a.key));
+    }
+
+    function renderWeekCard(w) {
+      const balance = w.ingresos - w.gastos;
+      const startLabel = w.start.toLocaleDateString('es-ES', { day: 'numeric', month: 'short' });
+      const endLabel = w.end.toLocaleDateString('es-ES', { day: 'numeric', month: 'short' });
+      const itemsHTML = w.items
+        .slice()
+        .sort((a, b) => (b.date || '').localeCompare(a.date || ''))
+        .map(it => renderMovementItemRow(it, true))
+        .join('');
+      return `
+        <div class="user-summary-card" style="gap:6px;">
+          <div style="display:flex; justify-content:space-between; align-items:center;">
+            <strong style="font-size:0.78rem;">Semana del ${startLabel} al ${endLabel}</strong>
+            <span class="balance-badge" style="color:${balance >= 0 ? 'var(--green)' : 'var(--red)'};">${balance >= 0 ? '+' : '-'}$${Math.abs(balance).toLocaleString()}</span>
+          </div>
+          <div style="display:flex; justify-content:space-around; font-size:0.68rem; color:var(--text-muted);">
+            <span>Ingresos: <b style="color:var(--green)">$${w.ingresos.toLocaleString()}</b></span>
+            <span>Gastos: <b style="color:var(--red)">$${w.gastos.toLocaleString()}</b></span>
+          </div>
+          <div style="display:flex; flex-direction:column; gap:4px;">${itemsHTML}</div>
+        </div>
+      `;
     }
 
     // Agrupa los gastos del mes por subcategoría para armar el diagrama de
@@ -2873,6 +3039,75 @@
       document.getElementById('schedTabJesus').classList.toggle('active', owner === 'Jesus');
       document.getElementById('schedTabAli').classList.toggle('active', owner === 'Ali');
       renderSchedules();
+      renderScheduleCalendar();
+    }
+
+    // Alterna entre la vista de Lista (como estaba) y la vista de Calendario
+    // (tabla con los días como columnas, para ver el horario semanal completo
+    // de un vistazo, como un calendario clásico).
+    function switchScheduleView(mode) {
+      document.getElementById('scheduleViewList').classList.toggle('active', mode === 'list');
+      document.getElementById('scheduleViewCalendar').classList.toggle('active', mode === 'calendar');
+      document.getElementById('scheduleContainer').style.display = mode === 'list' ? 'flex' : 'none';
+      document.getElementById('scheduleCalendarContainer').style.display = mode === 'calendar' ? 'block' : 'none';
+      if (mode === 'calendar') renderScheduleCalendar();
+    }
+
+    function renderScheduleCalendar() {
+      const container = document.getElementById('scheduleCalendarContainer');
+      if (!container) return;
+      const days = ["Lunes", "Martes", "Miércoles", "Jueves", "Viernes", "Sábado"];
+      const classesByDay = {};
+      days.forEach(d => classesByDay[d] = []);
+      Object.keys(allSchedules).forEach(k => {
+        const c = allSchedules[k];
+        if (c && (c.owner || '').toLowerCase() === currentScheduleOwner.toLowerCase() && classesByDay[c.day]) {
+          classesByDay[c.day].push({ id: k, ...c });
+        }
+      });
+      days.forEach(d => classesByDay[d].sort((a, b) => (a.startTime || '').localeCompare(b.startTime || '')));
+
+      const ownerColorVar = currentScheduleOwner === 'Jesus' ? 'var(--jesus-color)' : 'var(--ali-color)';
+      const headerHTML = days.map(d => `<th style="padding:8px 4px; font-size:0.64rem; color:var(--text-muted); border-bottom:2px solid var(--card-border); text-transform:uppercase; letter-spacing:0.3px; white-space:nowrap;">${d.slice(0, 3)}</th>`).join('');
+
+      const maxRows = Math.max(1, ...days.map(d => classesByDay[d].length));
+      let bodyRows = '';
+      for (let row = 0; row < maxRows; row++) {
+        bodyRows += '<tr>';
+        days.forEach(d => {
+          const c = classesByDay[d][row];
+          if (c) {
+            bodyRows += `
+              <td style="padding:4px; vertical-align:top;">
+                <div style="background:var(--bg); border-left:3px solid ${ownerColorVar}; border-radius:8px; padding:6px 7px; font-size:0.64rem; display:flex; flex-direction:column; gap:2px; min-width:88px;">
+                  <strong style="font-size:0.66rem; word-break:break-word;">${c.materia || 'Clase'}</strong>
+                  <span style="color:var(--gold); font-weight:700; white-space:nowrap;">⏰ ${c.startTime || 'S/H'}-${c.endTime || 'S/H'}</span>
+                  ${c.info ? `<span style="color:var(--text-muted); word-break:break-word;">${c.info}</span>` : ''}
+                  <span class="delete-btn" style="align-self:flex-end;" onclick="deleteScheduleItem('${c.id}')">🗑️</span>
+                </div>
+              </td>`;
+          } else {
+            bodyRows += `<td style="padding:4px;"></td>`;
+          }
+        });
+        bodyRows += '</tr>';
+      }
+
+      const hasAnyClass = days.some(d => classesByDay[d].length > 0);
+      if (!hasAnyClass) {
+        container.innerHTML = `<div style="text-align:center; font-size:0.78rem; color:var(--text-muted); padding:16px;">No hay clases registradas para ${currentScheduleOwner}.</div>`;
+        return;
+      }
+
+      container.innerHTML = `
+        <h3 class="${currentScheduleOwner === 'Jesus' ? 'title-jesus' : 'title-ali'}" style="font-size:0.85rem; margin-bottom:6px;">Calendario de ${currentScheduleOwner}</h3>
+        <div style="overflow-x:auto; width:100%;">
+          <table style="border-collapse:collapse; width:100%; min-width:540px;">
+            <thead><tr>${headerHTML}</tr></thead>
+            <tbody>${bodyRows}</tbody>
+          </table>
+        </div>
+      `;
     }
 
     function renderSchedules() {
